@@ -8,28 +8,21 @@ Call the provided functions to realize
 any changes to the web_root.
 """
 import os
-from .utils import make_dir, delete, move, copy
-from .config import config
-from .renderer import Renderer
+from barely.common.utils import make_dir, delete, move, copy
+from barely.common.config import config
+from barely.render import RENDERER as R
+from barely.common.decorators import Singleton
 
 
+@Singleton
 class ChangeHandler(object):
     """ ChangeHandler singleton realizes any and all file changes """
-
-    __instance = None
-
-    _Renderer = Renderer()
-
-    def __new__(cls):
-        if cls.__instance is None:
-            cls.__instance == object.__new__(cls)
-        return cls.__instance
 
     def _update_file(self, dev, web):
         extension = os.path.splitext(dev)[1]
 
         if extension in config["FILETYPES"]["RENDERABLE"]:
-            self._Renderer.render(dev, web)
+            R.render(dev, web)
         elif extension in config["FILETYPES"]["COMPRESSABLE"]["JS"]:
             pass
         elif extension in config["FILETYPES"]["COMPRESSABLE"]["CSS"]:

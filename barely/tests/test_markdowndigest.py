@@ -1,5 +1,5 @@
 import unittest
-from src import markdowndigest
+from barely.render import markdowndigest
 from ref.utils import read, prepare_tempfiles, cleanup
 
 

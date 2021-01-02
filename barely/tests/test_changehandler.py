@@ -1,16 +1,16 @@
 import os
 import unittest
-from src import changehandler
-from ref.utils import read, prepare_tempfiles, cleanup, remove
+from barely.track import changehandler
+from ref.utils import read, prepare_tempfiles, cleanup, remove, testdir
 
 
 class TestChangeHandler(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.ch = changehandler.ChangeHandler()
-        self.dir = os.path.join("test", "ref", "dir/")
-        self.file = os.path.join("test", "ref", "file.txt")
+        self.ch = changehandler.ChangeHandler.instance()
+        self.dir = os.path.join(testdir, "dir/")
+        self.file = os.path.join(testdir, "file.txt")
 
     @classmethod
     def tearDownClass(self):
@@ -27,7 +27,7 @@ class TestChangeHandler(unittest.TestCase):
     def test_notify_added_dir(self):
         message = self.ch.notify_added_dir(self.dir)
         self.assertTrue(os.path.exists(self.dir))
-        self.assertEqual(message, "created: test/ref/dir/ ")
+        self.assertEqual(message, "created: barely/tests/ref/dir/ ")
 
     def test_notify_deleted(self):
         os.mkdir(self.dir)
@@ -35,11 +35,11 @@ class TestChangeHandler(unittest.TestCase):
 
         message = self.ch.notify_deleted(self.file)
         self.assertFalse(os.path.exists(self.file))
-        self.assertEqual(message, "deleted: test/ref/file.txt ")
+        self.assertEqual(message, "deleted: barely/tests/ref/file.txt ")
 
         message = self.ch.notify_deleted(self.dir)
         self.assertFalse(os.path.exists(self.dir))
-        self.assertEqual(message, "deleted: test/ref/dir/ ")
+        self.assertEqual(message, "deleted: barely/tests/ref/dir/ ")
 
     def test_notify_moved_file(self):
         pass

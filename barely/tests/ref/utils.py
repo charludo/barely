@@ -7,15 +7,20 @@ import os
 import shutil
 
 
+testdir = os.path.join("barely", "tests", "ref")
+tempfile = os.path.join(testdir, "temp")
+infile = os.path.join(testdir, "in")
+
+
 def read(filename):
-    with open(os.path.join("test", "ref", filename), "r") as file:
+    with open(os.path.join(testdir, filename), "r") as file:
         contents = file.read()
         file.close()
         return contents
 
 
 def write(filename, content):
-    with open(os.path.join("test", "ref", filename), "w") as file:
+    with open(os.path.join(testdir, filename), "w") as file:
         file.write(content)
         file.close()
 
@@ -48,8 +53,8 @@ def prepare_tempfiles(yaml=0, markdown=0, dict=False, html=False, out=""):
 
 def cleanup():
     for path in ["in", "out", "temp"]:
-        if os.path.exists(os.path.join("test", "ref", path)):
-            os.remove(os.path.join("test", "ref", path))
+        if os.path.exists(os.path.join(testdir, path)):
+            os.remove(os.path.join(testdir, path))
 
 
 def remove(path):

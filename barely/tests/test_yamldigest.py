@@ -1,5 +1,5 @@
 import unittest
-from src import yamldigest
+from barely.render import yamldigest
 from ref.utils import read, prepare_tempfiles, cleanup
 
 

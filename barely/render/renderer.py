@@ -8,33 +8,26 @@ This is implemented as a singleton class.
 
 from jinja2 import Environment, FileSystemLoader
 from .filereader import FileReader
-from .utils import get_template_path, make_valid_path, get_basename
-from .config import config
+from barely.common.utils import get_template_path, make_valid_path, get_basename
+from barely.common.config import config
+from barely.common.decorators import Singleton
 
 
-class Renderer(object):
+@Singleton
+class Renderer():
     """ Renderer singleton provides a method to render a Page object to a HTML file """
-
-    __instance = None
 
     _jinja_env = None
     _files_rendered = 0
 
     _fr = FileReader()
 
-    def __new__(cls, template_path=""):
-        if cls.__instance is None:
-            cls.__instance == object.__new__(cls)
-        return cls.__instance
+    def __init__(self):
+        self.set_template_path(make_valid_path(config["ROOT"]["DEV"], "templates/"))
 
-    def __init__(self, template_path=""):
-        if not len(template_path):
-            template_root = make_valid_path(config["ROOT"]["DEV"], "templates/")
-        else:
-            template_root = template_path
-
+    def set_template_path(self, path):
         self._jinja_env = Environment(
-            loader=FileSystemLoader(template_root)
+            loader=FileSystemLoader(path)
             )
 
     def get_count(self):

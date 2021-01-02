@@ -1,7 +1,7 @@
 ROOT:
-    DEV: /home/charlotte/Webdesign/cms/barely/testing/devroot/
-    WEB: /home/charlotte/Webdesign/cms/barely/testing/webroot/
-    BAK: /home/charlotte/Webdesign/cms/barely/testing/backups/
+    DEV: /home/charlotte/Webdesign/barely/blueprints/devroot/
+    WEB: /home/charlotte/Webdesign/barely/blueprints/webroot/
+    BAK: /home/charlotte/Webdesign/barely/blueprints/backups/
 
 FILETYPES:
     RENDERABLE:

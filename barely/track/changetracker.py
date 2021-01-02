@@ -14,13 +14,14 @@ from watchdog.events import FileModifiedEvent
 from watchdog.events import FileDeletedEvent, DirDeletedEvent
 from watchdog.events import FileMovedEvent, DirMovedEvent
 
-from .config import config
-from .utils import dev_to_web
+from barely.common.config import config
+from barely.common.utils import dev_to_web
+from barely.common.decorators import Singleton
 
 
+@Singleton
 class ChangeTracker:
     """ monitors the devroot for file and dir changes and notifies the ChangeHandler """
-    __instance__ = None
 
     handler = None
     observer = None
@@ -28,33 +29,29 @@ class ChangeTracker:
     CH = None
 
     def __init__(self, changehandler):
-        if ChangeTracker.__instance__ is None:
-            ChangeTracker.__instance__ = self
 
-            self.CH = changehandler
+        self.CH = changehandler
 
-            """ set up the Event Handler """
-            patterns = "*"
-            ignore_patterns = ""
-            ignore_directories = False
-            case_sensitive = True
-            self.handler = PatternMatchingEventHandler(patterns,
-                                                       ignore_patterns,
-                                                       ignore_directories,
-                                                       case_sensitive)
+        """ set up the Event Handler """
+        patterns = "*"
+        ignore_patterns = ""
+        ignore_directories = False
+        case_sensitive = True
+        self.handler = PatternMatchingEventHandler(patterns,
+                                                   ignore_patterns,
+                                                   ignore_directories,
+                                                   case_sensitive)
 
-            self.handler.on_created = self._notify
-            self.handler.on_deleted = self._notify
-            self.handler.on_modified = self._notify
-            self.handler.on_moved = self._notify
+        self.handler.on_created = self._notify
+        self.handler.on_deleted = self._notify
+        self.handler.on_modified = self._notify
+        self.handler.on_moved = self._notify
 
-            """ set up the Observer """
-            path = config["ROOT"]["DEV"]
-            recursive = True
-            self.observer = Observer()
-            self.observer.schedule(self.handler, path, recursive=recursive)
-        else:
-            raise Exception("An instance of the singleton ChangeTracker already exists")
+        """ set up the Observer """
+        path = config["ROOT"]["DEV"]
+        recursive = True
+        self.observer = Observer()
+        self.observer.schedule(self.handler, path, recursive=recursive)
 
     def _notify(self, event):
         src_dev = event.src_path

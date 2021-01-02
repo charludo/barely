@@ -9,9 +9,15 @@ from .replacements import replacements
 
 
 def read_file(filename):
-    from .filereader import FileReader
-    fr = FileReader()
-    return fr.get_raw(filename)
+    try:
+        with open(filename, 'r') as file:
+            raw_content = file.read()
+            file.close()
+            return raw_content
+    except FileNotFoundError:
+        raise FileNotFoundError("File '{0}' not found.".format(filename))
+    except OSError as error:
+        raise OSError("OS Error: {0}".format(error))
 
 
 def get_template_path(template):

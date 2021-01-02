@@ -11,11 +11,12 @@ import glob
 from datetime import datetime
 import shutil
 from .config import config
+from barely.common.decorators import Singleton
 
 
+@Singleton
 class BackupManager:
     """ provides methods for the creation and the restoration of backups """
-    __instance__ = None
 
     root_bak = ""
     root_dev = ""
@@ -26,16 +27,11 @@ class BackupManager:
     max = 0
 
     def __init__(self):
-        if BackupManager.__instance__ is None:
-            BackupManager.__instance__ = self
+        self.root_bak = config["ROOT"]["BAK"]
+        self.root_dev = config["ROOT"]["DEV"]
+        self.root_web = config["ROOT"]["WEB"]
 
-            self.root_bak = config["ROOT"]["BAK"]
-            self.root_dev = config["ROOT"]["DEV"]
-            self.root_web = config["ROOT"]["WEB"]
-
-            self.max = int(config["BACKUP"]["MAX"])
-        else:
-            raise Exception("An instance of the singleton BackupManager already exists")
+        self.max = int(config["BACKUP"]["MAX"])
 
     def _do_backup(self, src, tag):
         backup_name = tag.upper() + "--" + datetime.now().strftime("%Y-%m-%d--%H-%M-%S-%f") + ".bak"
