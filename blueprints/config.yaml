@@ -1,0 +1,23 @@
+ROOT:
+    DEV: /home/charlotte/Webdesign/cms/barely/testing/devroot/
+    WEB: /home/charlotte/Webdesign/cms/barely/testing/webroot/
+    BAK: /home/charlotte/Webdesign/cms/barely/testing/backups/
+
+FILETYPES:
+    RENDERABLE:
+        - .md
+    COMPRESSABLE:
+        IMAGES:
+            - .jpg
+            - .jpeg
+            - .png
+        JS:
+            - .js
+        CSS:
+            - .sass
+            - .scss
+    IGNORE:
+        - .temp
+
+BACKUP:
+    MAX: 10
