@@ -22,13 +22,11 @@ def read_file(filename):
 
 def get_template_path(template):
     """ helper function to get absolute path of the template to be used """
-    dirs = template.split(".")
-    dirs[-1] += ".html"
-    return make_valid_path(*dirs)
-
-
-def get_basename(path):
-    return os.path.basename(path)
+    base = os.path.basename(template)
+    subdirs = base.split(".")
+    subdirs = subdirs[:-1]
+    path = make_valid_path(*subdirs)
+    return path + ".html"
 
 
 def make_valid_path(*args):

@@ -22,9 +22,9 @@ class TestUtils(unittest.TestCase):
         os.remove("test.txt")
 
     def test_get_template_path(self):
-        self.assertEqual(utils.get_template_path("template"), "template.html")
-        self.assertEqual(utils.get_template_path("template.subtemplate"), "template/subtemplate.html")
-        self.assertEqual(utils.get_template_path("template.sub.template"), "template/sub/template.html")
+        self.assertEqual(utils.get_template_path("template.md"), "template.html")
+        self.assertEqual(utils.get_template_path("template.subtemplate.md"), "template/subtemplate.html")
+        self.assertEqual(utils.get_template_path("template.sub.template.rc"), "template/sub/template.html")
 
     def test_make_valid_path(self):
         self.assertEqual(utils.make_valid_path("one", "two"), "one/two")
@@ -40,6 +40,6 @@ class TestUtils(unittest.TestCase):
         webroot = config["ROOT"]["WEB"]
 
         self.assertEqual(utils.dev_to_web((devroot + "test.txt")), (webroot + "test.txt"))
-        self.assertEqual(utils.dev_to_web((devroot + "test.sass")), (webroot + "test.css"))
+        self.assertEqual(utils.dev_to_web((devroot + "test.sass")), (webroot + "test.min.css"))
         self.assertEqual(utils.dev_to_web((devroot + "test.js")), (webroot + "test.min.js"))
         self.assertEqual(utils.dev_to_web((devroot + "test.md")), (webroot + "index.html"))

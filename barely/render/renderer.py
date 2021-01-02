@@ -8,7 +8,7 @@ This is implemented as a singleton class.
 
 from jinja2 import Environment, FileSystemLoader
 from .filereader import FileReader
-from barely.common.utils import get_template_path, make_valid_path, get_basename
+from barely.common.utils import get_template_path, make_valid_path
 from barely.common.config import config
 from barely.common.decorators import Singleton
 
@@ -36,7 +36,7 @@ class Renderer():
 
     def render(self, src, dest):
         """ Expects Source and Destination. Creates Page object to render to HTML and places it at dest """
-        template = get_template_path(get_basename(src))
+        template = get_template_path(src)
         content = self._fr.extract_markdown(src)
         params = self._fr.extract_yaml(src)
 

@@ -63,3 +63,12 @@ def remove(path):
             os.remove(path)
         elif os.path.isdir(path):
             shutil.rmtree(path)
+
+
+def touch(path):
+    remove(path)
+    open(path, "x")
+
+
+def move(old_path, new_path):
+    shutil.move(old_path, new_path)

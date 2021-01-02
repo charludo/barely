@@ -16,6 +16,7 @@ FILETYPES:
         CSS:
             - .sass
             - .scss
+            - .css
     IGNORE:
         - .temp
 

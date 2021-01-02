@@ -6,6 +6,6 @@ file names. Imported by utils.
 
 replacements = {
     "renderable": {"name": "index", "extension": ".html"},
-    "compressable_css": {"extension": ".css"},
+    "compressable_css": {"extension": ".min.css"},
     "compressable_js": {"extension": ".min.js"}
 }
