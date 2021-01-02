@@ -1,6 +1,7 @@
 import unittest
 import os
 from barely.common import utils
+from barely.common.config import config
 
 
 class TestUtils(unittest.TestCase):
@@ -35,8 +36,8 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(utils.make_valid_path("one", "/two/"), "/two/")
 
     def test_dev_to_web(self):
-        devroot = "/home/charlotte/Webdesign/barely/blueprints/devroot/"
-        webroot = "/home/charlotte/Webdesign/barely/blueprints/webroot/"
+        devroot = config["ROOT"]["DEV"]
+        webroot = config["ROOT"]["WEB"]
 
         self.assertEqual(utils.dev_to_web((devroot + "test.txt")), (webroot + "test.txt"))
         self.assertEqual(utils.dev_to_web((devroot + "test.sass")), (webroot + "test.css"))

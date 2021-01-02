@@ -1,6 +1,7 @@
 """
 Load the config and return it as a dict
 """
+import os
 import yaml
 from .decorators import Singleton
 
@@ -11,7 +12,12 @@ class Config:
     config = {}
 
     def __init__(self):
-        with open("/home/charlotte/Webdesign/barely/blueprints/config.yaml") as file:
+        if os.environ.get("barely") is None:
+            import sys
+            print("barely :: something went wrong; was barely started the proper way?")
+            sys.exit()
+
+        with open(os.path.join(os.environ.get("barely"), "config.yaml")) as file:
             raw_config = file.read()
         config_dict = yaml.safe_load(raw_config)
         self.config = config_dict
