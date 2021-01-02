@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>test_utils.py</title>
+  <link rel="stylesheet" href="../../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>test_utils.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">barely.common</span> <span class="kn">import</span> <span class="n">utils</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">TestUtils</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_read_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">test_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            Das hier ist ein String.</span>
+<span class="s2">            Das hier ist eine neue Zeile.</span>
+
+<span class="s2">            Das hier ist ein neuer Absatz mit Sonderzeichen: äöüß€</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;test.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">test_string</span><span class="p">)</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s2">&quot;test.txt&quot;</span><span class="p">),</span> <span class="n">test_string</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;test.txt&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_get_template_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">get_template_path</span><span class="p">(</span><span class="s2">&quot;template&quot;</span><span class="p">),</span> <span class="s2">&quot;template.html&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">get_template_path</span><span class="p">(</span><span class="s2">&quot;template.subtemplate&quot;</span><span class="p">),</span> <span class="s2">&quot;template/subtemplate.html&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">get_template_path</span><span class="p">(</span><span class="s2">&quot;template.sub.template&quot;</span><span class="p">),</span> <span class="s2">&quot;template/sub/template.html&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_make_valid_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">make_valid_path</span><span class="p">(</span><span class="s2">&quot;one&quot;</span><span class="p">,</span> <span class="s2">&quot;two&quot;</span><span class="p">),</span> <span class="s2">&quot;one/two&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">make_valid_path</span><span class="p">(</span><span class="s2">&quot;one&quot;</span><span class="p">,</span> <span class="s2">&quot;two.html&quot;</span><span class="p">),</span> <span class="s2">&quot;one/two.html&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">make_valid_path</span><span class="p">(</span><span class="s2">&quot;one&quot;</span><span class="p">,</span> <span class="s2">&quot;two.jinja.html&quot;</span><span class="p">),</span> <span class="s2">&quot;one/two.jinja.html&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">make_valid_path</span><span class="p">(</span><span class="s2">&quot;/one&quot;</span><span class="p">,</span> <span class="s2">&quot;two&quot;</span><span class="p">),</span> <span class="s2">&quot;/one/two&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">make_valid_path</span><span class="p">(</span><span class="s2">&quot;/one/&quot;</span><span class="p">,</span> <span class="s2">&quot;two&quot;</span><span class="p">),</span> <span class="s2">&quot;/one/two&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">make_valid_path</span><span class="p">(</span><span class="s2">&quot;/one/&quot;</span><span class="p">,</span> <span class="s2">&quot;two/&quot;</span><span class="p">),</span> <span class="s2">&quot;/one/two/&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">make_valid_path</span><span class="p">(</span><span class="s2">&quot;one&quot;</span><span class="p">,</span> <span class="s2">&quot;/two/&quot;</span><span class="p">),</span> <span class="s2">&quot;/two/&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_dev_to_web</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">devroot</span> <span class="o">=</span> <span class="s2">&quot;/home/charlotte/Webdesign/barely/blueprints/devroot/&quot;</span>
+        <span class="n">webroot</span> <span class="o">=</span> <span class="s2">&quot;/home/charlotte/Webdesign/barely/blueprints/webroot/&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">dev_to_web</span><span class="p">((</span><span class="n">devroot</span> <span class="o">+</span> <span class="s2">&quot;test.txt&quot;</span><span class="p">)),</span> <span class="p">(</span><span class="n">webroot</span> <span class="o">+</span> <span class="s2">&quot;test.txt&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">dev_to_web</span><span class="p">((</span><span class="n">devroot</span> <span class="o">+</span> <span class="s2">&quot;test.sass&quot;</span><span class="p">)),</span> <span class="p">(</span><span class="n">webroot</span> <span class="o">+</span> <span class="s2">&quot;test.css&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">dev_to_web</span><span class="p">((</span><span class="n">devroot</span> <span class="o">+</span> <span class="s2">&quot;test.js&quot;</span><span class="p">)),</span> <span class="p">(</span><span class="n">webroot</span> <span class="o">+</span> <span class="s2">&quot;test.min.js&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">dev_to_web</span><span class="p">((</span><span class="n">devroot</span> <span class="o">+</span> <span class="s2">&quot;test.md&quot;</span><span class="p">)),</span> <span class="p">(</span><span class="n">webroot</span> <span class="o">+</span> <span class="s2">&quot;index.html&quot;</span><span class="p">))</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

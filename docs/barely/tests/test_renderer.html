@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>test_renderer.py</title>
+  <link rel="stylesheet" href="../../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>test_renderer.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">barely.render</span> <span class="kn">import</span> <span class="n">RENDERER</span> <span class="k">as</span> <span class="n">R</span>
+<span class="kn">from</span> <span class="nn">ref.utils</span> <span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">prepare_tempfiles</span><span class="p">,</span> <span class="n">cleanup</span><span class="p">,</span> <span class="n">testdir</span><span class="p">,</span> <span class="n">infile</span><span class="p">,</span> <span class="n">tempfile</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">TestRenderer</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">set_template_path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">testdir</span><span class="p">,</span> <span class="s2">&quot;templates/&quot;</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">test_get_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">get_count</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">get_count</span><span class="p">(),</span> <span class="n">count</span><span class="p">)</span>
+
+        <span class="n">prepare_tempfiles</span><span class="p">(</span><span class="n">yaml</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">markdown</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s2">&quot;template-rendered.html&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="n">tempfile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="n">tempfile</span><span class="p">)</span>
+        <span class="n">cleanup</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">get_count</span><span class="p">(),</span> <span class="n">count</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">prepare_tempfiles</span><span class="p">(</span><span class="n">yaml</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">markdown</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s2">&quot;template-rendered.html&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="n">tempfile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;temp&quot;</span><span class="p">),</span> <span class="n">read</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">))</span>
+        <span class="n">cleanup</span><span class="p">()</span>
+
+        <span class="n">prepare_tempfiles</span><span class="p">(</span><span class="n">yaml</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">markdown</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s2">&quot;template-rendered-noyaml.html&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="n">tempfile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;temp&quot;</span><span class="p">),</span> <span class="n">read</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">))</span>
+        <span class="n">cleanup</span><span class="p">()</span>
+
+        <span class="n">prepare_tempfiles</span><span class="p">(</span><span class="n">yaml</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">markdown</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s2">&quot;template-rendered-nocontent.html&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="n">tempfile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;temp&quot;</span><span class="p">),</span> <span class="n">read</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">))</span>
+        <span class="n">cleanup</span><span class="p">()</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
