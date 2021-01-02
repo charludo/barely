@@ -1,0 +1,10 @@
+flake8==3.8.4
+Jinja2==2.11.2
+MarkupSafe==1.1.1
+mccabe==0.6.1
+mistune==2.0.0a4
+pathtools==0.1.2
+pycodestyle==2.6.0
+pyflakes==2.2.0
+PyYAML==5.3.1
+watchdog==0.10.4
