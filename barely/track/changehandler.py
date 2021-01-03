@@ -23,12 +23,12 @@ class ChangeHandler(object):
 
         if extension in config["FILETYPES"]["RENDERABLE"]:
             R.render(dev, web)
-        elif extension in config["FILETYPES"]["COMPRESSABLE"]["JS"]:
-            pass
-        elif extension in config["FILETYPES"]["COMPRESSABLE"]["CSS"]:
-            pass
-        elif extension in config["FILETYPES"]["COMPRESSABLE"]["IMAGES"]:
-            pass
+        # elif extension in config["FILETYPES"]["COMPRESSABLE"]["JS"]:
+            # pass
+        # elif extension in config["FILETYPES"]["COMPRESSABLE"]["CSS"]:
+            # pass
+        # elif extension in config["FILETYPES"]["COMPRESSABLE"]["IMAGES"]:
+            # pass
         elif extension not in config["FILETYPES"]["IGNORE"]:
             copy(dev, web)
 

@@ -1,7 +1,7 @@
 import os
 import unittest
 from barely.track import changehandler
-from ref.utils import remove, testdir, touch
+from ref.utils import remove, testdir, touch, write, read
 from barely.render import RENDERER as R
 
 
@@ -24,8 +24,35 @@ class TestChangeHandler(unittest.TestCase):
         remove(self.dir)
         remove(self.file)
 
+    def _update_test_helper(self, dev, web, action, message_from):
+        write(dev, "updated content")
+        write(web, "old content")
+        self.assertEqual(read(web), "old content")
+
+        message_from = os.path.join(testdir, message_from)
+        expected_message = f"{action}: {message_from} "
+
+        message = self.ch.notify_modified(os.path.join(testdir, dev), os.path.join(testdir, web))
+        self.assertEqual(message, expected_message)
+        self.assertNotEqual(read(web), "old content")
+
+        remove(os.path.join(testdir, dev))
+        remove(os.path.join(testdir, web))
+
     def test_notify_added_file(self):
-        pass
+        """doesn"t test for correctly rendering / compressing /
+        ... since that's been taken care of in the
+        test_notify_modified function"""
+
+        touch(self.file)
+        webfile = os.path.join(testdir, "webfile.txt")
+
+        message = self.ch.notify_added_file(self.file, webfile)
+
+        self.assertTrue(os.path.exists(webfile))
+        self.assertEqual(message, f"created: {webfile} ")
+
+        remove(webfile)
 
     def test_notify_added_dir(self):
         message = self.ch.notify_added_dir(self.dir)
@@ -45,7 +72,23 @@ class TestChangeHandler(unittest.TestCase):
         self.assertEqual(message, f"deleted: {self.dir} ")
 
     def test_notify_moved_file(self):
-        pass
+        """doesn"t test for correctly rendering / compressing /
+        ... since that's been taken care of in the
+        test_notify_modified function"""
+
+        newfile = os.path.join(testdir, "filenew.txt")
+        movedfile = os.path.join(testdir, "filemoved.txt")
+        touch(self.file)
+        touch(newfile)
+
+        message = self.ch.notify_moved_file(self.file, newfile, movedfile)
+
+        self.assertTrue(os.path.exists(movedfile))
+        self.assertFalse(os.path.exists(self.file))
+        self.assertEqual(message, f"moved: {self.file} to: {movedfile}")
+
+        remove(newfile)
+        remove(movedfile)
 
     def test_notify_moved_dir(self):
         os.mkdir(self.dir)
@@ -59,62 +102,8 @@ class TestChangeHandler(unittest.TestCase):
         remove(newdir)
 
     def test_notify_modified(self):
-        # renderable (.md)
-        f_in = os.path.join(testdir, "in.md")
-        f_out = os.path.join(testdir, "index.html")
-        touch(f_in)
-        message = self.ch.notify_modified(f_in, f_out)
-
-        self.assertTrue(os.path.exists(f_out))
-        self.assertTrue(os.path.exists(f_in))
-        self.assertEqual(message, f"updated: {f_out} ")
-        remove(f_in)
-        remove(f_out)
-
-        # compressable (.js)
-        f_in = os.path.join(testdir, "test.js")
-        f_out = os.path.join(testdir, "test.min.js")
-        touch(f_in)
-        message = self.ch.notify_modified(f_in, f_out)
-
-        # self.assertTrue(os.path.exists(f_out))
-        self.assertTrue(os.path.exists(f_in))
-        self.assertEqual(message, f"updated: {f_out} ")
-        remove(f_in)
-        remove(f_out)
-
-        # compressable (.css)
-        f_in = os.path.join(testdir, "test.scss")
-        f_out = os.path.join(testdir, "test.min.css")
-        touch(f_in)
-        message = self.ch.notify_modified(f_in, f_out)
-
-        # self.assertTrue(os.path.exists(f_out))
-        self.assertTrue(os.path.exists(f_in))
-        self.assertEqual(message, f"updated: {f_out} ")
-        remove(f_in)
-        remove(f_out)
-
-        # compressable (img)
-        f_in = os.path.join(testdir, "test.jpg")
-        f_out = os.path.join(testdir, "testmin.jpg")
-        touch(f_in)
-        message = self.ch.notify_modified(f_in, f_out)
-
-        # self.assertTrue(os.path.exists(f_out))
-        self.assertTrue(os.path.exists(f_in))
-        self.assertEqual(message, f"updated: {f_out} ")
-        remove(f_in)
-        remove(f_out)
-
-        # everything else
-        f_in = os.path.join(testdir, "test.txt")
-        f_out = os.path.join(testdir, "testcopy.txt")
-        touch(f_in)
-        message = self.ch.notify_modified(f_in, f_out)
-
-        self.assertTrue(os.path.exists(f_out))
-        self.assertTrue(os.path.exists(f_in))
-        self.assertEqual(message, f"updated: {f_out} ")
-        remove(f_in)
-        remove(f_out)
+        # missing: images
+        self._update_test_helper("in.md",  "index.html", "updated", "index.html")
+        self._update_test_helper("a.css",  "a.min.css", "updated", "a.min.css")
+        self._update_test_helper("a.js",  "a.min.js", "updated", "a.min.js")
+        self._update_test_helper("dev.txt",  "web.txt", "updated", "web.txt")
