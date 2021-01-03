@@ -14,6 +14,7 @@ from watchdog.events import FileModifiedEvent
 from watchdog.events import FileDeletedEvent, DirDeletedEvent
 from watchdog.events import FileMovedEvent, DirMovedEvent
 
+from .changehandler import ChangeHandler
 from barely.common.config import config
 from barely.common.utils import dev_to_web
 from barely.common.decorators import Singleton
@@ -25,13 +26,15 @@ class ChangeTracker:
 
     handler = None
     observer = None
+    CH = ChangeHandler.instance()
 
-    CH = None
+    silent = False
 
-    def __init__(self, changehandler):
+    def __init__(self):
+        path = config["ROOT"]["DEV"]
+        self.setup_eventhandler(path)
 
-        self.CH = changehandler
-
+    def setup_eventhandler(self, path):
         """ set up the Event Handler """
         patterns = "*"
         ignore_patterns = ""
@@ -48,10 +51,13 @@ class ChangeTracker:
         self.handler.on_moved = self._notify
 
         """ set up the Observer """
-        path = config["ROOT"]["DEV"]
+
         recursive = True
         self.observer = Observer()
         self.observer.schedule(self.handler, path, recursive=recursive)
+
+    def mute(self):
+        self.silence = True
 
     def _notify(self, event):
         src_dev = event.src_path
@@ -75,25 +81,30 @@ class ChangeTracker:
         elif isinstance(event, FileModifiedEvent):
             result = self.CH.notify_modified(src_dev, src_web)
         else:
-            pass
+            result = None
 
-        if result:
+        if result and not self.silence:
             print(f"ChangeTracker:: {result}")
 
-    def start(self):
+    def start(self, loop_action):
         """ start the watchdog configured above """
-        print("ChangeTracker running, monitoring {0}:".format(config["ROOT"]["DEV"]))
+        if not self.silence:
+            print("ChangeTracker running, monitoring {0}:".format(config["ROOT"]["DEV"]))
         self.observer.start()
         try:
             while True:
-                time.sleep(1)
+                while not self.observer.is_alive():
+                    time.sleep(0.25)
+                loop_action()
         except KeyboardInterrupt:
             self.observer.stop()
-            self.observer.join()
-            print("\nChangeTracker stopped.")
+            if not self.silence:
+                print("\nChangeTracker stopped.")
+        self.observer.join()
 
     def stop(self):
         """ stop the watchdog """
         self.observer.stop()
         self.observer.join()
-        print("\nChangeTracker stopped.")
+        if not self.silence:
+            print("\nChangeTracker stopped.")

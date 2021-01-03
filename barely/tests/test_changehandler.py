@@ -15,11 +15,6 @@ class TestChangeHandler(unittest.TestCase):
 
         R.set_template_path(os.path.join(testdir, "templates/"))
 
-    @classmethod
-    def tearDownClass(self):
-        self.ch = None
-        del self.ch
-
     def tearDown(self):
         remove(self.dir)
         remove(self.file)
