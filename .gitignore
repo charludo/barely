@@ -1,8 +1,8 @@
 # barely-specific
 blueprints/config.yaml
-barely/test/ref/backups/backups/
-barely/test/ref/backups/webroot/
-barely/test/ref/backups/devroot/
+barely/tests/ref/backups/backups/
+barely/tests/ref/backups/webroot/
+barely/tests/ref/backups/devroot/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

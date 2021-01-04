@@ -72,3 +72,8 @@ def touch(path):
 
 def move(old_path, new_path):
     shutil.move(old_path, new_path)
+
+
+def mkdir(path):
+    if not os.path.exists(path):
+        os.mkdir(path)

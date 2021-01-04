@@ -65,6 +65,7 @@ class BackupManager:
     def restore(self, web=False, dev=True, exact=""):
         """ restore a backup. no params passed will restore latest web backup. """
         if len(exact):
+            exact_input = exact
             exact = os.path.join(self.root_bak, exact)
             if self.tag_web in exact:
                 dest = self.root_web
@@ -73,16 +74,16 @@ class BackupManager:
             else:
                 raise FileNotFoundError("Backup file could not be found.")
             self._do_restore(exact, dest)
-            return exact
+            return [exact_input]
         else:
             w = None
             d = None
             if web:
-                newest = max(glob.iglob(os.path.join(self.root_bak, self.tag_web) + "*", key=os.path.getctime))
+                newest = max(glob.iglob(os.path.join(self.root_bak, self.tag_web) + "*"), key=os.path.getctime)
                 self._do_restore(newest, self.root_web)
-                w += newest
+                w = newest.replace(os.path.join(self.root_bak, self.tag_web), self.tag_web)
             if dev:
-                newest = max(glob.iglob(os.path.join(self.root_bak, self.tag_dev) + "*", key=os.path.getctime))
+                newest = max(glob.iglob(os.path.join(self.root_bak, self.tag_dev) + "*"), key=os.path.getctime)
                 self._do_restore(newest, self.root_dev)
-                d += newest
+                d = newest.replace(os.path.join(self.root_bak, self.tag_dev), self.tag_dev)
             return [w, d]
