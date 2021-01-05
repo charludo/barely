@@ -8,7 +8,7 @@ import sys
 
 def init():
     # TEMPORARY
-    os.chdir("blueprints")
+    os.chdir("blueprints/devroot")
 
     # get dir from which barely was started
     cwd = os.getcwd()
@@ -22,7 +22,7 @@ def init():
         sys.exit()
 
     # TEMPORARY
-    os.chdir("..")
+    os.chdir("../..")
 
 
 def test():

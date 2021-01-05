@@ -1,5 +1,5 @@
 # barely-specific
-blueprints/config.yaml
+blueprints/devroot/config.yaml
 barely/tests/ref/backups/backups/
 barely/tests/ref/backups/webroot/
 barely/tests/ref/backups/devroot/
