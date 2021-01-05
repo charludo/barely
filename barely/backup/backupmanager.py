@@ -63,7 +63,7 @@ class BackupManager:
         return [w, d]
 
     def restore(self, web=False, dev=True, exact=""):
-        """ restore a backup. no params passed will restore latest web backup. """
+        """ restore a backup. no params passed will restore latest dev backup. """
         if len(exact):
             exact_input = exact
             exact = os.path.join(self.root_bak, exact)
@@ -87,3 +87,17 @@ class BackupManager:
                 self._do_restore(newest, self.root_dev)
                 d = newest.replace(os.path.join(self.root_bak, self.tag_dev), self.tag_dev)
             return [w, d]
+
+        def revert_safely(self):
+            """ allows to revert to the latest backup, while simultaneously creating a new one """
+            latest_dev = max(glob.iglob(os.path.join(self.root_bak, self.tag_dev) + "*"), key=os.path.getctime)
+            latest_dev = latest_dev.replace(os.path.join(self.root_bak, self.tag_dev), self.tag_dev)
+
+            latest_web = max(glob.iglob(os.path.join(self.root_bak, self.tag_web) + "*"), key=os.path.getctime)
+            latest_web = latest_web.replace(os.path.join(self.root_bak, self.tag_web), self.tag_web)
+
+            backup = self.backup(web=True, dev=True)
+            restored_dev = self.restore(latest_dev)
+            restored_web = self.restore(latest_web)
+
+            return [[restored_web[0], restored_dev[0]], backup]
