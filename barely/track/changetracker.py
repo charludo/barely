@@ -6,6 +6,7 @@ of changes to files and dirs in devroot
 Useful for live development
 """
 
+import os
 import time
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
@@ -29,6 +30,7 @@ class ChangeTracker:
     CH = ChangeHandler.instance()
 
     silent = False
+    template_dir = ""
 
     def __init__(self):
         path = config["ROOT"]["DEV"]
@@ -56,6 +58,8 @@ class ChangeTracker:
         self.observer = Observer()
         self.observer.schedule(self.handler, path, recursive=recursive)
 
+        self.template_dir = os.path.join(path, "templates")
+
     def mute(self):
         self.silence = True
 
@@ -66,9 +70,16 @@ class ChangeTracker:
             dest_dev = event.dest_path
             dest_web = dev_to_web(dest_dev)
         except AttributeError:
-            pass
+            dest_dev = None
+            dest_web = None
 
-        if isinstance(event, FileCreatedEvent):
+        if self.template_dir in src_dev and not isinstance(event, FileDeletedEvent) and not isinstance(event, DirDeletedEvent):
+            if dest_dev is None:
+                affected = src_dev
+            else:
+                affected = dest_dev
+            result = self.CH.notify_changed_template(affected)
+        elif isinstance(event, FileCreatedEvent):
             result = self.CH.notify_added_file(src_dev, src_web)
         elif isinstance(event, DirCreatedEvent):
             result = self.CH.notify_added_dir(src_web)

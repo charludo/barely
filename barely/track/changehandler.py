@@ -83,3 +83,7 @@ class ChangeHandler(object):
         """ notify the ChangeHandler of a file modification """
         self._update_file(dev, web)
         return self._announce("updated", web)
+
+    def notify_changed_template(self, template):
+        """ notify the ChangeHandler of changes to the templates """
+        pass

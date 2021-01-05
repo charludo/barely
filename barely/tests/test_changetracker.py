@@ -1,5 +1,4 @@
 import os
-import time
 import shutil
 import unittest
 from unittest.mock import MagicMock
@@ -18,28 +17,10 @@ class TestChangeTracker(unittest.TestCase):
         CH.notify_moved_file = MagicMock(name="notify_moved_file")
         CH.notify_moved_dir = MagicMock(name="notify_moved_dir")
         CH.notify_modified = MagicMock(name="notify_modified")
+        CH.notify_changed_template = MagicMock(name="notify_changed_template")
 
         CT.setup_eventhandler(testdir)
         CT.mute()
-
-    def fake_loop_action(self):
-        file = os.path.join(testdir, "file.txt")
-        file_moved = os.path.join(testdir, "file_moved.txt")
-        dir = os.path.join(testdir, "dir/")
-        dir_moved = os.path.join(testdir, "dir_moved/")
-
-        touch(file)
-        os.mkdir(dir)
-
-        write("file.txt", "update")
-
-        shutil.move(file, file_moved)
-        shutil.move(dir, dir_moved)
-
-        remove(file_moved)
-        remove(dir_moved)
-
-        raise KeyboardInterrupt
 
     def loop_file_create(self):
         file = os.path.join(testdir, "file.txt")
@@ -55,6 +36,7 @@ class TestChangeTracker(unittest.TestCase):
         self.assertFalse(CH.notify_moved_dir.called)
         self.assertFalse(CH.notify_modified.called)
         self.assertFalse(CH.notify_deleted.called)
+        self.assertFalse(CH.notify_changed_template.called)
 
         return True
 
@@ -71,6 +53,7 @@ class TestChangeTracker(unittest.TestCase):
         self.assertFalse(CH.notify_moved_dir.called)
         self.assertFalse(CH.notify_modified.called)
         self.assertFalse(CH.notify_deleted.called)
+        self.assertFalse(CH.notify_changed_template.called)
 
         return True
 
@@ -87,6 +70,7 @@ class TestChangeTracker(unittest.TestCase):
         self.assertFalse(CH.notify_moved_dir.called)
         self.assertFalse(CH.notify_modified.called)
         self.assertFalse(CH.notify_deleted.called)
+        self.assertFalse(CH.notify_changed_template.called)
 
         return True
 
@@ -103,6 +87,7 @@ class TestChangeTracker(unittest.TestCase):
         self.assertTrue(CH.notify_moved_dir.called)
         self.assertFalse(CH.notify_modified.called)
         self.assertFalse(CH.notify_deleted.called)
+        self.assertFalse(CH.notify_changed_template.called)
 
         return True
 
@@ -117,6 +102,7 @@ class TestChangeTracker(unittest.TestCase):
         self.assertFalse(CH.notify_moved_dir.called)
         self.assertFalse(CH.notify_modified.called)
         self.assertTrue(CH.notify_deleted.called)
+        self.assertFalse(CH.notify_changed_template.called)
 
         return True
 
@@ -131,6 +117,7 @@ class TestChangeTracker(unittest.TestCase):
         self.assertFalse(CH.notify_moved_dir.called)
         self.assertFalse(CH.notify_modified.called)
         self.assertTrue(CH.notify_deleted.called)
+        self.assertFalse(CH.notify_changed_template.called)
 
         return True
 
@@ -147,6 +134,24 @@ class TestChangeTracker(unittest.TestCase):
         self.assertFalse(CH.notify_moved_dir.called)
         self.assertTrue(CH.notify_modified.called)
         self.assertFalse(CH.notify_deleted.called)
+        self.assertFalse(CH.notify_changed_template.called)
+
+        return True
+
+    def loop_templates(self):
+        touch(os.path.join(testdir, "templates", "test.html"))
+
+        raise KeyboardInterrupt
+
+        remove(os.path.join(testdir, "templates", "test.html"))
+
+        self.assertFalse(CH.notify_added_file.called)
+        self.assertFalse(CH.notify_added_dir.called)
+        self.assertFalse(CH.notify_moved_file.called)
+        self.assertFalse(CH.notify_moved_dir.called)
+        self.assertFalse(CH.notify_modified.called)
+        self.assertFalse(CH.notify_deleted.called)
+        self.assertTrue(CH.notify_changed_template.called)
 
         return True
 
@@ -172,3 +177,5 @@ class TestChangeTracker(unittest.TestCase):
         if done:
             touch(os.path.join(testdir, "file.txt"))
             done = CT.start(loop_action=self.loop_modified)
+        if done:
+            done = CT.start(loop_action=self.loop_templates)
