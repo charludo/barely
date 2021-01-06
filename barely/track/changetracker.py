@@ -79,6 +79,8 @@ class ChangeTracker:
             else:
                 affected = dest_dev
             result = self.CH.notify_changed_template(affected, self.template_dir)
+            # just a bit of eye-candy / error-searching-help
+            result = f"Change to {affected} affected:\n* " + "\n* ".join(result)
         elif isinstance(event, FileCreatedEvent):
             result = self.CH.notify_added_file(src_dev, src_web)
         elif isinstance(event, DirCreatedEvent):

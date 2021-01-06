@@ -141,6 +141,4 @@ class ChangeHandler(object):
                 if template in filename:
                     self._update_file(filename, dev_to_web(filename))
 
-        # just aa bit of eye-candy / error-searching-help
-        output = f"Change to {template} affected:\n* " + "\n* ".join(affected)
-        return output
+        return affected
