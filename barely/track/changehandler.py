@@ -5,10 +5,12 @@ actor ever making changes in the
 web_root directory.
 
 Call the provided functions to realize
-any changes to the web_root.
+any changes to the dev_root.
 """
 import os
-from barely.common.utils import make_dir, delete, move, copy
+import re
+from pathlib import Path
+from barely.common.utils import make_dir, delete, move, copy, dev_to_web
 from barely.common.config import config
 from barely.render import RENDERER as R
 from barely.common.decorators import Singleton
@@ -32,12 +34,13 @@ class ChangeHandler(object):
         elif extension not in config["FILETYPES"]["IGNORE"]:
             copy(dev, web)
 
-    def update_all(self, cleanup_needed=True):
+    def update_all(self, backup=False):
         """ create backup, then force update everything """
-        if cleanup_needed:
-            # backup anlegen!!
-            delete(config["ROOT"]["WEB"])
-            make_dir(config["ROOT"]["WEB"])
+        if backup:
+            from barely.backup import BACKUPMANAGER as BAK
+            BAK.backup(web=True, dev=False)
+        delete(config["ROOT"]["WEB"])
+        make_dir(config["ROOT"]["WEB"])
         for root, dirs, files in os.walk(config["ROOT"]["DEV"], topdown=False):
             for path in dirs:
                 self.notify_added_dir(os.path.join(root, path))
@@ -84,6 +87,60 @@ class ChangeHandler(object):
         self._update_file(dev, web)
         return self._announce("updated", web)
 
-    def notify_changed_template(self, template):
+    def find_children(parent, template_dir):
+        # find all templates. Yes, all of them.
+        for path in Path(template_dir).rglob("*.html"):
+            # open them to check their contents
+            with open(path, "r") as file:
+                content = file.read()
+                matches = re.findall(r'{%\s*extends\s+[\"|\']([^\"]+).html[\"|\']\s*%}', content)
+                # if an {% extends %} tag is found, this template is affected!
+                # return the child and continue the search
+                if len(matches):
+                    yield os.path.join(template_dir, matches[0])
+
+    def find_affected(self, parent, template_dir):
+        children = self.find_children(parent, template_dir)     # look for templates that extend parent
+        for child in children:
+            yield parent, self.find_affected(child)             # return the parent, and all children
+
+    def notify_changed_template(self, template, template_dir):
         """ notify the ChangeHandler of changes to the templates """
-        pass
+
+        # changes can occur on either files or dirs. If it's a dir, all files and subdirs are changed
+        changed = []
+        if os.path.isfile(template):
+            changed = [template]
+        elif os.path.isdir(template):
+            changed = []
+            for path in Path(template).rglob("*.html"):
+                changed.append(path.name)
+
+        # for every file that was directly changed, find all templates that
+        # inherit from it, since these are also in need of a rerender
+        affected = []
+        for parent in changed:
+            affected.extend(self.find_affected(parent, template_dir))
+
+        # extract the template name, such as it's used in the .md file names
+        for element in affected:
+            template_dir = os.path.join(template_dir, "")
+            element = element.replace(template_dir, "")
+            element = element.replace(".html", "")
+            element = element.replace("/", ".")
+
+        # find all renderable files. iterations depend on number of renderable file types
+        file_candidates = []
+        for ext in config["FILETYPES"]["RENDERABLE"]:
+            file_candidates.extend(Path(template).rglob("*" + ext))
+
+        # for every affected template, find all files that use this template.
+        # then, re-render them.
+        for template in affected:
+            for filename in file_candidates:
+                if template in filename:
+                    self._update_file(filename, dev_to_web(filename))
+
+        # just aa bit of eye-candy / error-searching-help
+        output = f"Change to {template} affected:\n* " + "\n* ".join(affected)
+        return output
