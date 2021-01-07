@@ -38,7 +38,7 @@ class TestRenderer(unittest.TestCase):
         mini_size = os.stat(mini_path).st_size
 
         self.assertLess(mini_size, original_size)
-        self.assertEqual(read(os.path.join("minimizer", "mini.min.js")), "function a(a){var b=a*a;return b;}var b=a(4);alert(square);")
+        self.assertEqual(read(os.path.join("minimizer", "mini.min.js")), "function a(b){var c=b*b;return c;}var b=a(4);")
 
         remove(mini_path)
 

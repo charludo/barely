@@ -4,4 +4,3 @@ function squared(number) {
 }
 
 var sqr = squared(4);
-alert(square);

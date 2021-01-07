@@ -6,10 +6,11 @@ It also functions as a sass/scss parser.
 """
 import sass
 from PIL import Image
+from calmjs.parse import es5
 from calmjs.parse.unparsers.es5 import minify_print
 from .filereader import FileReader
 from barely.common.config import config
-from barely.common.utils import write_file, suppress_stdout
+from barely.common.utils import write_file
 from barely.common.decorators import Singleton
 
 
@@ -26,8 +27,8 @@ class Minimizer(object):
 
     def minimize_js(self, dev, web):
         raw = self.fr.get_raw(dev)
-        minified = minify_print(raw, obfuscate=True, obfuscate_globals=True)  # 1. minify & mangle
-        write_file(web, minified)                                             # 2. write & done!
+        minified = minify_print(es5(raw), obfuscate=True, obfuscate_globals=True)  # 1. minify & mangle
+        write_file(web, minified)                                                  # 2. write & done!
 
     def minimize_image(self, dev, web):
         quality = int(config["IMAGES"]["QUALITY"])                  # load parameter
