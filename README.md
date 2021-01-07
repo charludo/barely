@@ -1,6 +1,6 @@
 TODO:
 - Renderer liest Mediendateien, übergibt "media" an template
-- Minimizer für JS, CSS, IMG
+- Minimizer für JS, CSS, IMG - media darf nicht umbenannt werden.
 
 - Minimizer muss nach Änderungen ausfindig machen, von welchen Templates die Ressource eingebunden wird, und diese dem Changehandler übermitteln: in CH._update_file() eine Funktion aufrufen, die nur die Liste derer Templates findet, die sie selbst einbinden. Diese ruft dann mit parameter "individual" (o.Ä.) notify_changed_template auf und übergibt die Liste. Fertig!
 

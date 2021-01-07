@@ -14,6 +14,20 @@ class TestRenderer(unittest.TestCase):
 
         self.infile = infile + ".md"
 
+    def test_gather_media(self):
+        media = self.R.gather_media(os.path.join(testdir, "gather_media"))
+
+        self.assertIn("extensionless", media)
+        self.assertIn("image.png", media)
+        self.assertIn("extra.min.css", media)
+
+        self.assertNotIn("sub", media)
+        self.assertNotIn("renderable.md", media)
+        self.assertNotIn("notincluded.jpg", media)
+        self.assertNotIn("sub/notincluded.jpg", media)
+
+        self.assertEqual(len(media), 3)
+
     def test_get_count(self):
 
         count = self.R.get_count()

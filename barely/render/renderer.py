@@ -6,9 +6,10 @@ at the appropriate place on the webserver
 This is implemented as a singleton class.
 """
 
+import os
 from jinja2 import Environment, FileSystemLoader
 from .filereader import FileReader
-from barely.common.utils import get_template_path, make_valid_path
+from barely.common.utils import get_template_path, make_valid_path, dev_to_web
 from barely.common.config import config
 from barely.common.decorators import Singleton
 
@@ -30,8 +31,21 @@ class Renderer():
             loader=FileSystemLoader(path)
             )
 
+    @staticmethod
+    def gather_media(path):
+        media = []
+        if os.path.isfile(path):
+            path = os.path.dirname(path)
+        for file in os.listdir(path):
+            if not os.path.isdir(os.path.join(path, file)):
+                name, ext = os.path.splitext(os.path.basename(file))
+                if ext not in config["FILETYPES"]["RENDERABLE"]:
+                    processed_file = os.path.basename(dev_to_web(file))
+                    media.append(processed_file)
+        return media
+
     def get_count(self):
-        """ get the count of rendered pages. Utterly useless, but pylint won't leave me alone """
+        """ get the count of rendered pages. Utterly useless, but fun to see. """
         return self._files_rendered
 
     def render(self, src, dest):
@@ -40,8 +54,10 @@ class Renderer():
         content = self._fr.extract_markdown(src)
         params = self._fr.extract_yaml(src)
 
+        media = self.gather_media(src)
+
         page_template = self._jinja_env.get_template(template)
-        page_rendered = page_template.render(content=content, context=params)
+        page_rendered = page_template.render(content=content, context=params, media=media)
 
         try:
             with open(dest, 'w') as file:
