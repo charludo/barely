@@ -1,7 +1,9 @@
 import os
 import unittest
+from unittest.mock import patch
 from barely.track import changehandler
 from ref.utils import remove, testdir, touch, write, read
+from barely.common.utils import dev_to_web
 from barely.render import RENDERER as R
 
 
@@ -12,6 +14,7 @@ class TestChangeHandler(unittest.TestCase):
         self.ch = changehandler.ChangeHandler.instance()
         self.dir = os.path.join(testdir, "dir/")
         self.file = os.path.join(testdir, "file.txt")
+        self.template_dir = os.path.join(testdir, "template_tracker")
 
         R.set_template_path(os.path.join(testdir, "templates/"))
 
@@ -102,3 +105,82 @@ class TestChangeHandler(unittest.TestCase):
         self._update_test_helper("a.css",  "a.min.css", "updated", "a.min.css")
         self._update_test_helper("a.js",  "a.min.js", "updated", "a.min.js")
         self._update_test_helper("dev.txt",  "web.txt", "updated", "web.txt")
+
+    def test_find_children(self):
+        # base.html
+        path = os.path.join(self.template_dir, "base.html")
+        affected = self.ch.find_children(path, self.template_dir)
+
+        result = []
+        for aff in affected:
+            result.append(aff)
+
+        self.assertNotIn(path, result)
+        self.assertIn(os.path.join(self.template_dir, "left", "extendsbase.html"), result)
+        self.assertIn(os.path.join(self.template_dir, "left", "left", "extendsbase.html"), result)
+        self.assertIn(os.path.join(self.template_dir, "left", "left", "extendschild.html"), result)
+        self.assertEqual(len(result), 3)
+
+        # left/parentless.html
+        path = os.path.join(self.template_dir, "left", "parentless.html")
+        affected = self.ch.find_children(path, self.template_dir)
+
+        result = []
+        for aff in affected:
+            result.append(aff)
+
+        self.assertNotIn(path, result)
+        self.assertIn(os.path.join(self.template_dir, "right", "right", "extendsparentless.html"), result)
+        self.assertEqual(len(result), 1)
+
+        # left/right/completelyalone.html
+        path = os.path.join(self.template_dir, "left", "right", "completelyalone.html")
+        affected = self.ch.find_children(path, self.template_dir)
+
+        result = []
+        for aff in affected:
+            result.append(aff)
+
+        self.assertNotIn(path, result)
+        self.assertEqual(len(result), 0)
+
+        # extendsdeeper.html
+        path = os.path.join(self.template_dir, "right", "left", "deeper.html")
+        affected = self.ch.find_children(path, self.template_dir)
+
+        result = []
+        for aff in affected:
+            result.append(aff)
+
+        self.assertNotIn(path, result)
+        self.assertIn(os.path.join(self.template_dir, "extendsdeeper.html"), result)
+        self.assertEqual(len(result), 1)
+
+    def nct_testfactory(self, template_parts, children):
+        devroot = os.path.join(testdir, "template_tracker_devroot")
+
+        template_path = os.path.join(self.template_dir, *template_parts)
+        affected_md = [os.path.join(devroot, child) + ".md" for child in children]
+
+        with patch("barely.track.CHANGEHANDLER._update_file", side_effect=lambda dev, web: dev) as mocked_update:
+            result = self.ch.notify_changed_template(template_path, self.template_dir, devroot)
+
+            self.assertEqual(len(result), len(children))
+            for child in children:
+                self.assertIn(child, result)
+
+            for md in affected_md:
+                mocked_update.assert_called_with(md, dev_to_web(md))
+
+            mocked_update.reset_mock()
+
+    def test_notify_changed_template(self):
+        # lonely template, doesn't inherit, doesn't get innherited from
+        template = ["right", "left", "deeper.html"]
+        children = ["right.left.deeper", "extendsdeeper"]
+        self.nct_testfactory(template, children)
+
+        # child higher up in dir tree
+        template = ["left", "right", "completelyalone.html"]
+        children = ["left.right.completelyalone"]
+        self.nct_testfactory(template, children)

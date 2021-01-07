@@ -87,52 +87,60 @@ class ChangeHandler(object):
         self._update_file(dev, web)
         return self._announce("updated", web)
 
-    def find_children(parent, template_dir):
+    def find_children(self, parent, template_dir):
         # find all templates. Yes, all of them.
         for path in Path(template_dir).rglob("*.html"):
             # open them to check their contents
             with open(path, "r") as file:
                 content = file.read()
-                matches = re.findall(r'{%\s*extends\s+[\"|\']([^\"]+).html[\"|\']\s*%}', content)
+                matches = re.findall(r'{%\s*extends\s+[\"|\']([^\"]+)[\"|\']\s*%}', content)
                 # if an {% extends %} tag is found, this template is affected!
-                # return the child and continue the search
+                # check if it extends the one we're looking for.
+                # return the children of the child (recursion!)
+                # return the child
                 if len(matches):
-                    yield os.path.join(template_dir, matches[0])
+                    if os.path.join(template_dir, matches[0]) == parent:
+                        yield from self.find_children(str(path), template_dir)
+                        yield str(path)
 
-    def find_affected(self, parent, template_dir):
-        children = self.find_children(parent, template_dir)     # look for templates that extend parent
-        for child in children:
-            yield parent, self.find_affected(child)             # return the parent, and all children
-
-    def notify_changed_template(self, template, template_dir):
+    def notify_changed_template(self, template, template_dir, devroot=""):
         """ notify the ChangeHandler of changes to the templates """
+
+        # used mostly for testing purposes
+        if not len(devroot):
+            devroot = config["ROOT"]["DEV"]
 
         # changes can occur on either files or dirs. If it's a dir, all files and subdirs are changed
         changed = []
         if os.path.isfile(template):
             changed = [template]
         elif os.path.isdir(template):
-            changed = []
-            for path in Path(template).rglob("*.html"):
-                changed.append(path.name)
+            changed = [str(path) for path in Path(template).rglob("*.html")]
 
         # for every file that was directly changed, find all templates that
         # inherit from it, since these are also in need of a rerender
-        affected = []
+        affected = changed
         for parent in changed:
-            affected.extend(self.find_affected(parent, template_dir))
+            affected.extend(self.find_children(parent, template_dir))
 
         # extract the template name, such as it's used in the .md file names
-        for element in affected:
+        for element in range(len(affected)):
             template_dir = os.path.join(template_dir, "")
-            element = element.replace(template_dir, "")
-            element = element.replace(".html", "")
-            element = element.replace("/", ".")
+            affected[element] = affected[element].replace(template_dir, "")
+            affected[element] = affected[element].replace(".html", "")
+            affected[element] = affected[element].replace("/", ".")
+            affected[element] = affected[element].replace("\\", ".")
 
         # find all renderable files. iterations depend on number of renderable file types
         file_candidates = []
         for ext in config["FILETYPES"]["RENDERABLE"]:
-            file_candidates.extend(Path(template).rglob("*" + ext))
+            for path in Path(devroot).rglob("*" + ext):
+                file_candidates.append(str(path))
+
+        # remove duplicate entries from the lists (prevents multiple re-renders)
+        # mostly unnecessary, especially on the file_candidates, but just to be sure...
+        affected = list(set(affected))
+        file_candidates = list(set(file_candidates))
 
         # for every affected template, find all files that use this template.
         # then, re-render them.
