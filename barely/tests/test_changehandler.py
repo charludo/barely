@@ -14,9 +14,9 @@ class TestChangeHandler(unittest.TestCase):
         self.ch = changehandler.ChangeHandler.instance()
         self.dir = os.path.join(testdir, "dir/")
         self.file = os.path.join(testdir, "file.txt")
-        self.template_dir = os.path.join(testdir, "template_tracker")
+        self.template_dir = os.path.join(testdir, "template_tracker_devroot", "templates")
 
-        R.set_template_path(os.path.join(testdir, "templates/"))
+        R.set_template_path(os.path.join(testdir, "templates", ""))
 
     def tearDown(self):
         remove(self.dir)
@@ -158,20 +158,20 @@ class TestChangeHandler(unittest.TestCase):
 
     def nct_testfactory(self, template_parts, children):
         devroot = os.path.join(testdir, "template_tracker_devroot")
-
         template_path = os.path.join(self.template_dir, *template_parts)
+
         affected_md = [os.path.join(devroot, child) + ".md" for child in children]
 
         with patch("barely.track.CHANGEHANDLER._update_file", side_effect=lambda dev, web: dev) as mocked_update:
             result = self.ch.notify_changed_template(template_path, self.template_dir, devroot)
+            result_length = 0
+            for pair in result:
+                result_length += 1
+                self.assertIn(pair[0], children)
+                child_path = affected_md[children.index(pair[0])]                     # make sure only .md files that should be affected are touched
+                mocked_update.assert_called_with(child_path, dev_to_web(child_path))  # just to be sure
 
-            self.assertEqual(len(result), len(children))
-            for child in children:
-                self.assertIn(child, result)
-
-            for md in affected_md:
-                mocked_update.assert_called_with(md, dev_to_web(md))
-
+            self.assertEqual(result_length, len(affected_md))                         # every affected file should only be touched once
             mocked_update.reset_mock()
 
     def test_notify_changed_template(self):
@@ -183,4 +183,10 @@ class TestChangeHandler(unittest.TestCase):
         # child higher up in dir tree
         template = ["left", "right", "completelyalone.html"]
         children = ["left.right.completelyalone"]
+        self.nct_testfactory(template, children)
+
+        # directory
+        template = [""]
+        children = ["base", "extendsdeeper", "left.extendsbase", "left.left.extendsbase", "left.left.extendschild", "left.parentless",
+                    "left.right.completelyalone", "right.left.completelyalone", "right.left.deeper", "right.right.extendsparentless"]
         self.nct_testfactory(template, children)

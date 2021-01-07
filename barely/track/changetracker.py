@@ -78,9 +78,9 @@ class ChangeTracker:
                 affected = src_dev
             else:
                 affected = dest_dev
-            result = self.CH.notify_changed_template(affected, self.template_dir)
-            # just a bit of eye-candy / error-searching-help
-            result = f"Change to {affected} affected:\n* " + "\n* ".join(result)
+            result = f"Change to {affected} affected:"
+            for pair in self.CH.notify_changed_template(affected, self.template_dir):
+                result += "\n* {pair[0]} -> {pair[1]}"
         elif isinstance(event, FileCreatedEvent):
             result = self.CH.notify_added_file(src_dev, src_web)
         elif isinstance(event, DirCreatedEvent):

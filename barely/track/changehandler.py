@@ -20,19 +20,21 @@ from barely.common.decorators import Singleton
 class ChangeHandler(object):
     """ ChangeHandler singleton realizes any and all file changes """
 
-    def _update_file(self, dev, web):
-        extension = os.path.splitext(dev)[1]
+    def _update_file(self, dev, web):       # don't touch the damn /templates/ dir...
+        templates_string = os.path.join(os.sep, "templates", "")
+        if templates_string not in dev:
+            extension = os.path.splitext(dev)[1]
 
-        if extension in config["FILETYPES"]["RENDERABLE"]:
-            R.render(dev, web)
-        # elif extension in config["FILETYPES"]["COMPRESSABLE"]["JS"]:
-            # pass
-        # elif extension in config["FILETYPES"]["COMPRESSABLE"]["CSS"]:
-            # pass
-        # elif extension in config["FILETYPES"]["COMPRESSABLE"]["IMAGES"]:
-            # pass
-        elif extension not in config["FILETYPES"]["IGNORE"]:
-            copy(dev, web)
+            if extension in config["FILETYPES"]["RENDERABLE"]:
+                R.render(dev, web)
+            # elif extension in config["FILETYPES"]["COMPRESSABLE"]["JS"]:
+                # pass
+            # elif extension in config["FILETYPES"]["COMPRESSABLE"]["CSS"]:
+                # pass
+            # elif extension in config["FILETYPES"]["COMPRESSABLE"]["IMAGES"]:
+                # pass
+            elif extension not in config["FILETYPES"]["IGNORE"]:
+                copy(dev, web)
 
     def update_all(self, backup=False):
         """ create backup, then force update everything """
@@ -146,7 +148,8 @@ class ChangeHandler(object):
         # then, re-render them.
         for template in affected:
             for filename in file_candidates:
-                if template in filename:
+                filename_ext = os.path.splitext(filename)
+                this_template = os.path.join(os.sep, template) + filename_ext[1]
+                if this_template in filename:
                     self._update_file(filename, dev_to_web(filename))
-
-        return affected
+                    yield (template, filename)
