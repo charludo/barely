@@ -3,7 +3,9 @@ utility functions shared by
 multiple classes
 """
 import os
+import sys
 import shutil
+from contextlib import contextmanager
 from .config import config
 from .replacements import replacements
 
@@ -86,3 +88,14 @@ def move(old_path, new_path):
 
 def copy(src, dest):
     shutil.copy(src, dest)
+
+
+@contextmanager
+def suppress_stdout():
+    with open(os.devnull, "w") as devnull:
+        old_stdout = sys.stdout
+        sys.stdout = devnull
+        try:
+            yield
+        finally:
+            sys.stdout = old_stdout

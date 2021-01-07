@@ -5,12 +5,11 @@ images, javascript,...
 It also functions as a sass/scss parser.
 """
 import sass
-import csscompressor
-import slimit
 from PIL import Image
+from calmjs.parse.unparsers.es5 import minify_print
 from .filereader import FileReader
 from barely.common.config import config
-from barely.common.utils import write_file
+from barely.common.utils import write_file, suppress_stdout
 from barely.common.decorators import Singleton
 
 
@@ -22,19 +21,17 @@ class Minimizer(object):
         self.fr = FileReader()
 
     def minimize_css(self, dev, web):
-        uncompiled = self.fr.get_raw(dev)               # super easy:
-        compiled = sass.compile(uncompiled)             # 1. compile to css
-        compressed = csscompressor.compress(compiled)   # 2. compress that css
-        write_file(web, compressed)                     # 3. write & done!
+        compiled = sass.compile(filename=dev, output_style="compressed")  # 1. compile to css and compress
+        write_file(web, compiled)                                         # 2. write & done!
 
     def minimize_js(self, dev, web):
-        raw = self.fr.get_raw(dev)                                          # even easier:
-        minified = slimit.minify(raw, mangle=True, mangle_toplevel=True)    # 1. minify & mangle
-        write_file(web, minified)                                           # 2. write & done!
+        raw = self.fr.get_raw(dev)
+        minified = minify_print(raw, obfuscate=True, obfuscate_globals=True)  # 1. minify & mangle
+        write_file(web, minified)                                             # 2. write & done!
 
-    def minimize_images(self, dev, web):
-        quality = config["IMAGES"]["QUALITY"]                       # load parameter
-        short_side = config["IMAGES"]["SHORT_SIDE"]
+    def minimize_image(self, dev, web):
+        quality = int(config["IMAGES"]["QUALITY"])                  # load parameter
+        short_side = int(config["IMAGES"]["LONG_SIDE"])
         size = short_side, short_side                               # apply based on orientation
 
         with Image.open(dev) as original:
