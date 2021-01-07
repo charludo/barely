@@ -20,6 +20,15 @@ def read_file(filename):
         raise OSError("OS Error: {0}".format(error))
 
 
+def write_file(filename, content):
+    try:
+        with open(filename, 'w') as file:
+            file.write(content)
+            file.close()
+    except OSError as error:
+        raise OSError(f"OSError: {error}")
+
+
 def get_template_path(template):
     """ helper function to get absolute path of the template to be used """
     base = os.path.basename(template)

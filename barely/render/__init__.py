@@ -7,7 +7,7 @@ Templates. It also handles ressource
 """
 
 from .renderer import Renderer
+from .minimizer import Minimizer
 
-
-global RENDERER
 RENDERER = Renderer.instance()
+MINIMIZER = Minimizer.instance()

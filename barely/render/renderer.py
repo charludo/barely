@@ -9,7 +9,7 @@ This is implemented as a singleton class.
 import os
 from jinja2 import Environment, FileSystemLoader
 from .filereader import FileReader
-from barely.common.utils import get_template_path, make_valid_path, dev_to_web
+from barely.common.utils import get_template_path, make_valid_path, dev_to_web, write_file
 from barely.common.config import config
 from barely.common.decorators import Singleton
 
@@ -59,11 +59,5 @@ class Renderer():
         page_template = self._jinja_env.get_template(template)
         page_rendered = page_template.render(content=content, context=params, media=media)
 
-        try:
-            with open(dest, 'w') as file:
-                file.write(page_rendered)
-                file.close()
-            self._files_rendered += 1
-            # print(f"Successfully rendered page to {dest}")
-        except OSError as error:
-            raise OSError(f"OSError: {error}")
+        write_file(dest, page_rendered)
+        self._files_rendered += 1
