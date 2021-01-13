@@ -1,0 +1,32 @@
+ROOT:
+    DEV: ~
+    WEB: ~
+    BAK: ~
+
+FILETYPES:
+    RENDERABLE:
+            - .md
+    COMPRESSABLE:
+        IMAGES:
+            - .jpg
+            - .jpeg
+            - .png
+        JS:
+            - .js
+        CSS:
+            - .sass
+            - .scss
+            - .css
+    IGNORE:
+        - .temp
+
+BACKUP:
+    MAX: 10
+
+IMAGES:
+    QUALITY: 70
+    LONG_SIDE: 1920
+    EXTENSIONS:
+        - .jpg
+        - .jpeg
+        - .png

@@ -1,5 +1,5 @@
 TODO:
-- config-parser lädt leeres template, überschreibt mit config.yaml, um leere configs zu erlauben
+- separate metadata.yaml
 
 - modular pages
 - contact forms

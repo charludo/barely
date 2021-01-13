@@ -17,9 +17,15 @@ class Config:
             print("barely :: something went wrong; was barely started the proper way?")
             sys.exit()
 
+        with open(os.path.join(os.path.dirname(__file__), "empty_config.yaml")) as file:
+            empty_config = file.read()
+        empty_dict = yaml.safe_load(empty_config)
+
         with open(os.path.join(os.environ.get("barely"), "config.yaml")) as file:
             raw_config = file.read()
         config_dict = yaml.safe_load(raw_config)
+
+        config_dict = empty_dict | config_dict
         self.config = config_dict
 
     def get_config(self):
