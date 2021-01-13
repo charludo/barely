@@ -40,7 +40,7 @@ class ChangeHandler(object):
                 R.render(dev, web)
             elif any(extension in type for type in config["FILETYPES"]["COMPRESSABLE"]):
                 MIN.minimize(dev, web)
-                self.find_dependants(dev)
+                rend, temp = self.find_dependants(dev)
             elif extension not in config["FILETYPES"]["IGNORE"]:
                 copy(dev, web)
 
@@ -99,27 +99,39 @@ class ChangeHandler(object):
 
     def find_dependants(self, abspath):
         # we can't know how exactly the user included the file...
-        relpath = abspath.replace(config["ROOT"]["DEV"], "")
+        relpath = abspath.replace(self.devroot, "")[1:]
         filename = os.path.basename(relpath)
 
         # ... but this is an educated guess.
-        wanted = [re.compile(f"[\"|\']{file}[\"|\']]") for file in [abspath, relpath, filename]]
+        wanted = [f"[\"|\']{file}[\"|\']" for file in [abspath, relpath, filename]]
 
         # both the templates and the actual renderables need to be searched!
-        to_be_searched = config["FILETYPES"]["RENDERABLE"] + ".html"
+        to_be_searched = config["FILETYPES"]["RENDERABLE"].copy()
+        to_be_searched.append(".html")
 
         # find every renderable or template that mentions the file we are interested in
-        affected = []
+        affected_templates = []
+        affected_renderables = []
         for ext in to_be_searched:
             for path in Path(self.devroot).rglob("*" + ext):
                 with open(path, "r") as file:
                     contents = file.read()
                     if any(re.search(regex, contents) for regex in wanted):
                         if ext == ".html":
-                            affected.append(path)       # template+children will need to be re-rendered
+                            affected_templates.append(str(path))     # template+children will need to be re-rendered
                         else:
-                            self.notify_modified(path)  # renderable will need to be rerendered
-        self.notify_changed_template(affected)
+                            affected_renderables.append(str(path))   # renderable will need to be rerendered
+
+        # re-render affected
+        for path in affected_renderables:
+            self.notify_modified(path, dev_to_web(path))
+
+        affected_templates_short = []
+        affected_templates = self.notify_changed_template(affected_templates)
+        for template in affected_templates:
+            affected_templates_short.append(template[0])           # empty the generator!!
+
+        return (affected_renderables, affected_templates_short)
 
     def find_children(self, parent, template_dir):
         # find all templates. Yes, all of them.
@@ -144,7 +156,7 @@ class ChangeHandler(object):
         changed = []
         if type(template) == list:
             changed = template
-        if os.path.isfile(template):
+        elif os.path.isfile(template):
             changed = [template]
         elif os.path.isdir(template):
             changed = [str(path) for path in Path(template).rglob("*.html")]

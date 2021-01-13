@@ -193,3 +193,22 @@ class TestChangeHandler(unittest.TestCase):
         children = ["base", "extendsdeeper", "left.extendsbase", "left.left.extendsbase", "left.left.extendschild", "left.parentless",
                     "left.right.completelyalone", "right.left.completelyalone", "right.left.deeper", "right.right.extendsparentless"]
         self.nct_testfactory(template, children)
+
+    def test_find_dependants(self):
+        devroot = os.path.join(testdir, "template_tracker_devroot")
+        self.ch.set_devroot(devroot)
+        self.ch.set_template_dir(self.template_dir)
+
+        with patch("barely.track.CHANGEHANDLER._update_file", side_effect=lambda dev, web: dev) as mocked_update:
+            path = os.path.join(os.sep, "res", "test.jpg")
+            renderables, templates = self.ch.find_dependants(path)
+
+            self.assertIn(os.path.join(devroot, "right.left.deeper.md"), renderables)
+            self.assertEqual(len(renderables), 1)
+
+            self.assertIn("extendsdeeper", templates)
+            self.assertEqual(len(templates), 1)
+
+            mocked_update.assert_called_with(os.path.join(devroot, "extendsdeeper.md"),
+                                             dev_to_web(os.path.join(devroot, "extendsdeeper.md")))
+            mocked_update.reset_mock()
