@@ -2,7 +2,7 @@ import os
 import unittest
 from PIL import Image
 from barely.render import MINIMIZER as MIN
-from ref.utils import read, write, remove, testdir
+from ref.utils import read, remove, testdir
 from barely.common.config import config
 
 

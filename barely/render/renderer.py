@@ -32,17 +32,17 @@ class Renderer():
             )
 
     @staticmethod
-    def gather_media(path):
-        media = []
+    def gather_images(path):
+        images = []
         if os.path.isfile(path):
             path = os.path.dirname(path)
         for file in os.listdir(path):
             if not os.path.isdir(os.path.join(path, file)):
                 name, ext = os.path.splitext(os.path.basename(file))
-                if ext not in config["FILETYPES"]["RENDERABLE"]:
+                if ext in config["IMAGES"]["EXTENSIONS"]:
                     processed_file = os.path.basename(dev_to_web(file))
-                    media.append(processed_file)
-        return media
+                    images.append(processed_file)
+        return images
 
     def get_count(self):
         """ get the count of rendered pages. Utterly useless, but fun to see. """
@@ -54,10 +54,10 @@ class Renderer():
         content = self._fr.extract_markdown(src)
         params = self._fr.extract_yaml(src)
 
-        media = self.gather_media(src)
+        images = self.gather_images(src)
 
         page_template = self._jinja_env.get_template(template)
-        page_rendered = page_template.render(content=content, context=params, media=media)
+        page_rendered = page_template.render(content=content, context=params, images=images)
 
         write_file(dest, page_rendered)
         self._files_rendered += 1
