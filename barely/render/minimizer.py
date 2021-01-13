@@ -10,7 +10,7 @@ from calmjs.parse import es5
 from calmjs.parse.unparsers.es5 import minify_print
 from .filereader import FileReader
 from barely.common.config import config
-from barely.common.utils import write_file
+from barely.common.utils import write_file, get_extension
 from barely.common.decorators import Singleton
 
 
@@ -20,6 +20,17 @@ class Minimizer(object):
 
     def __init__(self):
         self.fr = FileReader()
+
+    def minimize(self, dev, web):
+        extension = get_extension(dev)
+        if extension in config["FILETYPES"]["COMPRESSABLE"]["CSS"]:
+            self.minimize_css(dev, web)
+        elif extension in config["FILETYPES"]["COMPRESSABLE"]["JS"]:
+            self.minimize_js(dev, web)
+        elif extension in config["FILETYPES"]["COMPRESSABLE"]["IMAGES"]:
+            self.minimize_image(dev, web)
+        else:
+            raise f"Cant minimize {dev} - no minimizer rovided for the extension {extension}"
 
     def minimize_css(self, dev, web):
         compiled = sass.compile(filename=dev, output_style="compressed")  # 1. compile to css and compress

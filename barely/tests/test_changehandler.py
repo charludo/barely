@@ -163,7 +163,7 @@ class TestChangeHandler(unittest.TestCase):
         affected_md = [os.path.join(devroot, child) + ".md" for child in children]
 
         with patch("barely.track.CHANGEHANDLER._update_file", side_effect=lambda dev, web: dev) as mocked_update:
-            result = self.ch.notify_changed_template(template_path, self.template_dir, devroot)
+            result = self.ch.notify_changed_template(template_path)
             result_length = 0
             for pair in result:
                 result_length += 1
@@ -175,6 +175,9 @@ class TestChangeHandler(unittest.TestCase):
             mocked_update.reset_mock()
 
     def test_notify_changed_template(self):
+        # set up the changehandler
+        self.ch.set_devroot(os.path.join(testdir, "template_tracker_devroot"))
+        self.ch.set_template_dir(self.template_dir)
         # lonely template, doesn't inherit, doesn't get innherited from
         template = ["right", "left", "deeper.html"]
         children = ["right.left.deeper", "extendsdeeper"]

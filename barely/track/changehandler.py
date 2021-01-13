@@ -13,12 +13,23 @@ from pathlib import Path
 from barely.common.utils import make_dir, delete, move, copy, dev_to_web
 from barely.common.config import config
 from barely.render import RENDERER as R
+from barely.render import MINIMIZER as MIN
 from barely.common.decorators import Singleton
 
 
 @Singleton
 class ChangeHandler(object):
     """ ChangeHandler singleton realizes any and all file changes """
+
+    def __init__(self):
+        self.set_devroot(config["ROOT"]["DEV"])
+        self.set_template_dir(os.path.join(self.devroot, "templates"))
+
+    def set_devroot(self, devroot):
+        self.devroot = devroot
+
+    def set_template_dir(self, template_dir):
+        self.template_dir = template_dir
 
     def _update_file(self, dev, web):       # don't touch the damn /templates/ dir...
         templates_string = os.path.join(os.sep, "templates", "")
@@ -27,12 +38,9 @@ class ChangeHandler(object):
 
             if extension in config["FILETYPES"]["RENDERABLE"]:
                 R.render(dev, web)
-            # elif extension in config["FILETYPES"]["COMPRESSABLE"]["JS"]:
-                # pass
-            # elif extension in config["FILETYPES"]["COMPRESSABLE"]["CSS"]:
-                # pass
-            # elif extension in config["FILETYPES"]["COMPRESSABLE"]["IMAGES"]:
-                # pass
+            elif any(extension in type for type in config["FILETYPES"]["COMPRESSABLE"]):
+                MIN.minimize(dev, web)
+                self.find_dependants(dev)
             elif extension not in config["FILETYPES"]["IGNORE"]:
                 copy(dev, web)
 
@@ -89,6 +97,30 @@ class ChangeHandler(object):
         self._update_file(dev, web)
         return self._announce("updated", web)
 
+    def find_dependants(self, abspath):
+        # we can't know how exactly the user included the file...
+        relpath = abspath.replace(config["ROOT"]["DEV"], "")
+        filename = os.path.basename(relpath)
+
+        # ... but this is an educated guess.
+        wanted = [re.compile(f"[\"|\']{file}[\"|\']]") for file in [abspath, relpath, filename]]
+
+        # both the templates and the actual renderables need to be searched!
+        to_be_searched = config["FILETYPES"]["RENDERABLE"] + ".html"
+
+        # find every renderable or template that mentions the file we are interested in
+        affected = []
+        for ext in to_be_searched:
+            for path in Path(self.devroot).rglob("*" + ext):
+                with open(path, "r") as file:
+                    contents = file.read()
+                    if any(re.search(regex, contents) for regex in wanted):
+                        if ext == ".html":
+                            affected.append(path)       # template+children will need to be re-rendered
+                        else:
+                            self.notify_modified(path)  # renderable will need to be rerendered
+        self.notify_changed_template(affected)
+
     def find_children(self, parent, template_dir):
         # find all templates. Yes, all of them.
         for path in Path(template_dir).rglob("*.html"):
@@ -105,15 +137,13 @@ class ChangeHandler(object):
                         yield from self.find_children(str(path), template_dir)
                         yield str(path)
 
-    def notify_changed_template(self, template, template_dir, devroot=""):
+    def notify_changed_template(self, template):
         """ notify the ChangeHandler of changes to the templates """
-
-        # used mostly for testing purposes
-        if not len(devroot):
-            devroot = config["ROOT"]["DEV"]
 
         # changes can occur on either files or dirs. If it's a dir, all files and subdirs are changed
         changed = []
+        if type(template) == list:
+            changed = template
         if os.path.isfile(template):
             changed = [template]
         elif os.path.isdir(template):
@@ -123,11 +153,11 @@ class ChangeHandler(object):
         # inherit from it, since these are also in need of a rerender
         affected = changed
         for parent in changed:
-            affected.extend(self.find_children(parent, template_dir))
+            affected.extend(self.find_children(parent, self.template_dir))
 
         # extract the template name, such as it's used in the .md file names
         for element in range(len(affected)):
-            template_dir = os.path.join(template_dir, "")
+            template_dir = os.path.join(self.template_dir, "")
             affected[element] = affected[element].replace(template_dir, "")
             affected[element] = affected[element].replace(".html", "")
             affected[element] = affected[element].replace("/", ".")
@@ -136,7 +166,7 @@ class ChangeHandler(object):
         # find all renderable files. iterations depend on number of renderable file types
         file_candidates = []
         for ext in config["FILETYPES"]["RENDERABLE"]:
-            for path in Path(devroot).rglob("*" + ext):
+            for path in Path(self.devroot).rglob("*" + ext):
                 file_candidates.append(str(path))
 
         # remove duplicate entries from the lists (prevents multiple re-renders)

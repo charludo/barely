@@ -99,3 +99,8 @@ def suppress_stdout():
             yield
         finally:
             sys.stdout = old_stdout
+
+
+def get_extension(path):
+    name, ext = os.path.splitext(os.path.basename(path))
+    return ext

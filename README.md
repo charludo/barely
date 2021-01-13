@@ -1,5 +1,5 @@
 TODO:
-- Minimizer muss nach Änderungen ausfindig machen, von welchen Templates die Ressource eingebunden wird, und diese dem Changehandler übermitteln: in CH._update_file() eine Funktion aufrufen, die nur die Liste derer Templates findet, die sie selbst einbinden. Diese ruft dann mit parameter "individual" (o.Ä.) notify_changed_template auf und übergibt die Liste. Fertig!
+- config-parser lädt leeres template, überschreibt mit config.yaml, um leere configs zu erlauben
 
 - modular pages
 - contact forms
