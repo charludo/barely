@@ -1,6 +1,4 @@
 TODO:
-- separate metadata.yaml
-
 - modular pages
 - contact forms
 - ftp upload

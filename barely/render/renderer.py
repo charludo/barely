@@ -7,6 +7,7 @@ This is implemented as a singleton class.
 """
 
 import os
+import yaml
 from jinja2 import Environment, FileSystemLoader
 from .filereader import FileReader
 from barely.common.utils import get_template_path, make_valid_path, dev_to_web, write_file
@@ -24,7 +25,7 @@ class Renderer():
     _fr = FileReader()
 
     def __init__(self):
-        self.set_template_path(make_valid_path(config["ROOT"]["DEV"], "templates/"))
+        self.set_template_path(make_valid_path(config["ROOT"]["DEV"], "templates", ""))
 
     def set_template_path(self, path):
         self._jinja_env = Environment(
@@ -52,12 +53,18 @@ class Renderer():
         """ Expects Source and Destination. Creates Page object to render to HTML and places it at dest """
         template = get_template_path(src)
         content = self._fr.extract_markdown(src)
+
         params = self._fr.extract_yaml(src)
+        with open(os.path.join(config["ROOT"]["DEV"], "meta.yaml")) as file:
+            meta_raw = file.read()
+        meta = yaml.safe_load(meta_raw)
+        if type(params) == dict:
+            meta = meta | params
 
         images = self.gather_images(src)
 
         page_template = self._jinja_env.get_template(template)
-        page_rendered = page_template.render(content=content, context=params, images=images)
+        page_rendered = page_template.render(content=content, meta=meta, images=images)
 
         write_file(dest, page_rendered)
         self._files_rendered += 1
