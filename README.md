@@ -1,4 +1,5 @@
 TODO:
+- die config.yaml darf natürlich nicht gerendert werden...!
 - modular pages
 - contact forms
 - ftp upload
