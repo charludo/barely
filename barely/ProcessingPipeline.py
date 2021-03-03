@@ -1,6 +1,6 @@
 """
 The ProcessingPipeline is the heart of barely.py
-The class provides various filters, and pipes them
+It provides various filters, and pipes them
 together for four different cases:
     - pages
     - images
@@ -9,73 +9,112 @@ together for four different cases:
 It also provides the hook for content plugins.
 """
 
+import os
+import shutil
+from PIL import Image
 
-class ProcessingPipeline():
-    """ provides all the filters needed for barely to translate the templates and content into static websites """
 
-    def __init__(self):
-        pass
+def process(items):
+    """ choose the applicable pipeline depending on the type """
+    for item in items:
+        if item["type"] == "PAGE":
+            pipe_page([item])
+        elif item["type"] == "IMAGE":
+            pipe_image([item])
+        elif item["type"] == "TEXT":
+            pipe_text([item])
+        else:
+            pipe_generic([item])
 
-    def process(self):
-        """ choose the applicable pipeline depending on the type """
-        pass
 
-    ################################
-    #            PIPES             #
-    ################################
-    def _pipe_page(self):
-        """ pipe together the filters for page files """
-        pass
+################################
+#            PIPES             #
+################################
+def pipe_page(items):
+    """ pipe together the filters for page files """
+    write_file(render_page(hook_plugins(parse_page(read_file(items)))))
 
-    def _pipe_image(self):
-        """ pipe together the filters for image files """
-        pass
 
-    def _pipe_text(self):
-        """ pipe together the filters for textbased, non-page files """
-        pass
+def pipe_image(items):
+    """ pipe together the filters for image files """
+    save_image(hook_plugins(load_image(items)))
 
-    def _pipe_generic(self):
-        """ pipe together the filters for all other (generic) files """
-        pass
 
-    ################################
-    #       FILTERS (FILEOPS)      #
-    ################################
-    def _read_file(self):
-        """ filter that reads text based files """
-        pass
+def pipe_text(items):
+    """ pipe together the filters for textbased, non-page files """
+    write_file(hook_plugins(read_file(items)))
 
-    def _write_file(self):
-        """ filter that writes a text based file to its appropriate location """
-        pass
 
-    def _load_image(self):
-        """ filter that loads image files into PIL objects """
-        pass
+def pipe_generic(items):
+    """ pipe together the filters for all other (generic) files """
+    copy_file(hook_plugins(items))
 
-    def _save_image(self):
-        """ filter that saves a PIL object into an image file """
-        pass
 
-    def _copy(self):
-        """ filter that simply copies a file """
-        pass
+################################
+#       FILTERS (FILEOPS)      #
+################################
+def read_file(items):
+    """ filter that reads text based files """
+    for item in items:
+        try:
+            with open(item["origin"], 'r') as file:
+                raw_content = file.read()
+                file.close()
+                yield raw_content
+        except FileNotFoundError:
+            raise FileNotFoundError("File '{0}' not found.".format(item["origin"]))
+        except OSError as error:
+            raise OSError("OS Error: {0}".format(error))
 
-    ################################
-    #        FILTERS (PAGES)       #
-    ################################
-    def _parse_page(self):
-        """ filter that parses page files into dict values, including the page's content and its template """
-        pass
 
-    def _render_page(self):
-        """ filter that renders a dict and a jinja template into html """
-        pass
+def write_file(items):
+    """ filter that writes a text based file to its appropriate location """
+    for item in items:
+        try:
+            with open(item["destination"], 'w') as file:
+                file.write(item["output"])
+                file.close()
+        except OSError as error:
+            raise OSError(f"OSError: {error}")
 
-    ################################
-    #       FILTERS (PLUGINS)      #
-    ################################
-    def _hook_plugins(self):
-        """ filter that allows 3rd-party-plugins to go ham on content dicts """
-        pass
+
+def load_image(items):
+    """ filter that loads image files into PIL objects """
+    for item in items:
+        item["image"] = Image.open(item["origin"])
+
+
+def save_image(items):
+    """ filter that saves a PIL object into an image file """
+    for item in items:
+        item["image"].save()
+
+
+def copy_file(items):
+    """ filter that simply copies a file """
+    for item in items:
+        path = os.path.dirname(item["destination"])
+        if not os.path.exists(path):
+            os.mkdir(path)
+        shutil.copy(item["origin"], item["destination"])
+
+
+################################
+#        FILTERS (PAGES)       #
+################################
+def parse_page(items):
+    """ filter that parses page files into dict values, including the page's content and its template """
+    pass
+
+
+def render_page(items):
+    """ filter that renders a dict and a jinja template into html """
+    pass
+
+
+################################
+#       FILTERS (PLUGINS)      #
+################################
+def hook_plugins(items):
+    """ filter that allows 3rd-party-plugins to go ham on content dicts """
+    pass
