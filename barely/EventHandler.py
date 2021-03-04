@@ -27,6 +27,9 @@ class EventHandler():
         elif "config.yaml" in src_dev or "metadata.yaml" in src_dev:
             # don't do anything. These changes don't have to be tracked.
             pass
+        elif "_*.md" in src_dev:
+            # TODO: _get_parent_page; diese notifyen
+            pass
         elif isinstance(event, FileDeletedEvent) or isinstance(event, DirDeletedEvent):
             self._delete(src_web)
         elif isinstance(event, FileMovedEvent) or isinstance(event, DirMovedEvent):
@@ -58,6 +61,11 @@ class EventHandler():
 
     def _get_affected(self):
         """ yield the paths of all files that rely on a certain template """
+        pass
+
+    def _get_parent_page(self):
+        """ yield the path of the parent of a subpage """
+        pass
 
     def _delete(self, path):
         """ delete a file or dir """
