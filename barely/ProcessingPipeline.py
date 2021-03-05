@@ -81,6 +81,7 @@ def write_file(items):
     """ filter that writes a text based file to its appropriate location """
     for item in items:
         try:
+            os.makedirs(os.path.dirname(item["destination"]), exist_ok=True)
             with open(item["destination"], 'w') as file:
                 file.write(item["output"])
                 file.close()
@@ -99,7 +100,8 @@ def load_image(items):
 def save_image(items):
     """ filter that saves a PIL object into an image file """
     for item in items:
-        item["image"].save()
+        os.makedirs(os.path.dirname(item["destination"]), exist_ok=True)
+        item["image"].save(item["destination"])
 
 
 def copy_file(items):
@@ -107,9 +109,7 @@ def copy_file(items):
     for item in items:
         assert(os.path.exists(item["origin"]))
 
-        path = os.path.dirname(item["destination"])
-        if not os.path.exists(path):
-            os.mkdir(path)
+        os.makedirs(os.path.dirname(item["destination"]), exist_ok=True)
         shutil.copy(item["origin"], item["destination"])
 
 
@@ -193,7 +193,7 @@ def handle_subpages(items):
 
         for sub_page in sub_pages:
             # get the filepath
-            sub_page_origin = str(next(Path(os.path.join(os.path.dirname(item["origin"]), sub_page).rglob("*.md"))))
+            sub_page_origin = str(next(Path(os.path.join(os.path.dirname(item["origin"]), sub_page)).rglob("*.md")))
             sub_page_item = {
                 "origin": sub_page_origin,
                 "type": "PAGE",

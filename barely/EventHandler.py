@@ -8,6 +8,11 @@ new/update events to the ProcessingPipeline
 from watchdog.events import FileCreatedEvent, FileModifiedEvent
 from watchdog.events import FileDeletedEvent, DirDeletedEvent
 from watchdog.events import FileMovedEvent, DirMovedEvent
+from pathlib import Path
+import shutil
+import os
+import re
+from barely.common.config import config
 
 
 class EventHandler():
@@ -22,14 +27,14 @@ class EventHandler():
         src_web = self._get_web_path(src_dev)
 
         if self.template_dir in src_dev and not isinstance(event, FileDeletedEvent) and not isinstance(event, DirDeletedEvent):
-            # TODO: _get_affected; jeweils sich selbst notifyen mit einem Event
-            pass
+            for affected in self._get_affected(src_dev):
+                self.notify(FileModifiedEvent(src_path=affected))
         elif "config.yaml" in src_dev or "metadata.yaml" in src_dev:
             # don't do anything. These changes don't have to be tracked.
             pass
-        elif "_*.md" in src_dev:
-            # TODO: _get_parent_page; diese notifyen
-            pass
+        elif re.match(r"\/_\S+\/\S+.md", src_dev):
+            parent_page = self._get_parent_page(src_dev)
+            self.notify(FileModifiedEvent(src_path=parent_page))
         elif isinstance(event, FileDeletedEvent) or isinstance(event, DirDeletedEvent):
             self._delete(src_web)
         elif isinstance(event, FileMovedEvent) or isinstance(event, DirMovedEvent):
@@ -49,7 +54,12 @@ class EventHandler():
 
     def force_rebuild(self):
         """ rebuild the entire project by first deleting the devroot, then marking every file as new """
-        pass
+        self._delete(config["root"]["web"])
+        os.makedirs(config["root"]["web"], exist_ok=True)
+        for root, dirs, files in os.walk(config["ROOT"]["DEV"], topdown=False):
+            for path in files:
+                if self.template_dir not in path:
+                    self.notify(FileCreatedEvent(src_path=os.path.join(root, path)))
 
     def _determine_type(self):
         """ determine the type of the file via its extension. return both """
@@ -63,14 +73,24 @@ class EventHandler():
         """ yield the paths of all files that rely on a certain template """
         pass
 
-    def _get_parent_page(self):
-        """ yield the path of the parent of a subpage """
-        pass
+    @staticmethod
+    def _get_parent_page(sub_page):
+        """ return the path of the parent of a subpage """
+        parent_dir = os.path.dirname(os.path.dirname(sub_page))  # equals the dir of the parent
+        parent_page = str(next(Path(parent_dir).rglob("*.md")))
+        return parent_page
 
-    def _delete(self, path):
+    @staticmethod
+    def _delete(path):
         """ delete a file or dir """
-        pass
+        if os.path.exists(path):
+            if os.path.isfile(path):
+                os.remove(path)
+            elif os.path.isdir(path):
+                shutil.rmtree(path)
 
-    def _move(self, fro, to):
+    @staticmethod
+    def _move(fro, to):
         """ move a file or dir """
-        pass
+        os.makedirs(os.path.dirname(to), exist_ok=True)
+        shutil.move(fro, to)
