@@ -29,6 +29,8 @@ class EventHandler():
         src_web = self._get_web_path(src_dev)
 
         if self.template_dir in src_dev and not isinstance(event, FileDeletedEvent) and not isinstance(event, DirDeletedEvent):
+            if isinstance(event, FileMovedEvent) or isinstance(event, DirMovedEvent):
+                src_dev = event.dest_path
             for affected in self._get_affected(src_dev):
                 self.notify(FileModifiedEvent(src_path=affected))
         elif "config.yaml" in src_dev or "metadata.yaml" in src_dev:
@@ -51,6 +53,10 @@ class EventHandler():
                 "extension": extension
             }
             self.pipeline.process([item])
+
+            if extension in ["css", "js", "sass", "scss"] or type == "IMAGE":
+                for dependant in self._find_dependants(src_dev):
+                    self.notify(FileModifiedEvent(src_path=dependant))
         else:
             pass
 
@@ -75,9 +81,85 @@ class EventHandler():
         else:
             return "GENERIC", ext
 
-    def _get_affected(self):
+    def _find_children(self, parent):
+        # find all templates. Yes, all of them.
+        for path in Path(config["TEMPLATE_DIR"]).rglob("*.html"):
+            # open them to check their contents
+            with open(path, "r") as file:
+                content = file.read()
+                matches = re.findall(r'{%\s*extends\s+[\"|\']([^\"]+)[\"|\']\s*%}', content)
+                # if an {% extends %} tag is found, this template is potentially affected!
+                # check if it extends the one we're looking for.
+                # return the children of the child (recursion!)
+                # return the child
+                if len(matches):
+                    if os.path.join(config["TEMPLATE_DIR"], matches[0]) == parent:
+                        yield from self._find_children(str(path))
+                        yield str(path)
+
+    def _get_affected(self, template):
         """ yield the paths of all files that rely on a certain template """
-        pass
+        # changes can occur on either files or dirs. If it's a dir, all files and subdirs are changed
+        changed = []
+        if type(template) == list:
+            changed = template
+        elif os.path.isfile(template):
+            changed = [template]
+        elif os.path.isdir(template):
+            changed = [str(path) for path in Path(template).rglob("*.html")]
+
+        # for every file that was directly changed, find all templates that
+        # inherit from it, since these are also in need of a rerender
+        affected = changed
+        for parent in changed:
+            affected.extend(self._find_children(parent))
+
+        # extract the template name, such as it's used in the .md file names
+        template_dir_full = os.path.join(config["TEMPLATE_DIR"], "")
+        for element in range(len(affected)):
+            affected[element] = affected[element].replace(template_dir_full, "")
+            affected[element] = affected[element].replace(".html", "")
+            affected[element] = affected[element].replace("/", ".")
+            affected[element] = affected[element].replace("\\", ".")
+
+        # find all renderable files
+        file_candidates = []
+        for path in Path(config["ROOT"]["DEV"]).rglob("*" + config["PAGE_EXT"]):
+            file_candidates.append(str(path))
+
+        # remove duplicate entries from the lists (prevents multiple re-renders)
+        # mostly unnecessary, especially on the file_candidates, but just to be sure...
+        affected = list(set(affected))
+        file_candidates = list(set(file_candidates))
+
+        # for every affected template, find all files that use this template.
+        # then, re-render them.
+        for template in affected:
+            # the leading / is necessary to not match incomplete template paths/names
+            this_template = os.path.join(os.sep, template) + "." + config["PAGE_EXT"]
+            for filename in file_candidates:
+                if this_template in filename:
+                    yield filename
+
+    @staticmethod
+    def _find_dependants(abspath):
+        # we can't know how exactly the user included the file...
+        relpath = abspath.replace(config["ROOT"]["DEV"], "")[1:]
+        filename = os.path.basename(relpath)
+
+        # ... but this is an educated guess.
+        wanted = [f"[\"|\']{file}[\"|\']" for file in [abspath, relpath, filename]]
+
+        # both the templates and the actual renderables need to be searched!
+        to_be_searched = [config["PAGE_EXT"], "html"]
+
+        # find every renderable or template that mentions the file we are interested in
+        for ext in to_be_searched:
+            for path in Path(config["ROOT"]["DEV"]).rglob("*." + ext):
+                with open(path, "r") as file:
+                    contents = file.read()
+                    if any(re.search(regex, contents) for regex in wanted):
+                        yield path
 
     @staticmethod
     def _get_web_path(path):
