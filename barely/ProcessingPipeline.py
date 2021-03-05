@@ -42,7 +42,7 @@ def process(items):
 ################################
 def pipe_page(items):
     """ pipe together the filters for page files """
-    write_file(render_page(hook_plugins(parse_page(read_file(items)))))
+    write_file(render_page(hook_plugins(handle_subpages(parse_content(parse_meta(extract_template(read_file(items))))))))
 
 
 def pipe_image(items):
@@ -60,12 +60,6 @@ def pipe_generic(items):
     copy_file(hook_plugins(items))
 
 
-def pipe_sub_page(item):
-    """ pipe together the filters for sub pages. notably, they do not get written to a file """
-    for rendered_subpage in render_page(hook_plugins(parse_page(read_file(item)))):
-        yield rendered_subpage
-
-
 ################################
 #       FILTERS (FILEOPS)      #
 ################################
@@ -79,6 +73,7 @@ def read_file(items):
             file.close()
 
         item["content_raw"] = raw_content
+        item["output"] = raw_content        # default if no filter makes changes afterwards
         yield item
 
 
@@ -121,25 +116,30 @@ def copy_file(items):
 ################################
 #        FILTERS (PAGES)       #
 ################################
-def parse_page(items):
-    """ filter that parses page files into dict values, including the page's content and its template """
+def extract_template(items):
+    """ filter that extracts the path of the template to be used in rendering """
     for item in items:
-        # get the template path
         base = os.path.basename(item["origin"])
         subdirs = base.split(".")
         subdirs = subdirs[:-1]
         path = make_valid_path(*subdirs)
         item["template"] = path + ".html"
 
-        # get the metadata.yaml
-        try:
-            with open(os.path.join(config["ROOT"]["DEV"], "metadata.yaml")) as file:
-                meta_raw = file.read()
-            meta = yaml.safe_load(meta_raw)
-        except FileNotFoundError:
-            meta = {}
+        yield item
 
-        # extract the yaml from the template
+
+def parse_meta(items):
+    """ filter that gets the general and the page specific metadata (should they exist), and merges them """
+    # get the general metadata
+    try:
+        with open(os.path.join(config["ROOT"]["DEV"], "metadata.yaml")) as file:
+            meta_raw = file.read()
+        meta = yaml.safe_load(meta_raw)
+    except FileNotFoundError:
+        meta = {}
+
+    # extract the page-specific yaml
+    for item in items:
         lines = item["content_raw"].splitlines(keepends=True)
         extracted_yaml = ""
 
@@ -155,7 +155,12 @@ def parse_page(items):
 
         item["meta"] = meta | page_meta
 
-        # extract the content from the yaml
+        yield item
+
+
+def parse_content(items):
+    """ filter that gets the actual content from a page """
+    for item in items:
         lines = item["content_raw"].splitlines(keepends=True)
 
         ln = 0
@@ -175,7 +180,12 @@ def parse_page(items):
         else:
             item["content"] = mistune.html(item["content_raw"])
 
-        # if the page is modular; get the sub-pages
+        yield item
+
+
+def handle_subpages(items):
+    """ filter that finds and deals with subpages by means of a separate pipeline """
+    for item in items:
         try:
             sub_pages = item["meta"]["modular"]
         except KeyError:
@@ -189,7 +199,8 @@ def parse_page(items):
                 "type": "PAGE",
                 "extension": "md"
             }
-            for rendered_subpage in pipe_sub_page(sub_page_item):
+            # only one level of subpages possible. this can easily be changed by including handle_subpages in this pipe.
+            for rendered_subpage in render_page(hook_plugins(parse_content(parse_meta(extract_template(read_file(sub_page_item)))))):
                 item["meta"]["sub_pages"].append(rendered_subpage)
 
         yield item
@@ -199,8 +210,8 @@ def render_page(items):
     """ filter that renders a dict and a jinja template into html """
     for item in items:
         page_template = jinja.get_template(item["template"])
-        page_rendered = page_template.render(**item["meta"])
-        yield page_rendered
+        item["output"] = page_template.render(**item["meta"])
+        yield item
 
 
 ################################
