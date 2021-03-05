@@ -18,17 +18,17 @@ from barely.common.utils import make_valid_path
 
 
 class EventHandler():
-    """ handle events, hand hem off, or diregard irrelevant ones """
+    """ handle events, hand them off, or diregard irrelevant ones """
 
     def __init__(self):
         pass
 
-    def notify(self, event):
+    def notify(self, event, full_rebuild=False):
         """ anyone (but usually, the watchdog) can issue a notice of a file event """
         src_dev = event.src_path
         src_web = self._get_web_path(src_dev)
 
-        if self.template_dir in src_dev and not isinstance(event, FileDeletedEvent) and not isinstance(event, DirDeletedEvent):
+        if self.template_dir in src_dev and not isinstance(event, FileDeletedEvent) and not isinstance(event, DirDeletedEvent) and not full_rebuild:
             if isinstance(event, FileMovedEvent) or isinstance(event, DirMovedEvent):
                 src_dev = event.dest_path
             for affected in self._get_affected(src_dev):
@@ -54,7 +54,7 @@ class EventHandler():
             }
             self.pipeline.process([item])
 
-            if extension in ["css", "js", "sass", "scss"] or type == "IMAGE":
+            if (extension in ["css", "js", "sass", "scss"] or type == "IMAGE") and not full_rebuild:
                 for dependant in self._find_dependants(src_dev):
                     self.notify(FileModifiedEvent(src_path=dependant))
         else:
@@ -67,7 +67,7 @@ class EventHandler():
         for root, dirs, files in os.walk(config["ROOT"]["DEV"], topdown=False):
             for path in files:
                 if self.template_dir not in path:
-                    self.notify(FileCreatedEvent(src_path=os.path.join(root, path)))
+                    self.notify(FileCreatedEvent(src_path=os.path.join(root, path)), full_rebuild=True)
 
     def _determine_type(self, path):
         """ determine the type of the file via its extension. return both """
