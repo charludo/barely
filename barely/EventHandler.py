@@ -32,7 +32,7 @@ class EventHandler():
         elif "config.yaml" in src_dev or "metadata.yaml" in src_dev:
             # don't do anything. These changes don't have to be tracked.
             pass
-        elif re.match(r"\/_\S+\/\S+.md", src_dev):
+        elif re.match(r"\/_\S+\/\S+.{config['PAGE_EXT']}", src_dev):
             parent_page = self._get_parent_page(src_dev)
             self.notify(FileModifiedEvent(src_path=parent_page))
         elif isinstance(event, FileDeletedEvent) or isinstance(event, DirDeletedEvent):
@@ -77,7 +77,7 @@ class EventHandler():
     def _get_parent_page(sub_page):
         """ return the path of the parent of a subpage """
         parent_dir = os.path.dirname(os.path.dirname(sub_page))  # equals the dir of the parent
-        parent_page = str(next(Path(parent_dir).rglob("*.md")))
+        parent_page = str(next(Path(parent_dir).rglob("*." + config["PAGE_EXT"])))
         return parent_page
 
     @staticmethod

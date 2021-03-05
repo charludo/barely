@@ -193,11 +193,11 @@ def handle_subpages(items):
 
         for sub_page in sub_pages:
             # get the filepath
-            sub_page_origin = str(next(Path(os.path.join(os.path.dirname(item["origin"]), sub_page)).rglob("*.md")))
+            sub_page_origin = str(next(Path(os.path.join(os.path.dirname(item["origin"]), sub_page)).rglob("*." + config["PAGE_EXT"])))
             sub_page_item = {
                 "origin": sub_page_origin,
                 "type": "PAGE",
-                "extension": "md"
+                "extension": config["PAGE_EXT"]
             }
             # only one level of subpages possible. this can easily be changed by including handle_subpages in this pipe.
             for rendered_subpage in render_page(hook_plugins(parse_content(parse_meta(extract_template(read_file(sub_page_item)))))):
