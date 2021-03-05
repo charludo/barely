@@ -33,7 +33,7 @@ def process(items):
             pipe_image([item])
         elif item["type"] == "TEXT":
             pipe_text([item])
-        else:
+        elif item["type"] == "GENERIC":
             pipe_generic([item])
 
 

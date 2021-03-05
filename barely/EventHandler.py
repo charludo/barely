@@ -8,11 +8,13 @@ new/update events to the ProcessingPipeline
 from watchdog.events import FileCreatedEvent, FileModifiedEvent
 from watchdog.events import FileDeletedEvent, DirDeletedEvent
 from watchdog.events import FileMovedEvent, DirMovedEvent
+from binaryornot.check import is_binary
 from pathlib import Path
 import shutil
 import os
 import re
 from barely.common.config import config
+from barely.common.utils import make_valid_path
 
 
 class EventHandler():
@@ -41,7 +43,7 @@ class EventHandler():
             dest_web = self._get_web_path(event.dest_path)
             self._move(src_web, dest_web)
         elif isinstance(event, FileCreatedEvent) or isinstance(event, FileModifiedEvent):
-            type, extension = self._determine_type()
+            type, extension = self._determine_type(src_dev)
             item = {
                 "origin": src_dev,
                 "destination": src_web,
@@ -61,17 +63,39 @@ class EventHandler():
                 if self.template_dir not in path:
                     self.notify(FileCreatedEvent(src_path=os.path.join(root, path)))
 
-    def _determine_type(self):
+    def _determine_type(self, path):
         """ determine the type of the file via its extension. return both """
-        pass
-
-    def _get_web_path(self):
-        """ get where a file is supposed to go. depends on the type """
-        pass
+        ext = os.path.splitext(path)[1]
+        if ext == config["PAGE_EXT"]:
+            return "PAGE", config["PAGE_EXT"]
+        elif ext in config["IMAGE_EXT"]:
+            return "IMAGE", ext
+        elif not is_binary(path):
+            return "TEXT", ext
+        else:
+            return "GENERIC", ext
 
     def _get_affected(self):
         """ yield the paths of all files that rely on a certain template """
         pass
+
+    @staticmethod
+    def _get_web_path(path):
+        """ get where a file is supposed to go. depends on the type """
+        path = path.replace(config["ROOT"]["DEV"], "")                     # remove devroot if exists
+        path = path.replace(config["ROOT"]["WEB"], "")                     # remove webroot if exists
+        path = make_valid_path(config["ROOT"]["WEB"], path)                # add web root in front, args in back
+
+        # Seperate path into its three components: dirname; file name; file extension
+        dirname = os.path.dirname(path)
+        filename, extension = os.path.splitext(os.path.basename(path))
+
+        if extension == config["PAGE_EXT"]:
+            filename = "index"
+            extension = ".html"
+
+            web_path = make_valid_path(dirname, filename) + extension
+            return web_path
 
     @staticmethod
     def _get_parent_page(sub_page):
