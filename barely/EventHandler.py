@@ -36,7 +36,7 @@ class EventHandler():
         elif "config.yaml" in src_dev or "metadata.yaml" in src_dev:
             # don't do anything. These changes don't have to be tracked.
             pass
-        elif re.match(r"\/_\S+\/\S+.{config['PAGE_EXT']}", src_dev):
+        elif re.match(r"\/_[^\/]+\/[^\/]+.{config['PAGE_EXT']}", src_dev):
             parent_page = self._get_parent_page(src_dev)
             self.notify(FileModifiedEvent(src_path=parent_page))
         elif isinstance(event, FileDeletedEvent) or isinstance(event, DirDeletedEvent):
