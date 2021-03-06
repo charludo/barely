@@ -19,8 +19,10 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
 from barely.common.config import config
 from barely.common.utils import make_valid_path
+from barely.plugins.PluginManager import PluginManager
 
 
+PM = PluginManager()
 jinja = Environment(loader=FileSystemLoader(make_valid_path(config["ROOT"]["DEV"], "templates", "")))
 
 
@@ -220,4 +222,5 @@ def render_page(items):
 def hook_plugins(items):
     """ filter that allows 3rd-party-plugins to go ham on content dicts """
     for item in items:
-        yield item
+        for processed in PM.hook_content(item):
+            yield processed
