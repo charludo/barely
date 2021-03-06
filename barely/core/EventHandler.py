@@ -28,7 +28,7 @@ class EventHandler():
         src_dev = event.src_path
         src_web = self._get_web_path(src_dev)
 
-        if self.template_dir in src_dev and not isinstance(event, FileDeletedEvent) and not isinstance(event, DirDeletedEvent) and not full_rebuild:
+        if config["TEMPLATE_DIR"] in src_dev and not isinstance(event, FileDeletedEvent) and not isinstance(event, DirDeletedEvent) and not full_rebuild:
             if isinstance(event, FileMovedEvent) or isinstance(event, DirMovedEvent):
                 src_dev = event.dest_path
             for affected in self._get_affected(src_dev):
