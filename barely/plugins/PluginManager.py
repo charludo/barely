@@ -24,7 +24,7 @@ class PluginBase:
         pass
 
     def register(self):
-        return [], -1
+        return "Base", [], -1
 
     def action(self, *args, **kwargs):
         if "item" in kwargs:
@@ -50,9 +50,10 @@ class PluginManager:
                     attribute = getattr(module, attribute_name)
 
                     if issubclass(attribute, PluginBase):
-                        registered_for, priority = attribute.register()
-                        for extension in registered_for:
-                            found_plugins.setdefault(extension, []).append((attribute, priority))
+                        name, registered_for, priority = attribute.register()
+                        if name not in config["DISABLED_PLUGINS"]:
+                            for extension in registered_for:
+                                found_plugins.setdefault(extension, []).append((attribute, priority))
 
         for ext, registered in found_plugins.items():
             registered.sort(key=lambda t: t[1])
