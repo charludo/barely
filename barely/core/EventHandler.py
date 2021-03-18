@@ -15,6 +15,7 @@ import os
 import re
 from barely.common.config import config
 from barely.common.decorators import Singleton
+from barely.core.ProcessingPipeline import process
 
 
 @Singleton
@@ -53,7 +54,7 @@ class EventHandler():
                 "type": type,
                 "extension": extension
             }
-            self.pipeline.process([item])
+            process([item])
         else:
             pass
 

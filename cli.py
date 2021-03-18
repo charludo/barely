@@ -25,6 +25,27 @@ def init():
     os.chdir("../..")
 
 
+def track():
+    from multiprocessing import Process
+    from livereload import Server
+    from barely.common.config import config
+    from barely.core.ChangeTracker import Changetracker
+    from barely.core.EventHandler import EventHandler
+
+    EH = EventHandler.instance()
+    CT = Changetracker.instance()
+    CT.register_handler(EH.notify)
+
+    server = Server()
+    server.watch(config["ROOT"]["DEV"], delay=0, open_url_delay=0)
+
+    tracking_process = Process(name="barely_tracker", target=CT.start)
+    serving_process = Process(name="live_server", target=server.serve)
+
+    tracking_process.start()
+    serving_process.start()
+
+
 def test():
     import unittest
 
