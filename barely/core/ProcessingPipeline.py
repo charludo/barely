@@ -18,12 +18,11 @@ from PIL import Image
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
 from barely.common.config import config
-from barely.common.utils import make_valid_path
 from barely.plugins.PluginManager import PluginManager
 
 
 PM = PluginManager()
-jinja = Environment(loader=FileSystemLoader(make_valid_path(config["ROOT"]["DEV"], "templates", "")))
+jinja = Environment(loader=FileSystemLoader(os.path.join(config["ROOT"]["DEV"], "templates", "")))
 
 
 def process(items):
@@ -124,7 +123,7 @@ def extract_template(items):
         base = os.path.basename(item["origin"])
         subdirs = base.split(".")
         subdirs = subdirs[:-1]
-        path = make_valid_path(*subdirs)
+        path = os.path.join(*subdirs)
         item["template"] = path + ".html"
 
         yield item

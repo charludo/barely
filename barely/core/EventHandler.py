@@ -14,7 +14,6 @@ import shutil
 import os
 import re
 from barely.common.config import config
-from barely.common.utils import make_valid_path
 from barely.common.decorators import Singleton
 
 
@@ -144,7 +143,7 @@ class EventHandler():
         """ get where a file is supposed to go. depends on the type """
         path = path.replace(config["ROOT"]["DEV"], "")                     # remove devroot if exists
         path = path.replace(config["ROOT"]["WEB"], "")                     # remove webroot if exists
-        path = make_valid_path(config["ROOT"]["WEB"], path)                # add web root in front, args in back
+        path = os.path.join(config["ROOT"]["WEB"], path)                   # add web root in front, args in back
 
         # Seperate path into its three components: dirname; file name; file extension
         dirname = os.path.dirname(path)
@@ -154,7 +153,7 @@ class EventHandler():
             filename = "index"
             extension = ".html"
 
-            web_path = make_valid_path(dirname, filename) + extension
+            web_path = os.path.join(dirname, filename) + extension
             return web_path
 
     @staticmethod
