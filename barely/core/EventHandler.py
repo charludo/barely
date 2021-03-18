@@ -15,8 +15,10 @@ import os
 import re
 from barely.common.config import config
 from barely.common.utils import make_valid_path
+from barely.common.decorators import Singleton
 
 
+@Singleton
 class EventHandler():
     """ handle events, hand them off, or diregard irrelevant ones """
 
