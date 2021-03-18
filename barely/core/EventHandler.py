@@ -62,7 +62,7 @@ class EventHandler():
         os.makedirs(config["root"]["web"], exist_ok=True)
         for root, dirs, files in os.walk(config["ROOT"]["DEV"], topdown=False):
             for path in files:
-                if self.template_dir not in path:
+                if self.template_dir not in path and not re.match(r"\/_[^\/|\s]+\/[^\/|\s]+.{config['PAGE_EXT']}", path):
                     self.notify(FileCreatedEvent(src_path=os.path.join(root, path)), full_rebuild=True)
 
     def _determine_type(self, path):
