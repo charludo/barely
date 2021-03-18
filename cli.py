@@ -42,19 +42,29 @@ def track():
     tracking_process = Process(name="barely_tracker", target=CT.start)
     serving_process = Process(name="live_server", target=server.serve)
 
-    tracking_process.start()
+    tracking_process.track()
     serving_process.start()
 
 
 def test():
     import unittest
+    import shutil
+
+    # TEMPORARY
+    testdir = "/home/charlotte/test_barely"
+
+    testsuite_dir = os.path.join(os.getcwd(), "barely", "tests")
+    shutil.copytree(os.path.join(testsuite_dir, "ressources"), testdir)
 
     loader = unittest.TestLoader()
-    startdir = os.path.join(os.getcwd(), "barely", "tests")
-    suite = loader.discover(startdir)
+    suite = loader.discover(testsuite_dir)
+
+    os.chdir(testdir)
 
     runner = unittest.TextTestRunner()
     runner.run(suite)
+
+    shutil.rmtree(testdir)
 
 
 if __name__ == "__main__":
