@@ -53,10 +53,6 @@ class EventHandler():
                 "extension": extension
             }
             self.pipeline.process([item])
-
-            if (extension in ["css", "js", "sass", "scss"] or type == "IMAGE") and not full_rebuild:
-                for dependant in self._find_dependants(src_dev):
-                    self.notify(FileModifiedEvent(src_path=dependant))
         else:
             pass
 
@@ -140,26 +136,6 @@ class EventHandler():
             for filename in file_candidates:
                 if this_template in filename:
                     yield filename
-
-    @staticmethod
-    def _find_dependants(abspath):
-        # we can't know how exactly the user included the file...
-        relpath = abspath.replace(config["ROOT"]["DEV"], "")[1:]
-        filename = os.path.basename(relpath)
-
-        # ... but this is an educated guess.
-        wanted = [f"[\"|\']{file}[\"|\']" for file in [abspath, relpath, filename]]
-
-        # both the templates and the actual renderables need to be searched!
-        to_be_searched = [config["PAGE_EXT"], "html"]
-
-        # find every renderable or template that mentions the file we are interested in
-        for ext in to_be_searched:
-            for path in Path(config["ROOT"]["DEV"]).rglob("*." + ext):
-                with open(path, "r") as file:
-                    contents = file.read()
-                    if any(re.search(regex, contents) for regex in wanted):
-                        yield path
 
     @staticmethod
     def _get_web_path(path):
