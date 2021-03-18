@@ -56,10 +56,11 @@ def test():
     testsuite_dir = os.path.join(os.getcwd(), "barely", "tests")
     shutil.copytree(os.path.join(testsuite_dir, "ressources"), testdir)
 
+    os.chdir(testdir)
+    os.environ["barely"] = os.getcwd()
+
     loader = unittest.TestLoader()
     suite = loader.discover(testsuite_dir)
-
-    os.chdir(testdir)
 
     runner = unittest.TextTestRunner()
     runner.run(suite)
