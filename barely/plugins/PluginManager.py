@@ -9,9 +9,11 @@ Plugins are being differntiated by their category
 filetype(s) they register for.
 """
 
-from inspect import issubclass
+import sys
+from inspect import isclass
 from pkgutil import iter_modules
 from importlib import import_module
+from collections.abc import Iterable
 from barely.common.config import config
 
 
@@ -28,7 +30,7 @@ class PluginBase:
 
     def action(self, *args, **kwargs):
         if "item" in kwargs:
-            return kwargs.get("item")
+            yield kwargs.get("item")
         else:
             pass
 
@@ -46,20 +48,22 @@ class PluginManager:
         """ checks the path for plugin files, then imports them """
         found_plugins = {} if type_content else []
         for path in paths:
+            sys.path.insert(1, path)        # necessary for python to import from here
             for (_, module_name, _) in iter_modules([path]):
-
-                module = import_module(f"{__name__}.{module_name}")
+                module = import_module(f"{module_name}")
                 for attribute_name in dir(module):
                     attribute = getattr(module, attribute_name)
 
-                    if issubclass(attribute, PluginBase):
+                    # necessary to filter out the imported parent class
+                    if isclass(attribute) and issubclass(attribute, PluginBase) and not issubclass(PluginBase, attribute):
                         if type_content:
-                            name, priority, registered_for = attribute.register()
+                            name, priority, registered_for = attribute().register()
                             for extension in registered_for:
                                 found_plugins.setdefault(extension, []).append((attribute, priority))
                         else:
-                            name, priority = attribute.register()
+                            name, priority = attribute().register()
                             found_plugins.append((attribute, priority))
+            sys.path.pop(1)
 
         if type_content:
             for ext, registered in found_plugins.items():
@@ -71,12 +75,16 @@ class PluginManager:
 
         return found_plugins
 
-    def hook_content(self, item):
-        item_list = [item]
-        for plugin in self.plugins_content.get(item["extension"], default=[]):
+    def hook_content(self, to_hook):
+        item_list = [to_hook]
+        for plugin in self.plugins_content.get(to_hook["extension"], []):
             returned_items = []
             for i in item_list:
-                for returned in plugin.action(item=i):
+                returned = plugin.action(item=i)
+                if isinstance(returned, Iterable) and not isinstance(returned, str):
+                    for r in returned:
+                        returned_items.append(r)
+                else:
                     returned_items.append(returned)
             item_list = returned_items
         return item_list
