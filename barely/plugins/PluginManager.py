@@ -9,6 +9,7 @@ Plugins are being differntiated by their category
 filetype(s) they register for.
 """
 
+import os
 import sys
 from inspect import isclass
 from pkgutil import iter_modules
@@ -46,24 +47,30 @@ class PluginManager:
 
     def discover_plugins(self, paths, type_content=True):
         """ checks the path for plugin files, then imports them """
-        found_plugins = {} if type_content else []
+        module_paths = paths.copy()
         for path in paths:
-            sys.path.insert(1, path)        # necessary for python to import from here
-            for (_, module_name, _) in iter_modules([path]):
-                module = import_module(f"{module_name}")
-                for attribute_name in dir(module):
-                    attribute = getattr(module, attribute_name)
+            subdirs = (next(os.walk(path))[1])                                  # get all first level subdirs
+            module_paths.extend([os.path.join(path, sub) for sub in subdirs])   # necessary, otherwise wrong relative paths
+        sys.path.extend(module_paths)                                           # necessary for python to import from here
 
-                    # necessary to filter out the imported parent class
-                    if isclass(attribute) and issubclass(attribute, PluginBase) and not issubclass(PluginBase, attribute):
-                        if type_content:
-                            name, priority, registered_for = attribute().register()
-                            for extension in registered_for:
-                                found_plugins.setdefault(extension, []).append((attribute, priority))
-                        else:
-                            name, priority = attribute().register()
-                            found_plugins.append((attribute, priority))
-            sys.path.pop(1)
+        found_plugins = {} if type_content else []
+        for (_, module_name, _) in iter_modules(module_paths):
+            module = import_module(f"{module_name}")
+
+            for attribute_name in dir(module):
+                attribute = getattr(module, attribute_name)
+
+                # necessary to filter out the imported parent class
+                if isclass(attribute) and issubclass(attribute, PluginBase) and not issubclass(PluginBase, attribute):
+                    if type_content:
+                        name, priority, registered_for = attribute().register()
+                        for extension in registered_for:
+                            found_plugins.setdefault(extension, []).append((attribute, priority))
+                    else:
+                        name, priority = attribute().register()
+                        found_plugins.append((attribute, priority))
+
+        sys.path = list(set(sys.path) - set(module_paths))                      # remove our added entries to path
 
         if type_content:
             for ext, registered in found_plugins.items():
