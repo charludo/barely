@@ -6,6 +6,26 @@ from barely.plugins import PluginBase
 from barely.plugins.PluginManager import PluginManager
 
 
+class TestPluginBase(unittest.TestCase):
+
+    def test_register(self):
+        plugin = PluginBase()
+        registration_info = plugin.register()
+        self.assertTupleEqual(("Base", -1, []), registration_info)
+
+    def test_action(self):
+        plugin = PluginBase()
+        golden_item = {
+            "test": "dict"
+        }
+
+        test_item = plugin.action(item=golden_item)
+        test_noitem = plugin.action(True)
+
+        self.assertDictEqual(golden_item, test_item)
+        self.assertIsNone(test_noitem)
+
+
 class TestPluginManager(unittest.TestCase):
 
     @classmethod

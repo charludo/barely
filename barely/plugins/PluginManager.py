@@ -31,7 +31,7 @@ class PluginBase:
 
     def action(self, *args, **kwargs):
         if "item" in kwargs:
-            yield kwargs.get("item")
+            return kwargs.get("item")
         else:
             pass
 
