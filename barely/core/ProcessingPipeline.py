@@ -36,7 +36,12 @@ def process(items):
         if not isinstance(item, dict):
             raise TypeError("Argument must be a dict")
 
-        type = item.get("type", None)
+        assert "origin" in item
+        assert "destination" in item
+        assert "type" in item
+        assert "extension" in item
+
+        type = item["type"]
         if type == "PAGE":
             pipe_page([item])
         elif type == "IMAGE":
@@ -78,6 +83,9 @@ def pipe_generic(items):
 def read_file(items):
     """ filter that reads text based files """
     for item in items:
+        assert "origin" in item
+        assert "type" in item
+        assert (item["type"] in ["TEXT", "PAGE"])
         assert(os.path.exists(item["origin"]))
 
         with open(item["origin"], 'r') as file:

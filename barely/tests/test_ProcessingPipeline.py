@@ -10,6 +10,13 @@ class TestProcessingPipeline(unittest.TestCase):
     def setUpClass(self):
         os.chdir("ProcessingPipeline")
 
+        self.text_item = {
+            "origin": "",
+            "destination": "",
+            "type": "",
+            "extension": ""
+        }
+
     @classmethod
     def tearDownClass(self):
         os.chdir("..")
@@ -19,32 +26,33 @@ class TestProcessingPipeline(unittest.TestCase):
             item = {
                 "type": "PAGE"
             }
-            PP.process([item])
+            PP.process([self.item | item])
             self.assertTrue(pipe_page.called)
 
         with patch("barely.core.ProcessingPipeline.pipe_image") as pipe_image:
             item = {
                 "type": "IMAGE"
             }
-            PP.process([item])
+            PP.process([self.item | item])
             self.assertTrue(pipe_image.called)
 
         with patch("barely.core.ProcessingPipeline.pipe_text") as pipe_text:
             item = {
                 "type": "TEXT"
             }
-            PP.process([item])
+            PP.process([self.item | item])
             self.assertTrue(pipe_text.called)
 
         with patch("barely.core.ProcessingPipeline.pipe_generic") as pipe_generic:
             item = {
                 "type": "GENERIC"
             }
-            PP.process([item])
+            PP.process([self.item | item])
             self.assertTrue(pipe_generic.called)
 
         self.assertRaises(TypeError, PP.process, 0)
-        self.assertRaises(ValueError, PP.process, {})
+        self.assertRaises(ValueError, PP.process, self.item)
+        self.assertRaises(AssertionError, PP.process, {})
 
     def test_pipe_page(self):
         pass
@@ -59,7 +67,24 @@ class TestProcessingPipeline(unittest.TestCase):
         pass
 
     def test_read_file(self):
-        pass
+        self.assertRaises(AssertionError, PP.read_file, {})
+        self.assertRaises(AssertionError, PP.read_file, self.item)
+
+        item = {
+            "type": "TEXT",
+            "origin": "test_read.md"
+        }
+
+        golden_text = """
+            multi
+            line
+        """
+
+        self.assertEqual(golden_text, list(PP.read_file(item))[0]["content_raw"])
+        self.assertEqual(golden_text, list(PP.read_file(item))[0]["output"])
+
+        item["origin"] = "abc"
+        self.assertRaises(AssertionError, PP.read_file, item)
 
     def test_write_file(self):
         pass
