@@ -21,21 +21,32 @@ from barely.common.config import config
 from barely.plugins.PluginManager import PluginManager
 
 
-PM = PluginManager()
-jinja = Environment(loader=FileSystemLoader(os.path.join(config["ROOT"]["DEV"], "templates", "")))
+def init_pipeline():
+    global PM
+    global jinja
+    PM = PluginManager()
+    jinja = Environment(loader=FileSystemLoader(os.path.join(config["ROOT"]["DEV"], "templates", "")))
 
 
 def process(items):
     """ choose the applicable pipeline depending on the type """
+    items = items if isinstance(items, list) else [items]
+
     for item in items:
-        if item["type"] == "PAGE":
+        if not isinstance(item, dict):
+            raise TypeError("Argument must be a dict")
+
+        type = item.get("type", None)
+        if type == "PAGE":
             pipe_page([item])
-        elif item["type"] == "IMAGE":
+        elif type == "IMAGE":
             pipe_image([item])
-        elif item["type"] == "TEXT":
+        elif type == "TEXT":
             pipe_text([item])
-        elif item["type"] == "GENERIC":
+        elif type == "GENERIC":
             pipe_generic([item])
+        else:
+            raise ValueError("Unknown FileType")
 
 
 ################################
