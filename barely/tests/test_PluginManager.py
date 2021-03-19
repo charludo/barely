@@ -73,9 +73,26 @@ class TestPluginManager(unittest.TestCase):
         self.assertEqual([1, 1], returned_content)
 
     def test_hook_backup(self):
-        # Very basic function needs no testing
-        pass
+        sample_plugin = PluginBase()
+        sample_plugin.action = MagicMock()
+
+        self.PM.plugins_backup = [sample_plugin]
+
+        self.assertFalse(sample_plugin.action.called)
+        self.PM.hook_backup()
+        self.assertTrue(sample_plugin.action.called)
 
     def test_hook_publication(self):
-        # Very basic function needs no testing
-        pass
+        sample_plugin1 = PluginBase()
+        sample_plugin1.action = MagicMock()
+
+        sample_plugin2 = PluginBase()
+        sample_plugin2.action = MagicMock()
+
+        self.PM.plugins_publication = [sample_plugin1, sample_plugin2]
+
+        self.assertFalse(sample_plugin1.action.called)
+        self.assertFalse(sample_plugin2.action.called)
+        self.PM.hook_publication()
+        self.assertTrue(sample_plugin1.action.called)
+        self.assertTrue(sample_plugin2.action.called)
