@@ -1,6 +1,8 @@
 import os
 import unittest
 from mock import patch
+from PIL.PngImagePlugin import PngImageFile
+from PIL import Image, ImageChops, UnidentifiedImageError
 import barely.core.ProcessingPipeline as PP
 
 
@@ -67,7 +69,6 @@ class TestProcessingPipeline(unittest.TestCase):
         pass
 
     def test_read_file(self):
-
         item = {
             "type": "TEXT",
             "origin": "test_read.md"
@@ -104,10 +105,43 @@ class TestProcessingPipeline(unittest.TestCase):
         self.assertEqual(test_item["output"], readf(test_item))
 
     def test_load_image(self):
-        pass
+        item = self.item | {
+            "origin": "test_load.png"
+        }
+
+        test_image = list(PP.load_image([item]))[0]["image"]
+        self.assertTrue(isinstance(test_image, PngImageFile))
+
+        with self.assertRaises(UnidentifiedImageError) as context:
+            item = self.item | {
+                "origin": "test_read.md"
+            }
+            print(list(PP.load_image([item])))
+        self.assertTrue("Specified file is not an image." in str(context.exception))
+
+        with self.assertRaises(FileNotFoundError) as context:
+            list(PP.load_image([self.item]))
+        self.assertTrue("No image at specified origin." in str(context.exception))
 
     def test_save_image(self):
-        pass
+        def loadi(item):
+            return Image.open(item["destination"])
+
+        test_item = {
+            "destination": "new/new.png",
+            "image": Image.open("test_load.png")
+        }
+
+        PP.save_image([test_item])
+        first = loadi(test_item)
+        self.assertFalse(ImageChops.difference(test_item["image"], first).getbbox())
+
+        test_item["image"] = Image.open("test_save.png")
+        PP.save_image([test_item])
+        second = loadi(test_item)
+        self.assertFalse(ImageChops.difference(test_item["image"], second).getbbox())
+
+        self.assertNotEqual(first.size, second.size)
 
     def test_copy_file(self):
         pass

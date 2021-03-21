@@ -14,8 +14,8 @@ import os
 import yaml
 import shutil
 import mistune
-from PIL import Image
 from pathlib import Path
+from PIL import Image, UnidentifiedImageError
 from jinja2 import Environment, FileSystemLoader
 from barely.common.config import config
 from barely.plugins.PluginManager import PluginManager
@@ -26,6 +26,7 @@ def init_pipeline():
     global jinja
     PM = PluginManager()
     jinja = Environment(loader=FileSystemLoader(os.path.join(config["ROOT"]["DEV"], "templates", "")))
+
 
 def process(items):
     """ choose the applicable pipeline depending on the type """
@@ -112,9 +113,13 @@ def write_file(items):
 def load_image(items):
     """ filter that loads image files into PIL objects """
     for item in items:
-        assert(os.path.exists(item["origin"]))
-        item["image"] = Image.open(item["origin"])
-        yield item
+        try:
+            item["image"] = Image.open(item["origin"])
+            yield item
+        except FileNotFoundError:
+            raise FileNotFoundError("No image at specified origin.")
+        except UnidentifiedImageError:
+            raise UnidentifiedImageError("Specified file is not an image.")
 
 
 def save_image(items):
