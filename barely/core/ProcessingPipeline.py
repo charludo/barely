@@ -17,14 +17,18 @@ import mistune
 from pathlib import Path
 from PIL import Image, UnidentifiedImageError
 from jinja2 import Environment, FileSystemLoader
+from jinja2.exceptions import TemplateNotFound
 from barely.common.config import config
 from barely.plugins.PluginManager import PluginManager
 
 
-def init_pipeline():
+def init_plugin_manager():
     global PM
-    global jinja
     PM = PluginManager()
+
+
+def init_jinja():
+    global jinja
     jinja = Environment(loader=FileSystemLoader(os.path.join(config["ROOT"]["DEV"], "templates", "")))
 
 
@@ -249,9 +253,12 @@ def handle_subpages(items):
 def render_page(items):
     """ filter that renders a dict and a jinja template into html """
     for item in items:
-        page_template = jinja.get_template(item["template"])
-        item["output"] = page_template.render(**item["meta"])
-        yield item
+        try:
+            page_template = jinja.get_template(item["template"])
+            item["output"] = page_template.render(content=item["content"], **item["meta"])
+            yield item
+        except TemplateNotFound:
+            raise TemplateNotFound("Non-existant or no template specified, can't render.")
 
 
 ################################

@@ -2,6 +2,7 @@ import os
 import unittest
 from mock import patch
 from PIL.PngImagePlugin import PngImageFile
+from jinja2.exceptions import TemplateNotFound
 from PIL import Image, ImageChops, UnidentifiedImageError
 import barely.core.ProcessingPipeline as PP
 
@@ -237,7 +238,26 @@ class TestProcessingPipeline(unittest.TestCase):
             self.assertFalse(pipe_subpage.called)
 
     def test_render_page(self):
-        pass
+        PP.init_jinja()
+
+        def get_output(template, content=""):
+            item = {
+                "template": template,
+                "content": content,
+                "meta": {}
+            }
+            return list(PP.render_page([item]))[0]["output"]
+
+        self.assertEqual("test", get_output("template.html", "test"))
+        self.assertEqual("", get_output("template.html"))
+
+        with self.assertRaises(TemplateNotFound) as context:
+            get_output("")
+        self.assertTrue("Non-existant or no template specified, can't render." in str(context.exception))
+
+        with self.assertRaises(TemplateNotFound) as context:
+            get_output("nonexistant.html")
+        self.assertTrue("Non-existant or no template specified, can't render." in str(context.exception))
 
     def test_hook_plugins(self):
         pass
