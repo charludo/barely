@@ -10,7 +10,7 @@ class TestProcessingPipeline(unittest.TestCase):
     def setUpClass(self):
         os.chdir("ProcessingPipeline")
 
-        self.text_item = {
+        self.item = {
             "origin": "",
             "destination": "",
             "type": "",
@@ -67,8 +67,8 @@ class TestProcessingPipeline(unittest.TestCase):
         pass
 
     def test_read_file(self):
-        self.assertRaises(AssertionError, PP.read_file, {})
-        self.assertRaises(AssertionError, PP.read_file, self.item)
+        self.assertRaises(AssertionError, PP.read_file, [{}])
+        self.assertRaises(AssertionError, PP.read_file, [self.item])
 
         item = {
             "type": "TEXT",
