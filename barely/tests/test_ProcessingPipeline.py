@@ -68,6 +68,9 @@ class TestProcessingPipeline(unittest.TestCase):
     def test_pipe_generic(self):
         pass
 
+    def test_pipe_subpage(self):
+        pass
+
     def test_read_file(self):
         item = {
             "type": "TEXT",
@@ -213,7 +216,25 @@ class TestProcessingPipeline(unittest.TestCase):
         os.chdir("..")
 
     def test_handle_subpages(self):
-        pass
+        parent = {
+            "origin": "subpages/parent.md",
+            "meta": {
+                "modular": ["_subpage"]
+            }
+        }
+        with patch("barely.core.ProcessingPipeline.pipe_subpage") as pipe_subpage:
+            list(PP.handle_subpages([parent]))
+            self.assertTrue(pipe_subpage.called)
+
+        parent["meta"]["modular"] = ["_nonexistant"]
+        with self.assertRaises(IndexError) as context:
+            list(PP.handle_subpages([parent]))
+        self.assertTrue("No subpages at specified location." in str(context.exception))
+
+        parent["meta"] = {}
+        with patch("barely.core.ProcessingPipeline.pipe_subpage") as pipe_subpage:
+            list(PP.handle_subpages([parent]))
+            self.assertFalse(pipe_subpage.called)
 
     def test_render_page(self):
         pass

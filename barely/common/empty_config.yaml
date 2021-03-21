@@ -2,7 +2,7 @@ ROOT:
     DEV: ~
     WEB: ~
     BAK: ~
-
+PAGE_EXT: md
 FILETYPES:
     RENDERABLE:
             - .md
