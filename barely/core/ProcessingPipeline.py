@@ -226,7 +226,7 @@ def handle_subpages(items):
     for item in items:
         try:
             sub_pages = item["meta"]["modular"]
-            item["meta"]["subpages"] = []
+            item["meta"]["sub_pages"] = []
         except KeyError:
             sub_pages = []
 
@@ -240,8 +240,8 @@ def handle_subpages(items):
                     "extension": config["PAGE_EXT"]
                 }
                 # only one level of subpages possible. this can easily be changed by including handle_subpages in this pipe.
-                for rendered_subpage in pipe_subpage(sub_page_item):
-                    item["meta"]["sub_pages"].append(rendered_subpage)
+                for rendered_subpage in pipe_subpage([sub_page_item]):
+                    item["meta"]["sub_pages"].append(rendered_subpage["content"])
             except FileNotFoundError:
                 raise FileNotFoundError("Specified subpage does not exist.")
             except IndexError:    # Path found nothing

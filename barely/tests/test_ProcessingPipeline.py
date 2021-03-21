@@ -64,19 +64,77 @@ class TestProcessingPipeline(unittest.TestCase):
         self.assertRaises(ValueError, PP.process, {})
 
     def test_pipe_page(self):
-        pass
+        PP.init_jinja()
+
+        golden_render = "a\n<h1>Title</h1>\n"
+
+        item = {
+            "origin": "pipes/page_dev.md",
+            "destination": "pipes/page_web.html"
+        }
+
+        PP.pipe_page([item])
+        with open("pipes/page_web.html", "r") as file:
+            rendered = file.read()
+        self.assertEqual(golden_render, rendered)
+
+        # with a subpage:
+        golden_render = "<h1>Title Parent</h1>\n\n<p>Child</p>\n"
+        item = {
+            "origin": "pipes/page_with_child_dev.md",
+            "destination": "pipes/page_with_child_web.html"
+        }
+
+        PP.pipe_page([item])
+        with open("pipes/page_with_child_web.html", "r") as file:
+            rendered = file.read()
+        self.assertEqual(golden_render, rendered)
 
     def test_pipe_image(self):
-        pass
+        def loadi(path):
+            return Image.open(path)
+
+        item = {
+            "origin": "pipes/image_dev.png",
+            "destination": "pipes/image_web.png"
+        }
+        PP.pipe_image([item])
+        self.assertFalse(ImageChops.difference(loadi("pipes/image_dev.png"), loadi("pipes/image_web.png")).getbbox())
 
     def test_pipe_text(self):
-        pass
+        def readf(path):
+            with open(path, "r") as file:
+                return file.read()
+
+        item = {
+            "origin": "pipes/text_dev.txt",
+            "destination": "pipes/text_web.txt"
+        }
+        PP.pipe_text([item])
+        self.assertEqual(readf("pipes/text_dev.txt"), readf("pipes/text_web.txt"))
 
     def test_pipe_generic(self):
-        pass
+        def readf(path):
+            with open(path, "r") as file:
+                return file.read()
+
+        item = {
+            "origin": "pipes/generic_dev.txt",
+            "destination": "pipes/generic_web.txt"
+        }
+        PP.pipe_generic([item])
+        self.assertEqual(readf("pipes/generic_dev.txt"), readf("pipes/generic_web.txt"))
 
     def test_pipe_subpage(self):
-        pass
+        golden_render = "a\n<h1>Title</h1>\n"
+
+        item = {
+            "origin": "pipes/subpage_dev.md",
+        }
+
+        PP.init_jinja()
+        rendered = list(PP.pipe_subpage([item]))[0]["output"]
+        self.assertEqual(golden_render, rendered)
 
     def test_read_file(self):
         item = {
