@@ -164,7 +164,13 @@ class TestProcessingPipeline(unittest.TestCase):
         self.assertTrue("No file at specified origin." in str(context.exception))
 
     def test_extract_template(self):
-        pass
+        item = {
+            "origin": "template.md"
+        }
+        self.assertEqual("template.html", list(PP.extract_template([item]))[0]["template"])
+
+        item["origin"] = "template.subtemplate.md"
+        self.assertEqual("template/subtemplate.html", list(PP.extract_template([item]))[0]["template"])
 
     def test_parse_meta(self):
         pass
