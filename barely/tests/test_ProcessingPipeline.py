@@ -194,7 +194,23 @@ class TestProcessingPipeline(unittest.TestCase):
         os.chdir("..")
 
     def test_parse_content(self):
-        pass
+        def get_content(file):
+            with open(file, "r") as f:
+                item = {
+                    "content_raw": f.read()
+                }
+                return list(PP.parse_content([item]))[0]["content"]
+
+        os.chdir("content_files")
+        golden_html = "<h1>Title</h1>\n"
+
+        self.assertEqual("", get_content("EMPTY.md"))
+        self.assertEqual("", get_content("ONLY_YAML.md"))
+        self.assertEqual(golden_html, get_content("ONLY_MD.md"))
+        self.assertEqual(golden_html, get_content("ONE_YAML_ONE_MD.md"))
+        self.assertEqual("<h2>value2: b</h2>\n" + golden_html, get_content("MULTI_YAML.md"))
+
+        os.chdir("..")
 
     def test_handle_subpages(self):
         pass
