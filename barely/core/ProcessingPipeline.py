@@ -102,7 +102,7 @@ def write_file(items):
     for item in items:
         try:
             os.makedirs(os.path.dirname(item["destination"]), exist_ok=True)
-            with open(item["destination"], 'w') as file:
+            with open(item["destination"], 'w+') as file:
                 file.write(item["output"])
                 file.close()
         except OSError as error:

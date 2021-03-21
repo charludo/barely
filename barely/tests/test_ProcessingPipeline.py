@@ -88,7 +88,20 @@ class TestProcessingPipeline(unittest.TestCase):
         self.assertTrue("No file at specified origin." in str(context.exception))
 
     def test_write_file(self):
-        pass
+        def readf(item):
+            with open(item["destination"]) as f:
+                return f.read()
+
+        test_item = {
+            "destination": "new/new.txt",
+            "output": "multi\nline"
+        }
+
+        PP.write_file([test_item])
+        self.assertEqual(test_item["output"], readf(test_item))
+
+        PP.write_file([test_item])
+        self.assertEqual(test_item["output"], readf(test_item))
 
     def test_load_image(self):
         pass
