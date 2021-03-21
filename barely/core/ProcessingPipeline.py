@@ -132,10 +132,11 @@ def save_image(items):
 def copy_file(items):
     """ filter that simply copies a file """
     for item in items:
-        assert(os.path.exists(item["origin"]))
-
-        os.makedirs(os.path.dirname(item["destination"]), exist_ok=True)
-        shutil.copy(item["origin"], item["destination"])
+        try:
+            os.makedirs(os.path.dirname(item["destination"]), exist_ok=True)
+            shutil.copy(item["origin"], item["destination"])
+        except FileNotFoundError:
+            raise FileNotFoundError("No file at specified origin.")
 
 
 ################################

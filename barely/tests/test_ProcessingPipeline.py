@@ -144,7 +144,24 @@ class TestProcessingPipeline(unittest.TestCase):
         self.assertNotEqual(first.size, second.size)
 
     def test_copy_file(self):
-        pass
+        def readf(item, key):
+            with open(item[key]) as f:
+                return f.read()
+
+        test_item = {
+            "origin": "test_read.md",
+            "destination": "copy/file.md"
+        }
+
+        PP.copy_file([test_item])
+        self.assertEqual(readf(test_item, "origin"), readf(test_item, "destination"))
+
+        PP.copy_file([test_item])
+        self.assertEqual(readf(test_item, "origin"), readf(test_item, "destination"))
+
+        with self.assertRaises(FileNotFoundError) as context:
+            list(PP.copy_file([self.item]))
+        self.assertTrue("No file at specified origin." in str(context.exception))
 
     def test_extract_template(self):
         pass
