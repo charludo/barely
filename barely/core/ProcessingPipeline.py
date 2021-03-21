@@ -171,13 +171,15 @@ def parse_meta(items):
 
         if not len(lines):
             page_meta = {}
-        if re.match(r"^---[\s|\t]*[\n|\r]?$", lines[0]):
+        elif re.match(r"^---[\s|\t]*[\n|\r]?$", lines[0]):
             ln = 1
             while ln < len(lines) and not re.match(r"^---[\s|\t]*[\n|\r]?$", lines[ln]):
                 extracted_yaml += lines[ln]
                 ln += 1
 
             page_meta = yaml.safe_load(extracted_yaml)
+        else:
+            page_meta = {}
 
         item["meta"] = meta | page_meta
 

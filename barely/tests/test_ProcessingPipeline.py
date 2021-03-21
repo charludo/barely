@@ -90,7 +90,7 @@ class TestProcessingPipeline(unittest.TestCase):
 
     def test_write_file(self):
         def readf(item):
-            with open(item["destination"]) as f:
+            with open(item["destination"], "r") as f:
                 return f.read()
 
         test_item = {
@@ -145,7 +145,7 @@ class TestProcessingPipeline(unittest.TestCase):
 
     def test_copy_file(self):
         def readf(item, key):
-            with open(item[key]) as f:
+            with open(item[key], "r") as f:
                 return f.read()
 
         test_item = {
@@ -173,7 +173,25 @@ class TestProcessingPipeline(unittest.TestCase):
         self.assertEqual("template/subtemplate.html", list(PP.extract_template([item]))[0]["template"])
 
     def test_parse_meta(self):
-        pass
+        def get_yaml(file):
+            with open(file, "r") as f:
+                item = {
+                    "content_raw": f.read()
+                }
+                return list(PP.parse_meta([item]))[0]["meta"]
+
+        os.chdir("content_files")
+        golden_dict = {
+            "value": "a"
+        }
+
+        self.assertDictEqual({}, get_yaml("EMPTY.md"))
+        self.assertDictEqual({}, get_yaml("ONLY_MD.md"))
+        self.assertDictEqual(golden_dict, get_yaml("ONLY_YAML.md"))
+        self.assertDictEqual(golden_dict, get_yaml("MULTI_YAML.md"))
+        self.assertDictEqual(golden_dict, get_yaml("ONE_YAML_ONE_MD.md"))
+
+        os.chdir("..")
 
     def test_parse_content(self):
         pass
