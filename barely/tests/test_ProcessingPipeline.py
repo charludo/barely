@@ -11,7 +11,7 @@ class TestProcessingPipeline(unittest.TestCase):
         os.chdir("ProcessingPipeline")
 
         self.item = {
-            "origin": "",
+            "origin": "xxx",
             "destination": "",
             "type": "",
             "extension": ""
@@ -52,7 +52,7 @@ class TestProcessingPipeline(unittest.TestCase):
 
         self.assertRaises(TypeError, PP.process, 0)
         self.assertRaises(ValueError, PP.process, self.item)
-        self.assertRaises(AssertionError, PP.process, {})
+        self.assertRaises(ValueError, PP.process, {})
 
     def test_pipe_page(self):
         pass
@@ -67,24 +67,25 @@ class TestProcessingPipeline(unittest.TestCase):
         pass
 
     def test_read_file(self):
-        self.assertRaises(AssertionError, PP.read_file, [{}])
-        self.assertRaises(AssertionError, PP.read_file, [self.item])
 
         item = {
             "type": "TEXT",
             "origin": "test_read.md"
         }
 
-        golden_text = """
-            multi
-            line
-        """
+        golden_text = "multi\nline\n"""
 
-        self.assertEqual(golden_text, list(PP.read_file(item))[0]["content_raw"])
-        self.assertEqual(golden_text, list(PP.read_file(item))[0]["output"])
+        self.assertEqual(golden_text, list(PP.read_file([item]))[0]["content_raw"])
+        self.assertEqual(golden_text, list(PP.read_file([item]))[0]["output"])
 
-        item["origin"] = "abc"
-        self.assertRaises(AssertionError, PP.read_file, item)
+        with self.assertRaises(FileNotFoundError) as context:
+            item["origin"] = "abc"
+            list(PP.read_file([item]))
+        self.assertTrue("No file at specified origin." in str(context.exception))
+
+        with self.assertRaises(FileNotFoundError) as context:
+            list(PP.read_file([self.item]))
+        self.assertTrue("No file at specified origin." in str(context.exception))
 
     def test_write_file(self):
         pass

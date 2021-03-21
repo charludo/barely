@@ -27,19 +27,21 @@ def init_pipeline():
     PM = PluginManager()
     jinja = Environment(loader=FileSystemLoader(os.path.join(config["ROOT"]["DEV"], "templates", "")))
 
-
 def process(items):
     """ choose the applicable pipeline depending on the type """
     items = items if isinstance(items, list) else [items]
+    minimum_dict = {
+        "origin": "",
+        "destination": "",
+        "type": "",
+        "extension": ""
+    }
 
     for item in items:
         if not isinstance(item, dict):
             raise TypeError("Argument must be a dict")
 
-        assert "origin" in item
-        assert "destination" in item
-        assert "type" in item
-        assert "extension" in item
+        item = minimum_dict | item
 
         type = item["type"]
         if type == "PAGE":
@@ -83,18 +85,16 @@ def pipe_generic(items):
 def read_file(items):
     """ filter that reads text based files """
     for item in items:
-        assert "origin" in item
-        assert "type" in item
-        assert (item["type"] in ["TEXT", "PAGE"])
-        assert(os.path.exists(item["origin"]))
+        try:
+            with open(item["origin"], 'r') as file:
+                raw_content = file.read()
+                file.close()
 
-        with open(item["origin"], 'r') as file:
-            raw_content = file.read()
-            file.close()
-
-        item["content_raw"] = raw_content
-        item["output"] = raw_content        # default if no filter makes changes afterwards
-        yield item
+            item["content_raw"] = raw_content
+            item["output"] = raw_content        # default if no filter makes changes afterwards
+            yield item
+        except FileNotFoundError:
+            raise FileNotFoundError("No file at specified origin.")
 
 
 def write_file(items):
