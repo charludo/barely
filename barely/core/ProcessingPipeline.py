@@ -176,6 +176,12 @@ def parse_meta(items):
 
     # extract the page-specific yaml
     for item in items:
+        # in case this is a sub page, the parent might have passed some meta to it
+        try:
+            parent_meta = item["parent_meta"]
+        except KeyError:
+            parent_meta = {}
+
         lines = item["content_raw"].splitlines(keepends=True)
         extracted_yaml = ""
 
@@ -191,7 +197,7 @@ def parse_meta(items):
         else:
             page_meta = {}
 
-        item["meta"] = meta | page_meta
+        item["meta"] = meta | parent_meta | page_meta
 
         yield item
 
@@ -234,14 +240,18 @@ def handle_subpages(items):
             # get the filepath
             try:
                 sub_page_origin = str(list(Path(os.path.join(os.path.dirname(item["origin"]), sub_page)).rglob("*." + config["PAGE_EXT"]))[0])
+                parent_meta = item["meta"].copy()
+                parent_meta.pop("modular")
+                parent_meta.pop("sub_pages")
                 sub_page_item = {
                     "origin": sub_page_origin,
                     "type": "PAGE",
-                    "extension": config["PAGE_EXT"]
+                    "extension": config["PAGE_EXT"],
+                    "parent_meta": parent_meta
                 }
                 # only one level of subpages possible. this can easily be changed by including handle_subpages in this pipe.
                 for rendered_subpage in pipe_subpage([sub_page_item]):
-                    item["meta"]["sub_pages"].append(rendered_subpage["content"])
+                    item["meta"]["sub_pages"].append(rendered_subpage["output"])
             except FileNotFoundError:
                 raise FileNotFoundError("Specified subpage does not exist.")
             except IndexError:    # Path found nothing

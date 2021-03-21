@@ -79,7 +79,7 @@ class TestProcessingPipeline(unittest.TestCase):
         self.assertEqual(golden_render, rendered)
 
         # with a subpage:
-        golden_render = "<h1>Title Parent</h1>\n\n<p>Child</p>\n"
+        golden_render = "<h1>Title Parent</h1>\n\n\n<p>Child</p>\n\npm"
         item = {
             "origin": "pipes/page_with_child_dev.md",
             "destination": "pipes/page_with_child_web.html"
@@ -126,7 +126,7 @@ class TestProcessingPipeline(unittest.TestCase):
         self.assertEqual(readf("pipes/generic_dev.txt"), readf("pipes/generic_web.txt"))
 
     def test_pipe_subpage(self):
-        golden_render = "a\n<h1>Title</h1>\n"
+        golden_render = "a\n<h1>Title</h1>\n\n"
 
         item = {
             "origin": "pipes/subpage_dev.md",
