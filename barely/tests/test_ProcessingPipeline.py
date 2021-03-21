@@ -284,7 +284,7 @@ class TestProcessingPipeline(unittest.TestCase):
         parent = {
             "origin": "subpages/parent.md",
             "meta": {
-                "modular": ["_subpage"]
+                "modular": ["subpage"]
             }
         }
         with patch("barely.core.ProcessingPipeline.pipe_subpage") as pipe_subpage:
