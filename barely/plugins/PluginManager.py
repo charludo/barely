@@ -64,11 +64,13 @@ class PluginManager:
                 if isclass(attribute) and issubclass(attribute, PluginBase) and not issubclass(PluginBase, attribute):
                     if type_content:
                         name, priority, registered_for = attribute().register()
-                        for extension in registered_for:
-                            found_plugins.setdefault(extension, []).append((attribute, priority))
+                        if priority > -1:
+                            for extension in registered_for:
+                                found_plugins.setdefault(extension, []).append((attribute, priority))
                     else:
                         name, priority = attribute().register()
-                        found_plugins.append((attribute, priority))
+                        if priority > -1:
+                            found_plugins.append((attribute, priority))
 
         sys.path = list(set(sys.path) - set(module_paths))                      # remove our added entries to path
 
