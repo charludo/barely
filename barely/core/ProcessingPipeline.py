@@ -265,7 +265,7 @@ def render_page(items):
 #       FILTERS (PLUGINS)      #
 ################################
 def hook_plugins(items):
-    """ filter that allows 3rd-party-plugins to go ham on content dicts """
+    """ filter that allows 3rd-party-plugins to go ham on item dicts """
     for item in items:
         for processed in PM.hook_content(item):
             yield processed

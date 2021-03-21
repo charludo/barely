@@ -1,10 +1,12 @@
 import os
 import unittest
 from mock import patch
+from unittest.mock import MagicMock
 from PIL.PngImagePlugin import PngImageFile
 from jinja2.exceptions import TemplateNotFound
 from PIL import Image, ImageChops, UnidentifiedImageError
 import barely.core.ProcessingPipeline as PP
+from barely.plugins.PluginManager import PluginManager
 
 
 class TestProcessingPipeline(unittest.TestCase):
@@ -19,6 +21,10 @@ class TestProcessingPipeline(unittest.TestCase):
             "type": "",
             "extension": ""
         }
+
+        with patch.object(PluginManager, "__init__", lambda x: None):
+            PP.PM = PluginManager()
+            PP.PM.hook_content = MagicMock(side_effect=lambda x: [x])
 
     @classmethod
     def tearDownClass(self):
@@ -260,4 +266,6 @@ class TestProcessingPipeline(unittest.TestCase):
         self.assertTrue("Non-existant or no template specified, can't render." in str(context.exception))
 
     def test_hook_plugins(self):
-        pass
+        hooked = list(PP.hook_plugins([{"test": "a"}]))[0]
+        self.assertTrue(PP.PM.hook_content.called)
+        self.assertDictEqual({"test": "a"}, hooked)
