@@ -32,7 +32,7 @@ class TestEventHandler(unittest.TestCase):
         os.chdir("..")
 
     def test__find_children(self):
-        pass
+        os.chdir("affedted")
 
     def test__get_affected(self):
         pass
