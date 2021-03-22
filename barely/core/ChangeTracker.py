@@ -40,9 +40,9 @@ class ChangeTracker:
         self.observer = Observer()
         self.observer.schedule(handler, config["ROOT"]["DEV"], recursive=recursive)
 
-    def track(self, loop_action):
+    def track(self, loop_action=lambda: None):
         """ start the watchdog configured above """
-        if self.handler_availale:
+        if self.handler_available:
             self.observer.start()
             try:
                 while True:
