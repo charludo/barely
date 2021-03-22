@@ -34,7 +34,17 @@ class TestEventHandler(unittest.TestCase):
         pass
 
     def test__get_parent_page(self):
-        pass
+        os.chdir("getparent")
+        parent = self.EH._get_parent_page(os.path.join("_sub", "child.md"))
+        self.assertEqual("parent.md", parent)
+
+        parent = self.EH._get_parent_page("_sub")
+        self.assertEqual("parent.md", parent)
+
+        with self.assertRaises(IndexError) as context:
+            self.EH._get_parent_page(os.path.join("none", "none", "parentless.md"))
+        self.assertTrue("Child page has no parent!" in str(context.exception))
+        os.chdir("..")
 
     def test__delete(self):
         os.chdir("delete")
