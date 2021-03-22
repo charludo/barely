@@ -9,18 +9,16 @@ Useful for live development
 import time
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
-
 from barely.common.config import config
-from barely.common.decorators import Singleton
 
 
-@Singleton
 class ChangeTracker:
     """ monitors the devroot for file and dir changes and notifies the ChangeHandler """
 
     def __init__(self, EH=None):
         if EH is not None:
             self.register_handler(EH)
+            self.handler_availale = True
         else:
             self.handler_availale = False
 
@@ -41,7 +39,6 @@ class ChangeTracker:
         recursive = True
         self.observer = Observer()
         self.observer.schedule(handler, config["ROOT"]["DEV"], recursive=recursive)
-        self.handler_availale = True
 
     def track(self, loop_action):
         """ start the watchdog configured above """
