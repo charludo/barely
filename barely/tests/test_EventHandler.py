@@ -23,7 +23,13 @@ class TestEventHandler(unittest.TestCase):
         pass
 
     def test__determine_type(self):
-        pass
+        os.chdir("type")
+        self.assertTupleEqual(("PAGE", "md"), self.EH._determine_type("file.md"))
+        self.assertTupleEqual(("IMAGE", "png"), self.EH._determine_type("file.png"))
+        self.assertTupleEqual(("TEXT", "css"), self.EH._determine_type("file.css"))
+        self.assertTupleEqual(("GENERIC", "mp4"), self.EH._determine_type("binary.mp4"))
+        self.assertTupleEqual(("GENERIC", "NOTYPE"), self.EH._determine_type("notype"))
+        os.chdir("..")
 
     def test__find_children(self):
         pass

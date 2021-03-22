@@ -3,6 +3,10 @@ ROOT:
     WEB: ~
     BAK: ~
 PAGE_EXT: md
+IMAGE_EXT:
+    - jpg
+    - jpeg
+    - png
 FILETYPES:
     RENDERABLE:
             - .md

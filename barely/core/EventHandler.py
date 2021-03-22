@@ -64,15 +64,20 @@ class EventHandler():
 
     def _determine_type(self, path):
         """ determine the type of the file via its extension. return both """
-        ext = os.path.splitext(path)[1]
+        try:
+            ext = os.path.splitext(path)[1][1:]
+        except IndexError:
+            ext = ""
         if ext == config["PAGE_EXT"]:
             return "PAGE", config["PAGE_EXT"]
         elif ext in config["IMAGE_EXT"]:
             return "IMAGE", ext
-        elif not is_binary(path):
+        elif not is_binary(path) and ext != "":
             return "TEXT", ext
-        else:
+        elif is_binary(path):
             return "GENERIC", ext
+        else:
+            return "GENERIC", "NOTYPE"
 
     def _find_children(self, parent):
         # find all templates. Yes, all of them.
