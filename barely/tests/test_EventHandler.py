@@ -37,7 +37,13 @@ class TestEventHandler(unittest.TestCase):
         pass
 
     def test__delete(self):
-        pass
+        os.chdir("delete")
+        self.EH._delete("dir")
+        self.EH._delete("nothere")
+        self.EH._delete("file.txt")
+        self.assertFalse(os.path.exists("dir"))
+        self.assertFalse(os.path.exists("file.txt"))
+        os.chdir("..")
 
     def test__move(self):
         def readf(path):
