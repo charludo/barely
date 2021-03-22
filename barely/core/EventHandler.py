@@ -20,9 +20,6 @@ from barely.core.ProcessingPipeline import process
 class EventHandler():
     """ handle events, hand them off, or diregard irrelevant ones """
 
-    def __init__(self):
-        pass
-
     def notify(self, event, full_rebuild=False):
         """ anyone (but usually, the watchdog) can issue a notice of a file event """
         src_dev = event.src_path
