@@ -25,14 +25,16 @@ class EventHandler():
         src_dev = event.src_path
         src_web = self._get_web_path(src_dev)
 
-        if config["TEMPLATE_DIR"] in src_dev and not isinstance(event, FileDeletedEvent) and not isinstance(event, DirDeletedEvent) and not full_rebuild:
+        if config["TEMPLATES_DIR"] in src_dev and not isinstance(event, FileDeletedEvent) and not isinstance(event, DirDeletedEvent) and not full_rebuild:
             if isinstance(event, FileMovedEvent) or isinstance(event, DirMovedEvent):
                 src_dev = event.dest_path
             for affected in self._get_affected(src_dev):
                 self.notify(FileModifiedEvent(src_path=affected))
-        elif "config.yaml" in src_dev or "metadata.yaml" in src_dev:
-            # don't do anything. These changes don't have to be tracked.
+        elif "config.yaml" in src_dev:
+            # don't do anything. Config changes at runtime are not respected.
             pass
+        elif "metadata.yaml" in src_dev:
+            self.notify(FileModifiedEvent(src_path=config["TEMPLATES_DIR"]))
         elif re.match(r"\/_[^\/|\s]+\/[^\/|\s]+.{config['PAGE_EXT']}", src_dev):
             parent_page = self._get_parent_page(src_dev)
             self.notify(FileModifiedEvent(src_path=parent_page))
@@ -55,11 +57,13 @@ class EventHandler():
 
     def force_rebuild(self):
         """ rebuild the entire project by first deleting the devroot, then marking every file as new """
-        self._delete(config["root"]["web"])
-        os.makedirs(config["root"]["web"], exist_ok=True)
+        self._delete(config["ROOT"]["WEB"])
+        os.makedirs(config["ROOT"]["WEB"], exist_ok=True)
         for root, dirs, files in os.walk(config["ROOT"]["DEV"], topdown=False):
             for path in files:
-                if self.template_dir not in path and not re.match(r"\/_[^\/|\s]+\/[^\/|\s]+.{config['PAGE_EXT']}", path):
+                if (config["TEMPLATES_DIR"] not in path
+                    and "metadata.yaml" not in path
+                        and not re.match(r"\/_[^\/|\s]+\/[^\/|\s]+.{config['PAGE_EXT']}", path)):
                     self.notify(FileCreatedEvent(src_path=os.path.join(root, path)), full_rebuild=True)
 
     def _get_affected(self, template):
