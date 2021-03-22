@@ -18,9 +18,9 @@ class ChangeTracker:
     def __init__(self, EH=None):
         if EH is not None:
             self.register_handler(EH)
-            self.handler_availale = True
+            self.handler_available = True
         else:
-            self.handler_availale = False
+            self.handler_available = False
 
     def register_handler(self, EH):
         """ register an event handler. The EH gets notified about observed changes """
