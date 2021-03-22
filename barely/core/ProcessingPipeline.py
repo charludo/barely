@@ -239,7 +239,7 @@ def handle_subpages(items):
         for sub_page in sub_pages:
             # get the filepath
             try:
-                sub_page_origin = str(list(Path(os.path.join(os.path.dirname(item["origin"]), "_" + sub_page)).rglob("*." + config["PAGE_EXT"]))[0])
+                sub_page_origin = str(list(Path(os.path.join(os.path.dirname(item["origin"]), "_" + sub_page)).glob("*." + config["PAGE_EXT"]))[0])
                 parent_meta = item["meta"].copy()
                 parent_meta.pop("modular")
                 parent_meta.pop("sub_pages")
