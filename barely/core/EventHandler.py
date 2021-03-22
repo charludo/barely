@@ -81,7 +81,8 @@ class EventHandler():
 
     def _find_children(self, parent):
         # find all templates. Yes, all of them.
-        for path in Path(config["TEMPLATE_DIR"]).rglob("*.html"):
+        parent = parent.replace(os.path.join(config["TEMPLATES_DIR"], ""), "")
+        for path in Path(config["TEMPLATES_DIR"]).rglob("*.html"):
             # open them to check their contents
             with open(path, "r") as file:
                 content = file.read()
@@ -91,7 +92,7 @@ class EventHandler():
                 # return the children of the child (recursion!)
                 # return the child
                 if len(matches):
-                    if os.path.join(config["TEMPLATE_DIR"], matches[0]) == parent:
+                    if matches[0] == parent:
                         yield from self._find_children(str(path))
                         yield str(path)
 
@@ -113,7 +114,7 @@ class EventHandler():
             affected.extend(self._find_children(parent))
 
         # extract the template name, such as it's used in the .md file names
-        template_dir_full = os.path.join(config["TEMPLATE_DIR"], "")
+        template_dir_full = os.path.join(config["TEMPLATES_DIR"], "")
         for element in range(len(affected)):
             affected[element] = affected[element].replace(template_dir_full, "")
             affected[element] = affected[element].replace(".html", "")
