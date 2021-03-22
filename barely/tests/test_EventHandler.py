@@ -1,7 +1,6 @@
 import os
 import unittest
 from mock import patch
-from unittest.mock import MagicMock
 from barely.common.config import config
 from barely.core.EventHandler import EventHandler
 
@@ -20,8 +19,22 @@ class TestEventHandler(unittest.TestCase):
     def test_notify(self):
         pass
 
-    def test_force_rebuild(self):
-        pass
+    @patch("barely.core.EventHandler.EventHandler.notify")
+    def test_force_rebuild(self, notify):
+        notifications = []
+
+        def collect_notifications(notification):
+            notifications.append(notification.src_path)
+
+        os.chdir("force")
+
+        notify.side_effect = collect_notifications
+        self.EH.force_rebuild()
+
+        golden_notified = {'./dir/_subpage/subimage.jpg', './dir/page.md', './dir/image.png', './file.txt'}
+        self.assertSetEqual(golden_notified, set(notifications))
+
+        os.chdir("..")
 
     @patch("barely.core.EventHandler.EventHandler._find_children")
     def test__get_affected(self, _f_c):

@@ -20,12 +20,12 @@ from barely.core.ProcessingPipeline import process
 class EventHandler():
     """ handle events, hand them off, or diregard irrelevant ones """
 
-    def notify(self, event, full_rebuild=False):
+    def notify(self, event):
         """ anyone (but usually, the watchdog) can issue a notice of a file event """
         src_dev = event.src_path
         src_web = self._get_web_path(src_dev)
 
-        if config["TEMPLATES_DIR"] in src_dev and not isinstance(event, FileDeletedEvent) and not isinstance(event, DirDeletedEvent) and not full_rebuild:
+        if config["TEMPLATES_DIR"] in src_dev and not isinstance(event, FileDeletedEvent) and not isinstance(event, DirDeletedEvent):
             if isinstance(event, FileMovedEvent) or isinstance(event, DirMovedEvent):
                 src_dev = event.dest_path
             for affected in self._get_affected(src_dev):
@@ -61,10 +61,12 @@ class EventHandler():
         os.makedirs(config["ROOT"]["WEB"], exist_ok=True)
         for root, dirs, files in os.walk(config["ROOT"]["DEV"], topdown=False):
             for path in files:
+                path = os.path.join(root, path)
                 if (config["TEMPLATES_DIR"] not in path
+                    and "config.yaml" not in path
                     and "metadata.yaml" not in path
-                        and not re.match(r"\/_[^\/|\s]+\/[^\/|\s]+.{config['PAGE_EXT']}", path)):
-                    self.notify(FileCreatedEvent(src_path=os.path.join(root, path)), full_rebuild=True)
+                        and not re.search(rf"[\\|\/]_\S+[\\|\/]\S+\.{config['PAGE_EXT']}", path)):
+                    self.notify(FileCreatedEvent(src_path=path))
 
     def _get_affected(self, template):
         """ yield the paths of all files that rely on a certain template """
