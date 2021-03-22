@@ -171,5 +171,12 @@ class EventHandler():
     @staticmethod
     def _move(fro, to):
         """ move a file or dir """
-        os.makedirs(os.path.dirname(to), exist_ok=True)
-        shutil.move(fro, to)
+        try:
+            if os.path.exists(to):
+                if os.path.isfile(to):
+                    os.remove(to)
+                else:
+                    shutil.rmtree(to)
+            shutil.move(fro, to)
+        except FileNotFoundError:
+            raise FileNotFoundError("No file/dir at notification origin!")
