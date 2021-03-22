@@ -1,5 +1,6 @@
 import unittest
 from mock import patch
+from unittest.mock import MagicMock
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 from barely.core.ChangeTracker import ChangeTracker
@@ -28,4 +29,23 @@ class TestChangeTracker(unittest.TestCase):
                 self.assertTrue(obs.called)
 
     def test_track(self):
-        pass
+        self.CT.handler_available = False
+        with self.assertRaises(Exception) as context:
+            self.CT.track()
+        self.assertTrue("No available handler. Not tracking." in str(context.exception))
+
+        self.CT.handler_available = True
+        self.CT.observer = Observer()
+        self.CT.observer.start = MagicMock()
+        self.CT.observer.stop = MagicMock()
+        self.CT.observer.join = MagicMock()
+        self.CT.observer.is_alive = MagicMock(return_value=True)
+
+        def loop_action():
+            raise KeyboardInterrupt
+        self.CT.track(loop_action)
+
+        self.assertTrue(self.CT.observer.start.called)
+        self.assertTrue(self.CT.observer.stop.called)
+        self.assertTrue(self.CT.observer.join.called)
+        self.assertTrue(self.CT.observer.is_alive.called)
