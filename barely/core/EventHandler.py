@@ -139,18 +139,18 @@ class EventHandler():
         """ get where a file is supposed to go. depends on the type """
         path = path.replace(config["ROOT"]["DEV"], "")                     # remove devroot if exists
         path = path.replace(config["ROOT"]["WEB"], "")                     # remove webroot if exists
+        path = path[1:] if path[0] == os.sep else path                     # otherwise path is absolute, won't join
         path = os.path.join(config["ROOT"]["WEB"], path)                   # add web root in front, args in back
-
         # Seperate path into its three components: dirname; file name; file extension
         dirname = os.path.dirname(path)
         filename, extension = os.path.splitext(os.path.basename(path))
 
-        if extension == config["PAGE_EXT"]:
+        if extension == "." + config["PAGE_EXT"]:
             filename = "index"
             extension = ".html"
 
-            web_path = os.path.join(dirname, filename) + extension
-            return web_path
+        web_path = os.path.join(dirname, filename) + extension
+        return web_path
 
     @staticmethod
     def _get_parent_page(sub_page):

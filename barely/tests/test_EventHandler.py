@@ -1,6 +1,7 @@
 import os
 import unittest
 from mock import patch
+from barely.common.config import config
 from barely.core.EventHandler import EventHandler
 
 
@@ -30,8 +31,20 @@ class TestEventHandler(unittest.TestCase):
     def test__get_affected(self):
         pass
 
+    @patch.dict(config, {"PAGE_EXT": "md", "ROOT": {"WEB": "web", "DEV": "dev"}})
     def test__get_web_path(self):
-        pass
+        devroot = config["ROOT"]["DEV"]
+        webroot = config["ROOT"]["WEB"]
+
+        def join(*args):
+            return os.path.join(*args)
+
+        def get(file):
+            return self.EH._get_web_path(join(devroot, file))
+
+        self.assertEqual(join(webroot, "index.html"), get("test.md"))
+        self.assertEqual(join(webroot, "generic.txt"), get("generic.txt"))
+        self.assertEqual(join(webroot, "noext"), get("noext"))
 
     def test__get_parent_page(self):
         os.chdir("getparent")
