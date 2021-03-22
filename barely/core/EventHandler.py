@@ -14,11 +14,9 @@ import shutil
 import os
 import re
 from barely.common.config import config
-from barely.common.decorators import Singleton
 from barely.core.ProcessingPipeline import process
 
 
-@Singleton
 class EventHandler():
     """ handle events, hand them off, or diregard irrelevant ones """
 
