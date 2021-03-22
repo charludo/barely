@@ -21,7 +21,7 @@ class TestProcessingPipeline(unittest.TestCase):
             "type": "",
             "extension": ""
         }
-
+        PP.init_jinja()
         with patch.object(PluginManager, "__init__", lambda x: None):
             PP.PM = PluginManager()
             PP.PM.hook_content = MagicMock(side_effect=lambda x: [x])
@@ -29,6 +29,20 @@ class TestProcessingPipeline(unittest.TestCase):
     @classmethod
     def tearDownClass(self):
         os.chdir("..")
+
+    def test_init_plugin_manager(self):
+        current_PM = PP.PM
+        with patch.object(PluginManager, "__init__", lambda x: None):
+            PP.init_plugin_manager()
+            PP.PM.hook_content = MagicMock(side_effect=lambda x: [x])
+        new_PM = PP.PM
+        self.assertNotEqual(current_PM, new_PM)
+
+    def test_init_jinja(self):
+        current_jinja = PP.jinja
+        PP.init_jinja()
+        new_jinja = PP.jinja
+        self.assertNotEqual(current_jinja, new_jinja)
 
     def test_process(self):
         with patch("barely.core.ProcessingPipeline.pipe_page") as pipe_page:
@@ -302,8 +316,6 @@ class TestProcessingPipeline(unittest.TestCase):
             self.assertFalse(pipe_subpage.called)
 
     def test_render_page(self):
-        PP.init_jinja()
-
         def get_output(template, content=""):
             item = {
                 "template": template,
