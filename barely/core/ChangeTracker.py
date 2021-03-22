@@ -18,9 +18,7 @@ from barely.common.decorators import Singleton
 class ChangeTracker:
     """ monitors the devroot for file and dir changes and notifies the ChangeHandler """
 
-    def __init__(self, EH=None, silent=False):
-        self.silent = silent
-
+    def __init__(self, EH=None):
         if EH is not None:
             self.register_handler(EH)
         else:
@@ -43,12 +41,11 @@ class ChangeTracker:
         recursive = True
         self.observer = Observer()
         self.observer.schedule(handler, config["ROOT"]["DEV"], recursive=recursive)
+        self.handler_availale = True
 
     def track(self, loop_action):
         """ start the watchdog configured above """
         if self.handler_availale:
-            if not self.silence:
-                print(f'ChangeTracker running, monitoring {config["ROOT"]["DEV"]}')
             self.observer.start()
             try:
                 while True:
@@ -57,8 +54,6 @@ class ChangeTracker:
                     loop_action()
             except KeyboardInterrupt:
                 self.observer.stop()
-                if not self.silence:
-                    print("\nChangeTracker stopped.")
             self.observer.join()
         else:
-            print("No handler registered. Not tracking.")
+            raise Exception("No available handler. Not tracking.")
