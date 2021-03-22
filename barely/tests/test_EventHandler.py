@@ -22,14 +22,8 @@ class TestEventHandler(unittest.TestCase):
     def test_force_rebuild(self):
         pass
 
-    def test__determine_type(self):
-        os.chdir("type")
-        self.assertTupleEqual(("PAGE", "md"), self.EH._determine_type("file.md"))
-        self.assertTupleEqual(("IMAGE", "png"), self.EH._determine_type("file.png"))
-        self.assertTupleEqual(("TEXT", "css"), self.EH._determine_type("file.css"))
-        self.assertTupleEqual(("GENERIC", "mp4"), self.EH._determine_type("binary.mp4"))
-        self.assertTupleEqual(("GENERIC", "NOTYPE"), self.EH._determine_type("notype"))
-        os.chdir("..")
+    def test__get_affected(self):
+        pass
 
     def test__find_children(self):
         def join(*args):
@@ -58,8 +52,14 @@ class TestEventHandler(unittest.TestCase):
 
         os.chdir("..")
 
-    def test__get_affected(self):
-        pass
+    def test__determine_type(self):
+        os.chdir("type")
+        self.assertTupleEqual(("PAGE", "md"), self.EH._determine_type("file.md"))
+        self.assertTupleEqual(("IMAGE", "png"), self.EH._determine_type("file.png"))
+        self.assertTupleEqual(("TEXT", "css"), self.EH._determine_type("file.css"))
+        self.assertTupleEqual(("GENERIC", "mp4"), self.EH._determine_type("binary.mp4"))
+        self.assertTupleEqual(("GENERIC", "NOTYPE"), self.EH._determine_type("notype"))
+        os.chdir("..")
 
     @patch.dict(config, {"PAGE_EXT": "md", "ROOT": {"WEB": "web", "DEV": "dev"}})
     def test__get_web_path(self):

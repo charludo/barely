@@ -62,40 +62,6 @@ class EventHandler():
                 if self.template_dir not in path and not re.match(r"\/_[^\/|\s]+\/[^\/|\s]+.{config['PAGE_EXT']}", path):
                     self.notify(FileCreatedEvent(src_path=os.path.join(root, path)), full_rebuild=True)
 
-    def _determine_type(self, path):
-        """ determine the type of the file via its extension. return both """
-        try:
-            ext = os.path.splitext(path)[1][1:]
-        except IndexError:
-            ext = ""
-        if ext == config["PAGE_EXT"]:
-            return "PAGE", config["PAGE_EXT"]
-        elif ext in config["IMAGE_EXT"]:
-            return "IMAGE", ext
-        elif not is_binary(path) and ext != "":
-            return "TEXT", ext
-        elif is_binary(path):
-            return "GENERIC", ext
-        else:
-            return "GENERIC", "NOTYPE"
-
-    def _find_children(self, parent):
-        # find all templates. Yes, all of them.
-        parent = parent.replace(os.path.join(config["TEMPLATES_DIR"], ""), "")
-        for path in Path(config["TEMPLATES_DIR"]).rglob("*.html"):
-            # open them to check their contents
-            with open(path, "r") as file:
-                content = file.read()
-                matches = re.findall(r'{%\s*extends\s+[\"|\']([^\"]+)[\"|\']\s*%}', content)
-                # if an {% extends %} tag is found, this template is potentially affected!
-                # check if it extends the one we're looking for.
-                # return the children of the child (recursion!)
-                # return the child
-                if len(matches):
-                    if matches[0] == parent:
-                        yield from self._find_children(str(path))
-                        yield str(path)
-
     def _get_affected(self, template):
         """ yield the paths of all files that rely on a certain template """
         # changes can occur on either files or dirs. If it's a dir, all files and subdirs are changed
@@ -139,6 +105,40 @@ class EventHandler():
             for filename in file_candidates:
                 if this_template in filename:
                     yield filename
+
+    def _find_children(self, parent):
+        # find all templates. Yes, all of them.
+        parent = parent.replace(os.path.join(config["TEMPLATES_DIR"], ""), "")
+        for path in Path(config["TEMPLATES_DIR"]).rglob("*.html"):
+            # open them to check their contents
+            with open(path, "r") as file:
+                content = file.read()
+                matches = re.findall(r'{%\s*extends\s+[\"|\']([^\"]+)[\"|\']\s*%}', content)
+                # if an {% extends %} tag is found, this template is potentially affected!
+                # check if it extends the one we're looking for.
+                # return the children of the child (recursion!)
+                # return the child
+                if len(matches):
+                    if matches[0] == parent:
+                        yield from self._find_children(str(path))
+                        yield str(path)
+
+    def _determine_type(self, path):
+        """ determine the type of the file via its extension. return both """
+        try:
+            ext = os.path.splitext(path)[1][1:]
+        except IndexError:
+            ext = ""
+        if ext == config["PAGE_EXT"]:
+            return "PAGE", config["PAGE_EXT"]
+        elif ext in config["IMAGE_EXT"]:
+            return "IMAGE", ext
+        elif not is_binary(path) and ext != "":
+            return "TEXT", ext
+        elif is_binary(path):
+            return "GENERIC", ext
+        else:
+            return "GENERIC", "NOTYPE"
 
     @staticmethod
     def _get_web_path(path):
