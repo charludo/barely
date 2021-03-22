@@ -29,7 +29,7 @@ def init_plugin_manager():
 
 def init_jinja():
     global jinja
-    jinja = Environment(loader=FileSystemLoader(os.path.join(config["ROOT"]["DEV"], "templates", "")))
+    jinja = Environment(loader=FileSystemLoader(os.path.join(config["ROOT"]["DEV"], config["TEMPLATES_DIR"], "")))
 
 
 def process(items):
