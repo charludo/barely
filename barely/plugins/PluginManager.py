@@ -21,10 +21,8 @@ from barely.common.config import config
 class PluginBase:
     """ base class for all plugins """
 
-    config = config
-
     def __init__(self, *args, **kwargs):
-        pass
+        self.config = config
 
     def register(self):
         return "Base", -1, []
@@ -49,8 +47,9 @@ class PluginManager:
         """ checks the path for plugin files, then imports them """
         module_paths = paths.copy()
         for path in paths:
-            subdirs = (next(os.walk(path))[1])                                  # get all first level subdirs
-            module_paths.extend([os.path.join(path, sub) for sub in subdirs])   # necessary, otherwise wrong relative paths
+            if os.path.exists(path):
+                subdirs = (next(os.walk(path))[1])                                  # get all first level subdirs
+                module_paths.extend([os.path.join(path, sub) for sub in subdirs])   # necessary, otherwise wrong relative paths
         sys.path.extend(module_paths)                                           # necessary for python to import from here
 
         found_plugins = {} if type_content else []

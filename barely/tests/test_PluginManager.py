@@ -3,10 +3,17 @@ import unittest
 from mock import patch
 from unittest.mock import MagicMock
 from barely.plugins import PluginBase
+from barely.common.config import config
 from barely.plugins.PluginManager import PluginManager
 
 
 class TestPluginBase(unittest.TestCase):
+
+    def test___init__(self):
+        mock_config = {}
+        with patch.dict(config, mock_config):
+            PB = PluginBase()
+        self.assertIsNotNone(PB.config)
 
     def test_register(self):
         plugin = PluginBase()
@@ -38,6 +45,29 @@ class TestPluginManager(unittest.TestCase):
     @classmethod
     def tearDownClass(self):
         os.chdir("..")
+
+    @patch("barely.plugins.PluginManager.PluginManager.discover_plugins")
+    def test___init__(self, discover):
+        mock_config = {
+            "PLUGIN_PATHS": {
+                "SYS": {
+                    "CONTENT": "",
+                    "BACKUP": "",
+                    "PUBLICATION": ""
+                },
+                "USER": {
+                    "CONTENT": "",
+                    "BACKUP": "",
+                    "PUBLICATION": ""
+                }
+            }
+        }
+        with patch.dict(config, mock_config):
+            PM = PluginManager()
+        self.assertTrue(discover.called)
+        self.assertIsNotNone(PM.plugins_content)
+        self.assertIsNotNone(PM.plugins_backup)
+        self.assertIsNotNone(PM.plugins_publication)
 
     def test_discover_plugins(self):
         # Content Plugins register with filetypes and a priority
