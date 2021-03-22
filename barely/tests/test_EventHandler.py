@@ -1,6 +1,7 @@
 import os
 import unittest
 from mock import patch
+from unittest.mock import MagicMock
 from barely.common.config import config
 from barely.core.EventHandler import EventHandler
 
@@ -22,8 +23,23 @@ class TestEventHandler(unittest.TestCase):
     def test_force_rebuild(self):
         pass
 
-    def test__get_affected(self):
-        pass
+    @patch("barely.core.EventHandler.EventHandler._find_children")
+    def test__get_affected(self, _f_c):
+        def join(*args):
+            return os.path.join("templates", *args)
+
+        base = join("base.html")
+        l_r_completelyalone = join("left", "right", "completelyalone.html")
+        l_l = join("left", "left")
+
+        os.chdir("affected")
+        _f_c.return_value = []
+
+        self.assertSetEqual({"base.md"}, set(self.EH._get_affected(base)))
+        self.assertSetEqual({"left.right.completelyalone.md"}, set(self.EH._get_affected(l_r_completelyalone)))
+        self.assertSetEqual({"left.left.extendsbase.md", "left.left.extendschild.md"}, set(self.EH._get_affected(l_l)))
+
+        os.chdir("..")
 
     def test__find_children(self):
         def join(*args):

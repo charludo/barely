@@ -67,7 +67,11 @@ class EventHandler():
         # changes can occur on either files or dirs. If it's a dir, all files and subdirs are changed
         changed = []
         if type(template) == list:
-            changed = template
+            # since we don't know if the list contains dirs, files, or both,
+            # this is easiest
+            for t in template:
+                yield from self._get_affected(t)
+            return
         elif os.path.isfile(template):
             changed = [template]
         elif os.path.isdir(template):
@@ -89,7 +93,7 @@ class EventHandler():
 
         # find all renderable files
         file_candidates = []
-        for path in Path(config["ROOT"]["DEV"]).rglob("*" + config["PAGE_EXT"]):
+        for path in Path(config["ROOT"]["DEV"]).rglob("*." + config["PAGE_EXT"]):
             file_candidates.append(str(path))
 
         # remove duplicate entries from the lists (prevents multiple re-renders)
@@ -103,7 +107,7 @@ class EventHandler():
             # the leading / is necessary to not match incomplete template paths/names
             this_template = os.path.join(os.sep, template) + "." + config["PAGE_EXT"]
             for filename in file_candidates:
-                if this_template in filename:
+                if this_template in filename or this_template[1:] == filename:
                     yield filename
 
     def _find_children(self, parent):
