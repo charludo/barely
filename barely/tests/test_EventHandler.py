@@ -226,6 +226,10 @@ class TestEventHandler(unittest.TestCase):
         self.assertTrue(os.path.isdir("to"))
         self.assertTrue(os.path.isfile(os.path.join("to", "collateral")))
 
+        self.EH._move("fro2", "to")
+        self.assertTrue(os.path.isdir("to"))
+        self.assertTrue(os.path.isfile(os.path.join("to", "collateral")))
+
         self.assertFalse(os.path.exists("fro"))
         self.assertFalse(os.path.exists("fro.txt"))
         self.assertFalse(os.path.exists("fro2.txt"))

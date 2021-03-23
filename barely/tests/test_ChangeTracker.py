@@ -39,7 +39,6 @@ class TestChangeTracker(unittest.TestCase):
         self.CT.observer.start = MagicMock()
         self.CT.observer.stop = MagicMock()
         self.CT.observer.join = MagicMock()
-        self.CT.observer.is_alive = MagicMock(return_value=True)
 
         def loop_action():
             raise KeyboardInterrupt
@@ -48,4 +47,3 @@ class TestChangeTracker(unittest.TestCase):
         self.assertTrue(self.CT.observer.start.called)
         self.assertTrue(self.CT.observer.stop.called)
         self.assertTrue(self.CT.observer.join.called)
-        self.assertTrue(self.CT.observer.is_alive.called)

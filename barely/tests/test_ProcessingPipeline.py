@@ -271,6 +271,7 @@ class TestProcessingPipeline(unittest.TestCase):
         self.assertDictEqual({}, get_yaml("ONLY_MD.md"))
         self.assertDictEqual(golden_dict, get_yaml("ONLY_YAML.md"))
         self.assertDictEqual(golden_dict, get_yaml("MULTI_YAML.md"))
+        open("metadata.yaml", 'a')  # just for the test coverage...
         self.assertDictEqual(golden_dict, get_yaml("ONE_YAML_ONE_MD.md"))
 
         os.chdir("..")

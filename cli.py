@@ -47,6 +47,7 @@ def track():
 
 
 def test():
+    # import coverage
     import unittest
     import shutil
 
@@ -62,8 +63,15 @@ def test():
     loader = unittest.TestLoader()
     suite = loader.discover(testsuite_dir)
 
+    # cov = coverage.Coverage()
+    # cov.start()
+
     runner = unittest.TextTestRunner()
     runner.run(suite)
+
+    # cov.stop()
+    # cov.save()
+    # cov.html_report()
 
     shutil.rmtree(testdir)
 

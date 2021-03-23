@@ -6,7 +6,6 @@ of changes to files and dirs in devroot
 Useful for live development
 """
 
-import time
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 from barely.common.config import config
@@ -46,8 +45,6 @@ class ChangeTracker:
             self.observer.start()
             try:
                 while True:
-                    while not self.observer.is_alive():
-                        time.sleep(0.25)
                     loop_action()
             except KeyboardInterrupt:
                 self.observer.stop()

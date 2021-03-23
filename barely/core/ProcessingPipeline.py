@@ -171,6 +171,7 @@ def parse_meta(items):
         with open(os.path.join(config["ROOT"]["DEV"], "metadata.yaml")) as file:
             meta_raw = file.read()
         meta = yaml.safe_load(meta_raw)
+        meta = {} if meta is None else meta
     except FileNotFoundError:
         meta = {}
 
