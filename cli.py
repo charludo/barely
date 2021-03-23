@@ -39,13 +39,20 @@ def track():
     CT.register_handler(EH.notify)
 
     server = Server()
-    server.watch(config["ROOT"]["DEV"], delay=0, open_url_delay=0)
+    #server.watch(config["ROOT"]["WEB"], delay=0)
 
-    tracking_process = Process(name="barely_tracker", target=CT.start)
-    serving_process = Process(name="live_server", target=server.serve)
+    tracking_process = Process(name="barely_tracker", target=CT.track)
+    #serving_process = Process(name="live_server", target=server.serve, kwargs={"open_url_delay": 0})
 
-    tracking_process.track()
-    serving_process.start()
+    tracking_process.start()
+    #serving_process.start()
+
+    try:
+        while True:
+            pass
+    except KeyboardInterrupt:
+        tracking_process.stop()
+        #serving_process.stop()
 
 
 def test():

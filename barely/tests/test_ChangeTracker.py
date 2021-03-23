@@ -20,7 +20,6 @@ class TestChangeTracker(unittest.TestCase):
         with patch("barely.core.ChangeTracker.ChangeTracker.register_handler") as reg:
             EH_yes = ChangeTracker(lambda x: x)
         self.assertTrue(reg.called)
-        self.assertTrue(EH_yes.handler_available)
 
     def test_register_handler(self):
         with patch.object(PatternMatchingEventHandler, "__init__", lambda v, w, x, y, z: None):

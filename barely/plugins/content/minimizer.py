@@ -3,7 +3,7 @@ Minimizer exports the singleton Minimzer,
 which in turn provides functons to minimize
 images, javascript,...
 It also functions as a sass/scss parser.
-"""
+
 import sass
 from PIL import Image
 from calmjs.parse import es5
@@ -16,7 +16,7 @@ from barely.common.decorators import Singleton
 
 @Singleton
 class Minimizer(object):
-    """ Minimizer provides functions to reduce various formats in size """
+    # Minimizer provides functions to reduce various formats in size
 
     def __init__(self):
         self.fr = FileReader()
@@ -49,3 +49,4 @@ class Minimizer(object):
         with Image.open(dev) as original:
             original.thumbnail(size, Image.ANTIALIAS)               # doesn't care about orientation
             original.save(web, optimize=True, quality=quality)      # should make a nice small size!
+"""

@@ -38,10 +38,10 @@ class PluginManager:
     """ finds, registers and pipes in plugins """
 
     def __init__(self):
-        self.plugins_content = self.discover_plugins([config["PLUGIN_PATHS"]["SYS"]["CONTENT"], [config["PLUGIN_PATHS"]["USER"]["CONTENT"]]])
-        self.plugins_backup = self.discover_plugins([config["PLUGIN_PATHS"]["SYS"]["BACKUP"], [config["PLUGIN_PATHS"]["USER"]["BACKUP"]]], type_content=False)
+        self.plugins_content = self.discover_plugins([config["PLUGIN_PATHS"]["SYS"]["CONTENT"], config["PLUGIN_PATHS"]["USER"]["CONTENT"]])
+        self.plugins_backup = self.discover_plugins([config["PLUGIN_PATHS"]["SYS"]["BACKUP"], config["PLUGIN_PATHS"]["USER"]["BACKUP"]], type_content=False)
         self.plugins_publication = self.discover_plugins([config["PLUGIN_PATHS"]["SYS"]["PUBLICATION"],
-                                                         [config["PLUGIN_PATHS"]["USER"]["PUBLICATION"]]], type_content=False)
+                                                         config["PLUGIN_PATHS"]["USER"]["PUBLICATION"]], type_content=False)
 
     def discover_plugins(self, paths, type_content=True):
         """ checks the path for plugin files, then imports them """
@@ -50,7 +50,7 @@ class PluginManager:
             if os.path.exists(path):
                 subdirs = (next(os.walk(path))[1])                                  # get all first level subdirs
                 module_paths.extend([os.path.join(path, sub) for sub in subdirs])   # necessary, otherwise wrong relative paths
-        sys.path.extend(module_paths)                                           # necessary for python to import from here
+        sys.path.extend(module_paths)                                               # necessary for python to import from here
 
         found_plugins = {} if type_content else []
         for (_, module_name, _) in iter_modules(module_paths):

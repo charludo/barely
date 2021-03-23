@@ -96,12 +96,14 @@ class EventHandler():
             affected.extend(self._find_children(parent))
 
         # extract the template name, such as it's used in the .md file names
-        template_dir_full = os.path.join(config["TEMPLATES_DIR"], "")
         for element in range(len(affected)):
-            affected[element] = affected[element].replace(template_dir_full, "")
+            affected[element] = affected[element].replace(config["ROOT"]["DEV"], "")
+            affected[element] = affected[element].replace(config["TEMPLATES_DIR"], "")
+            while affected[element][0] == os.sep:
+                affected[element] = affected[element][1:]
             affected[element] = affected[element].replace(".html", "")
-            affected[element] = affected[element].replace("/", ".")
-            affected[element] = affected[element].replace("\\", ".")
+            affected[element] = affected[element].replace(os.sep, ".")
+            affected[element] = os.sep + affected[element] + "." + config["PAGE_EXT"]
 
         # find all renderable files
         file_candidates = []
@@ -112,19 +114,17 @@ class EventHandler():
         # mostly unnecessary, especially on the file_candidates, but just to be sure...
         affected = list(set(affected))
         file_candidates = list(set(file_candidates))
-
         # for every affected template, find all files that use this template.
         # then, re-render them.
         for template in affected:
             # the leading / is necessary to not match incomplete template paths/names
-            this_template = os.path.join(os.sep, template) + "." + config["PAGE_EXT"]
             for filename in file_candidates:
-                if this_template in filename or this_template[1:] == filename:
+                if template in filename or template[1:] == filename:
                     yield filename
 
     def _find_children(self, parent):
         # find all templates. Yes, all of them.
-        parent = parent.replace(os.path.join(config["TEMPLATES_DIR"], ""), "")
+        parent = parent.replace(os.path.join(config["ROOT"]["DEV"], config["TEMPLATES_DIR"], ""), "")
         for path in Path(config["TEMPLATES_DIR"]).rglob("*.html"):
             # open them to check their contents
             with open(path, "r") as file:

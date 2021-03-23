@@ -6,6 +6,7 @@ of changes to files and dirs in devroot
 Useful for live development
 """
 
+import time
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 from barely.common.config import config
@@ -17,7 +18,6 @@ class ChangeTracker:
     def __init__(self, EH=None):
         if EH is not None:
             self.register_handler(EH)
-            self.handler_available = True
         else:
             self.handler_available = False
 
@@ -39,12 +39,15 @@ class ChangeTracker:
         self.observer = Observer()
         self.observer.schedule(handler, config["ROOT"]["DEV"], recursive=recursive)
 
+        self.handler_available = True
+
     def track(self, loop_action=lambda: None):
         """ start the watchdog configured above """
         if self.handler_available:
             self.observer.start()
             try:
                 while True:
+                    time.sleep(0.1)
                     loop_action()
             except KeyboardInterrupt:
                 self.observer.stop()

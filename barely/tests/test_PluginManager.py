@@ -71,7 +71,7 @@ class TestPluginManager(unittest.TestCase):
 
     def test_discover_plugins(self):
         # Content Plugins register with filetypes and a priority
-        test_dict = self.PM.discover_plugins(["content"])
+        test_dict = self.PM.discover_plugins(["content", "empty"])
 
         self.assertEqual(3, len(test_dict))
         self.assertIn("md", test_dict)
