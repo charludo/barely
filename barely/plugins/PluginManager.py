@@ -38,12 +38,13 @@ class PluginManager:
     """ finds, registers and pipes in plugins """
 
     def __init__(self):
-        print("barely :: collecting plugins...")
+        print("barely :: registering plugins...")
         self.plugins_content = self.discover_plugins([config["PLUGIN_PATHS"]["SYS"]["CONTENT"], config["PLUGIN_PATHS"]["USER"]["CONTENT"]])
         self.plugins_backup = self.discover_plugins([config["PLUGIN_PATHS"]["SYS"]["BACKUP"], config["PLUGIN_PATHS"]["USER"]["BACKUP"]], type_content=False)
         self.plugins_publication = self.discover_plugins([config["PLUGIN_PATHS"]["SYS"]["PUBLICATION"],
                                                          config["PLUGIN_PATHS"]["USER"]["PUBLICATION"]], type_content=False)
-        print("barely :: plugins collected.")
+        plugin_count = len(self.plugins_content) + len(self.plugins_backup) + len(self.plugins_publication)
+        print(f"barely :: {plugin_count} plugins registered.")
 
     def discover_plugins(self, paths, type_content=True):
         """ checks the path for plugin files, then imports them """
