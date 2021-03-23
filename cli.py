@@ -36,7 +36,7 @@ def track():
     EH.init_pipeline()
 
     CT = ChangeTracker()
-    CT.register_handler(EH.notify)
+    CT.register_handler(EH)
 
     server = Server()
     #server.watch(config["ROOT"]["WEB"], delay=0)

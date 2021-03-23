@@ -20,6 +20,7 @@ class ChangeTracker:
             self.register_handler(EH)
         else:
             self.handler_available = False
+        self.eventbuffer = []
 
     def register_handler(self, EH):
         """ register an event handler. The EH gets notified about observed changes """
@@ -29,10 +30,11 @@ class ChangeTracker:
         case_sensitive = True
         handler = PatternMatchingEventHandler(patterns, ignore_patterns, ignore_directories, case_sensitive)
 
-        handler.on_created = EH
-        handler.on_deleted = EH
-        handler.on_modified = EH
-        handler.on_moved = EH
+        handler.on_created = self.buffer
+        handler.on_deleted = self.buffer
+        handler.on_modified = self.buffer
+        handler.on_moved = self.buffer
+        self.EH = EH
 
         """ set up the Observer """
         recursive = True
@@ -48,11 +50,31 @@ class ChangeTracker:
             print("barely :: started tracking...")
             try:
                 while True:
-                    time.sleep(0.1)
+                    time.sleep(0.25)
                     loop_action()
+                    self.empty_buffer()
             except KeyboardInterrupt:
                 self.observer.stop()
                 print("barely :: stopped tracking.")
             self.observer.join()
         else:
             raise Exception("No available handler. Not tracking.")
+
+    def buffer(self, event):
+        try:
+            relevant_path = event.dest_path
+        except AttributeError:
+            relevant_path = event.src_path
+        event.relevant_path = relevant_path
+
+        irrelevant = []
+        for older in self.eventbuffer:
+            if isinstance(event, older) and event.relevant_path == older.relevant_path:
+                irrelevant.append(older)
+        for i in irrelevant:
+            self.eventbuffer.remove(i)
+        self.eventbuffer.append(event)
+
+    def empty_buffer(self):
+        for event in self.eventbuffer:
+            self.EH.notify(event)
