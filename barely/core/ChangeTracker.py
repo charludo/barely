@@ -6,7 +6,12 @@ of changes to files and dirs in devroot
 Useful for live development
 """
 
+
 import time
+import signal
+from livereload import Server
+from unittest.mock import patch
+from multiprocessing import Process
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 from barely.common.config import config
@@ -47,18 +52,34 @@ class ChangeTracker:
         """ start the watchdog configured above """
         if self.handler_available:
             self.observer.start()
+
+            server = Server()
+            server.watch(config["ROOT"]["WEB"], delay=0)
+
+            self.liveserver = Process(target=self.serve, args=(server,))
+            self.liveserver.start()
             print("barely :: started tracking...")
-            try:
-                while True:
-                    time.sleep(0.25)
-                    loop_action()
-                    self.empty_buffer()
-            except KeyboardInterrupt:
-                self.observer.stop()
-                print("barely :: stopped tracking.")
-            self.observer.join()
+
+            signal.signal(signal.SIGINT, self.stop)
+            while True:
+                time.sleep(0.2)
+                loop_action()
+                self.empty_buffer()
         else:
             raise Exception("No available handler. Not tracking.")
+
+    def serve(self, server):
+        with patch("livereload.server.logger"):
+            server.serve(root=config["ROOT"]["WEB"], open_url_delay=0)
+
+    def stop(self, signal, frame):
+        self.observer.stop()
+        self.observer.join()
+        self.liveserver.join()
+        print()
+        print("\033[A\033[A")
+        print("barely :: stopped tracking.")
+        exit(0)
 
     def buffer(self, event):
         try:

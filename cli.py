@@ -26,9 +26,6 @@ def init():
 
 
 def track():
-    from multiprocessing import Process
-    from livereload import Server
-    from barely.common.config import config
     from barely.core.ChangeTracker import ChangeTracker
     from barely.core.EventHandler import EventHandler
 
@@ -38,21 +35,7 @@ def track():
     CT = ChangeTracker()
     CT.register_handler(EH)
 
-    server = Server()
-    #server.watch(config["ROOT"]["WEB"], delay=0)
-
-    tracking_process = Process(name="barely_tracker", target=CT.track)
-    #serving_process = Process(name="live_server", target=server.serve, kwargs={"open_url_delay": 0})
-
-    tracking_process.start()
-    #serving_process.start()
-
-    try:
-        while True:
-            pass
-    except KeyboardInterrupt:
-        tracking_process.stop()
-        #serving_process.stop()
+    CT.track()
 
 
 def rebuild():
