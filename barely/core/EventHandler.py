@@ -124,7 +124,8 @@ class EventHandler():
 
     def _find_children(self, parent):
         # find all templates. Yes, all of them.
-        parent = parent.replace(os.path.join(config["ROOT"]["DEV"], config["TEMPLATES_DIR"], ""), "")
+        parent = parent.replace(os.path.join(config["ROOT"]["DEV"], ""), "")
+        parent = parent.replace(os.path.join(config["TEMPLATES_DIR"], ""), "")
         for path in Path(config["TEMPLATES_DIR"]).rglob("*.html"):
             # open them to check their contents
             with open(path, "r") as file:

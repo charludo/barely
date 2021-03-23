@@ -117,6 +117,7 @@ class TestEventHandler(unittest.TestCase):
 
         os.chdir("..")
 
+    @patch.dict(config, {"ROOT": {"DEV": "." + os.sep, "WEB": ""}, "PAGE_EXT": "md"})
     @patch("barely.core.EventHandler.EventHandler._find_children")
     def test__get_affected(self, _f_c):
         def join(*args):
@@ -128,7 +129,6 @@ class TestEventHandler(unittest.TestCase):
 
         os.chdir("affected")
         _f_c.return_value = []
-
         self.assertSetEqual({"base.md"}, set(self.EH._get_affected(base)))
         self.assertSetEqual({"left.right.completelyalone.md"}, set(self.EH._get_affected(l_r_completelyalone)))
         self.assertSetEqual({"left.left.extendsbase.md", "left.left.extendschild.md"}, set(self.EH._get_affected(l_l)))
