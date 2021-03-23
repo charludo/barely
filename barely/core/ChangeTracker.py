@@ -9,8 +9,8 @@ Useful for live development
 
 import time
 import signal
+import logging
 from livereload import Server
-from unittest.mock import patch
 from multiprocessing import Process
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
@@ -58,6 +58,7 @@ class ChangeTracker:
 
             self.liveserver = Process(target=self.serve, args=(server,))
             self.liveserver.start()
+
             print("barely :: started tracking...")
 
             signal.signal(signal.SIGINT, self.stop)
@@ -69,8 +70,11 @@ class ChangeTracker:
             raise Exception("No available handler. Not tracking.")
 
     def serve(self, server):
-        with patch("livereload.server.logger"):
-            server.serve(root=config["ROOT"]["WEB"], open_url_delay=0)
+        # with patch("livereload.server.logger"):
+        for _ in logging.root.manager.loggerDict:
+            # logging.getLogger(_).setLevel(logging.CRITICAL)
+            logging.getLogger(_).disabled = True
+        server.serve(root=config["ROOT"]["WEB"], open_url_delay=0)
 
     def stop(self, signal, frame):
         self.observer.stop()
