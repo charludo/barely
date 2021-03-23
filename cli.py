@@ -55,6 +55,15 @@ def track():
         #serving_process.stop()
 
 
+def rebuild():
+    from barely.core.EventHandler import EventHandler
+
+    EH = EventHandler()
+    EH.init_pipeline()
+
+    EH.force_rebuild()
+
+
 def test():
     # import coverage
     import unittest
