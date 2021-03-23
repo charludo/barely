@@ -19,6 +19,13 @@ class TestEventHandler(unittest.TestCase):
     def tearDownClass(self):
         os.chdir("..")
 
+    @patch("barely.core.ProcessingPipeline.init_jinja")
+    @patch("barely.core.ProcessingPipeline.init_plugin_manager")
+    def test_init_pipeline(self, jinja, pm):
+        self.EH.init_pipeline()
+        self.assertTrue(jinja.called)
+        self.assertTrue(pm.called)
+
     @patch("barely.core.ProcessingPipeline.process")
     @patch("barely.core.EventHandler.EventHandler._determine_type")
     @patch("barely.core.EventHandler.EventHandler._move")

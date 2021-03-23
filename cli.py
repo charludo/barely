@@ -29,11 +29,13 @@ def track():
     from multiprocessing import Process
     from livereload import Server
     from barely.common.config import config
-    from barely.core.ChangeTracker import Changetracker
+    from barely.core.ChangeTracker import ChangeTracker
     from barely.core.EventHandler import EventHandler
 
-    EH = EventHandler.instance()
-    CT = Changetracker.instance()
+    EH = EventHandler()
+    EH.init_pipeline()
+
+    CT = ChangeTracker()
     CT.register_handler(EH.notify)
 
     server = Server()

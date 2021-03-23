@@ -20,6 +20,11 @@ import barely.core.ProcessingPipeline as PP
 class EventHandler():
     """ handle events, hand them off, or diregard irrelevant ones """
 
+    @staticmethod
+    def init_pipeline():
+        PP.init_jinja()
+        PP.init_plugin_manager()
+
     def notify(self, event):
         """ anyone (but usually, the watchdog) can issue a notice of a file event """
         src_dev = event.src_path
