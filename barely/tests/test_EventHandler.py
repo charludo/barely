@@ -3,6 +3,9 @@ import unittest
 from mock import patch
 from barely.common.config import config
 from barely.core.EventHandler import EventHandler
+from watchdog.events import FileCreatedEvent, FileModifiedEvent
+from watchdog.events import FileDeletedEvent, DirModifiedEvent
+from watchdog.events import FileMovedEvent, DirMovedEvent
 
 
 class TestEventHandler(unittest.TestCase):
@@ -16,8 +19,79 @@ class TestEventHandler(unittest.TestCase):
     def tearDownClass(self):
         os.chdir("..")
 
-    def test_notify(self):
-        pass
+    @patch("barely.core.ProcessingPipeline.process")
+    @patch("barely.core.EventHandler.EventHandler._determine_type")
+    @patch("barely.core.EventHandler.EventHandler._move")
+    @patch("barely.core.EventHandler.EventHandler._delete")
+    @patch("barely.core.EventHandler.EventHandler._get_parent_page")
+    @patch("barely.core.EventHandler.EventHandler._get_affected")
+    @patch("barely.core.EventHandler.EventHandler._get_web_path")
+    def test_notify(self, _get_web_path, _get_affected, _get_parent_page, _delete, _move, _determine_type, process):
+        def join(*args):
+            return os.path.join(*args)
+
+        def catch_response(response):
+            response_items.append(response[0])
+        response_items = []
+
+        # a bit counterintuitive, but easier to test:
+        # only the origin ever changes with these mocks
+        _get_web_path.return_value = "destination"
+        _get_affected.side_effect = lambda x: [x[10:]]
+        _get_parent_page.return_value = "parent"
+        _delete.return_value = None
+        _move.return_value = None
+        _determine_type.return_value = ("TYPE", "ext")
+        process.side_effect = catch_response
+
+        golden_item = {
+            "origin": "origin",
+            "destination": "destination",
+            "type": "TYPE",
+            "extension": "ext"
+        }
+
+        # template modified
+        golden_item["origin"] = "tpl"
+        self.EH.notify(FileModifiedEvent(src_path=join("templates", "tpl")))
+        self.assertDictEqual(golden_item, response_items[-1])
+
+        # template moved
+        golden_item["origin"] = "dest"
+        self.EH.notify(FileMovedEvent(src_path=join("templates", "origin"), dest_path=join("templates", "dest")))
+        self.assertDictEqual(golden_item, response_items[-1])
+
+        # metadata.yaml
+        golden_item["origin"] = ""
+        self.EH.notify(FileModifiedEvent(src_path="metadata.yaml"))
+        self.assertDictEqual(golden_item, response_items[-1])
+
+        # subpage
+        golden_item["origin"] = "parent"
+        self.EH.notify(FileModifiedEvent(src_path=join("", "_subpage", "origin.md")))
+        self.assertDictEqual(golden_item, response_items[-1])
+
+        # deleted
+        self.EH.notify(FileDeletedEvent(src_path="trash"))
+        self.assertTrue(_delete.called)
+
+        # moved
+        self.EH.notify(DirMovedEvent(src_path="from", dest_path="to"))
+        self.assertTrue(_move.called)
+
+        # created file
+        golden_item["origin"] = "file.png"
+        self.EH.notify(FileCreatedEvent(src_path="file.png"))
+        self.assertDictEqual(golden_item, response_items[-1])
+
+        # config.yaml (other/pointless)
+        self.EH.notify(FileModifiedEvent(src_path="config.yaml"))
+
+        # DirModifiedEvent (other/pointless)
+        self.EH.notify(DirModifiedEvent(src_path="dir"))
+
+        # number of unique responses we should have received
+        self.assertEqual(5, len(list({r["origin"]: r for r in response_items}.values())))
 
     @patch("barely.core.EventHandler.EventHandler.notify")
     def test_force_rebuild(self, notify):
