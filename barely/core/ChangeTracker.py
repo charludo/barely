@@ -69,7 +69,7 @@ class ChangeTracker:
 
         irrelevant = []
         for older in self.eventbuffer:
-            if isinstance(event, older) and event.relevant_path == older.relevant_path:
+            if type(event) is type(older) and event.relevant_path == older.relevant_path:
                 irrelevant.append(older)
         for i in irrelevant:
             self.eventbuffer.remove(i)
@@ -78,3 +78,4 @@ class ChangeTracker:
     def empty_buffer(self):
         for event in self.eventbuffer:
             self.EH.notify(event)
+        self.eventbuffer = []

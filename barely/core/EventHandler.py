@@ -40,8 +40,11 @@ class EventHandler():
             if not isinstance(event, FileDeletedEvent) and not isinstance(event, DirDeletedEvent):
                 if isinstance(event, FileMovedEvent) or isinstance(event, DirMovedEvent):
                     src_dev = event.dest_path
+
+                print(f"       -> event at {src_dev} affected pages:")
                 for affected in self._get_affected(src_dev):
                     self.notify(FileModifiedEvent(src_path=affected))
+                print(f"       -> done handling event at {src_dev}")
         elif "config.yaml" in src_dev:
             # don't do anything. Config changes at runtime are not respected.
             pass
