@@ -84,7 +84,7 @@ def test():
     # cov = coverage.Coverage()
     # cov.start()
 
-    runner = unittest.TextTestRunner()
+    runner = unittest.TextTestRunner(buffer=True)
     runner.run(suite)
 
     # cov.stop()
