@@ -84,7 +84,8 @@ class TestProcessingPipeline(unittest.TestCase):
 
         item = {
             "origin": "pipes/page_dev.md",
-            "destination": "pipes/page_web.html"
+            "destination": "pipes/page_web.html",
+            "action": ""
         }
 
         PP.pipe_page([item])
@@ -96,7 +97,8 @@ class TestProcessingPipeline(unittest.TestCase):
         golden_render = "<h1>Title Parent</h1>\n\n\n<p>Child</p>\n\npm"
         item = {
             "origin": "pipes/page_with_child_dev.md",
-            "destination": "pipes/page_with_child_web.html"
+            "destination": "pipes/page_with_child_web.html",
+            "action": ""
         }
 
         PP.pipe_page([item])
@@ -110,7 +112,8 @@ class TestProcessingPipeline(unittest.TestCase):
 
         item = {
             "origin": "pipes/image_dev.png",
-            "destination": "pipes/image_web.png"
+            "destination": "pipes/image_web.png",
+            "action": ""
         }
         PP.pipe_image([item])
         self.assertFalse(ImageChops.difference(loadi("pipes/image_dev.png"), loadi("pipes/image_web.png")).getbbox())
@@ -122,7 +125,8 @@ class TestProcessingPipeline(unittest.TestCase):
 
         item = {
             "origin": "pipes/text_dev.txt",
-            "destination": "pipes/text_web.txt"
+            "destination": "pipes/text_web.txt",
+            "action": ""
         }
         PP.pipe_text([item])
         self.assertEqual(readf("pipes/text_dev.txt"), readf("pipes/text_web.txt"))
@@ -134,7 +138,8 @@ class TestProcessingPipeline(unittest.TestCase):
 
         item = {
             "origin": "pipes/generic_dev.txt",
-            "destination": "pipes/generic_web.txt"
+            "destination": "pipes/generic_web.txt",
+            "action": ""
         }
         PP.pipe_generic([item])
         self.assertEqual(readf("pipes/generic_dev.txt"), readf("pipes/generic_web.txt"))
@@ -177,7 +182,9 @@ class TestProcessingPipeline(unittest.TestCase):
 
         test_item = {
             "destination": "new/new.txt",
-            "output": "multi\nline"
+            "output": "multi\nline",
+            "action": "",
+            "origin": ""
         }
 
         PP.write_file([test_item])
@@ -211,7 +218,9 @@ class TestProcessingPipeline(unittest.TestCase):
 
         test_item = {
             "destination": "new/new.png",
-            "image": Image.open("test_load.png")
+            "image": Image.open("test_load.png"),
+            "action": "",
+            "origin": ""
         }
 
         PP.save_image([test_item])
@@ -232,7 +241,8 @@ class TestProcessingPipeline(unittest.TestCase):
 
         test_item = {
             "origin": "test_read.md",
-            "destination": "copy/file.md"
+            "destination": "copy/file.md",
+            "action": ""
         }
 
         PP.copy_file([test_item])

@@ -30,6 +30,12 @@ class EventHandler():
         src_dev = event.src_path
         src_web = self._get_web_path(src_dev)
 
+        try:
+            dest_dev = " -> " + event.dest_path
+        except AttributeError:
+            dest_dev = ""
+        print(f"barely :: event at {src_dev}{dest_dev}")
+
         if config["TEMPLATES_DIR"] in src_dev:
             if not isinstance(event, FileDeletedEvent) and not isinstance(event, DirDeletedEvent):
                 if isinstance(event, FileMovedEvent) or isinstance(event, DirMovedEvent):
@@ -63,6 +69,7 @@ class EventHandler():
 
     def force_rebuild(self):
         """ rebuild the entire project by first deleting the devroot, then marking every file as new """
+        print("barely :: starting full rebuild...")
         self._delete(config["ROOT"]["WEB"])
         os.makedirs(config["ROOT"]["WEB"], exist_ok=True)
         for root, dirs, files in os.walk(config["ROOT"]["DEV"], topdown=False):
@@ -73,6 +80,7 @@ class EventHandler():
                     and "metadata.yaml" not in path
                         and not re.search(rf"[\\|\/]?_\S+[\\|\/]\S+\.{config['PAGE_EXT']}", path)):
                     self.notify(FileCreatedEvent(src_path=path))
+        print("barely :: full rebuild complete.")
 
     def _get_affected(self, template):
         """ yield the paths of all files that rely on a certain template """

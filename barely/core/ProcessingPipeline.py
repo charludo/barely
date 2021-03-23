@@ -32,6 +32,10 @@ def init_jinja():
     jinja = Environment(loader=FileSystemLoader(os.path.join(config["ROOT"]["DEV"], config["TEMPLATES_DIR"], "")))
 
 
+def log(item):
+    print(f"barely :: {item['action']} {item['origin']} -> {item['destination']}")
+
+
 def process(items):
     """ choose the applicable pipeline depending on the type """
     items = items if isinstance(items, list) else [items]
@@ -50,12 +54,16 @@ def process(items):
 
         type = item["type"]
         if type == "PAGE":
+            item["action"] = "rendered"
             pipe_page([item])
         elif type == "IMAGE":
+            item["action"] = "saved"
             pipe_image([item])
         elif type == "TEXT":
+            item["action"] = "saved"
             pipe_text([item])
         elif type == "GENERIC":
+            item["action"] = "copied"
             pipe_generic([item])
         else:
             raise ValueError("Unknown FileType")
@@ -118,6 +126,7 @@ def write_file(items):
                 file.close()
         except OSError as error:
             raise OSError(f"OSError: {error}")
+        log(item)
 
 
 def load_image(items):
@@ -137,6 +146,7 @@ def save_image(items):
     for item in items:
         os.makedirs(os.path.dirname(item["destination"]), exist_ok=True)
         item["image"].save(item["destination"])
+        log(item)
 
 
 def copy_file(items):
@@ -147,6 +157,7 @@ def copy_file(items):
             shutil.copy(item["origin"], item["destination"])
         except FileNotFoundError:
             raise FileNotFoundError("No file at specified origin.")
+        log(item)
 
 
 ################################

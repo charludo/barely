@@ -45,12 +45,14 @@ class ChangeTracker:
         """ start the watchdog configured above """
         if self.handler_available:
             self.observer.start()
+            print("barely :: started tracking...")
             try:
                 while True:
                     time.sleep(0.1)
                     loop_action()
             except KeyboardInterrupt:
                 self.observer.stop()
+                print("barely :: stopped tracking.")
             self.observer.join()
         else:
             raise Exception("No available handler. Not tracking.")
