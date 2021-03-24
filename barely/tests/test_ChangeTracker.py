@@ -48,10 +48,37 @@ class TestChangeTracker(unittest.TestCase):
         self.assertTrue(self.CT.observer.join.called)"""
 
     def test_buffer(self):
-        pass
+        self.CT.eventbuffer = []
 
-    def test_empty_buffer(self):
-        pass
+        event_1a = type('obj', (object,), {"src_path": 1})
+        event_1b = type('obj', (object,), {"dest_path": 1})
+        event_2 = type('obj', (object,), {"src_path": 2})
+
+        self.CT.buffer(event_1a)
+        self.CT.buffer(event_2)
+        self.CT.buffer(event_1b)
+
+        self.assertEqual(2, len(self.CT.eventbuffer))
+        self.assertEqual(2, self.CT.eventbuffer[0].src_path)
+        self.assertEqual(2, self.CT.eventbuffer[0].relevant_path)
+        self.assertEqual(1, self.CT.eventbuffer[1].dest_path)
+        self.assertEqual(1, self.CT.eventbuffer[1].relevant_path)
+
+    @patch("barely.core.EventHandler.EventHandler")
+    def test_empty_buffer(self, EH):
+        def enbuffer(item):
+            emptied_buffer.append(item)
+        emptied_buffer = []
+        original_buffer = [1, 2, 3]
+
+        self.CT.EH = EH
+        self.CT.EH.notify = MagicMock(side_effect=enbuffer)
+        self.CT.eventbuffer = original_buffer.copy()
+
+        self.CT.empty_buffer()
+
+        self.assertListEqual(original_buffer, emptied_buffer)
+        self.assertListEqual([], self.CT.eventbuffer)
 
     @patch("signal.signal")
     @patch("multiprocessing.Process")
