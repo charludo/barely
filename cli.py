@@ -38,6 +38,7 @@ def track():
     CT.register_handler(EH)
 
     CT.track()
+    aftermath(PM)
 
 
 def rebuild():
@@ -49,6 +50,24 @@ def rebuild():
     EH.init_pipeline(PM)
 
     EH.force_rebuild()
+    aftermath(PM)
+
+
+def aftermath(PM):
+    print("barely ..")
+    print("barely :: Do you want to Publish / Backup / do both?")
+    action = input("       -> [n]othing | [p]ublish | [b]ackup | *[Y]do both :: ").lower()
+
+    if action.startswith("p") or action.startswith("y") or action == "":
+        print("barely :: publishing...")
+        PM.hook_publication()
+        print("       -> ...done.")
+    if action.startswith("b") or action.startswith("y") or action == "":
+        print("barely :: backuping...")
+        PM.hook_backup()
+        print("       -> ...done.")
+
+    print("barely :: exited.")
 
 
 def test():
@@ -83,4 +102,4 @@ def test():
 
 if __name__ == "__main__":
     init()
-    test()
+    track()
