@@ -18,7 +18,7 @@ class TestChangeTracker(unittest.TestCase):
         self.assertFalse(EH_no.handler_available)
 
         with patch("barely.core.ChangeTracker.ChangeTracker.register_handler") as reg:
-            EH_yes = ChangeTracker(lambda x: x)
+            ChangeTracker(lambda x: x)
         self.assertTrue(reg.called)
 
     def test_register_handler(self):
@@ -47,11 +47,28 @@ class TestChangeTracker(unittest.TestCase):
         self.assertTrue(self.CT.observer.stop.called)
         self.assertTrue(self.CT.observer.join.called)"""
 
-    def test_stop(self):
-        pass
-
     def test_buffer(self):
         pass
 
     def test_empty_buffer(self):
         pass
+
+    @patch("signal.signal")
+    @patch("multiprocessing.Process")
+    @patch("watchdog.observers.Observer")
+    def test_stop(self, observer, liveserver, signal):
+        self.CT.observer = observer
+        self.CT.observer.stop = MagicMock()
+        self.CT.observer.join = MagicMock()
+        self.CT.liveserver = liveserver
+        self.CT.liveserver.join = MagicMock()
+        self.CT.tracking = True
+        self.CT.original_sigint = None
+
+        self.CT.stop(None, None)
+
+        self.assertTrue(self.CT.observer.stop.called)
+        self.assertTrue(self.CT.observer.join.called)
+        self.assertTrue(self.CT.liveserver.join.called)
+        self.assertTrue(signal.called)
+        self.assertFalse(self.CT.tracking)
