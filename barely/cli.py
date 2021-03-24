@@ -19,8 +19,9 @@ def init():
         sys.exit()
 
 
-@click.group()
-def run():
+@click.group(invoke_without_command=True)
+@click.pass_context
+def run(context):
     """
     barely reduces static website development to its key parts,
     by automatically rendering jinja2 templates and Markdown content
@@ -28,7 +29,8 @@ def run():
     and the built-in live web server makes on-the-fly development as
     comfortable as possible.
     """
-    pass
+    if context.invoked_subcommand is None:
+        track()
 
 
 @run.command()
