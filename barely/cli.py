@@ -4,13 +4,10 @@ from the cli by the user.
 """
 import os
 import sys
+import argparse
 
 
 def init():
-    # TEMPORARY
-    os.chdir("blueprints/devroot")
-
-    # get dir from which barely was started
     cwd = os.getcwd()
 
     # try to find the config.yaml
@@ -20,9 +17,6 @@ def init():
     else:
         print("barely :: could not find 'config.yaml'. Exiting")
         sys.exit()
-
-    # TEMPORARY
-    os.chdir("../..")
 
 
 def track():
@@ -100,6 +94,30 @@ def test():
     shutil.rmtree(testdir)
 
 
-if __name__ == "__main__":
+def run():
+    parser = argparse.ArgumentParser()
+    FUNCTION_MAP = {
+        "test": test,
+        "build": rebuild,
+        "track": track
+    }
+
+    parser.add_argument("command",
+                        nargs="?",
+                        default="track",
+                        help="command which barely should execute",
+                        choices=FUNCTION_MAP.keys())
+    args = parser.parse_args()
+
+    command = FUNCTION_MAP[args.command]
+
     init()
-    track()
+    command()
+
+
+if __name__ == "__main__":
+    os.chdir("blueprints/devroot")
+    init()
+    os.chdir("../..")
+
+    test()
