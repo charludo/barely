@@ -21,11 +21,19 @@ def init():
 
 @click.group()
 def run():
+    """
+    barely reduces static website development to its key parts,
+    by automatically rendering jinja2 templates and Markdown content
+    into HTML. A simple plugin interface allows for easy extensibility,
+    and the built-in live web server makes on-the-fly development as
+    comfortable as possible.
+    """
     pass
 
 
 @run.command()
 def track():
+    """starts a live server, opens your project in the browser and auto-refreshes a page whenever it, its template, or the media it includes are modified."""
     init()
 
     from barely.core.EventHandler import EventHandler
@@ -45,6 +53,7 @@ def track():
 
 @run.command()
 def rebuild():
+    """(re)build the entire project"""
     init()
 
     from barely.core.EventHandler import EventHandler
@@ -77,6 +86,7 @@ def aftermath(PM):
 
 @run.command()
 def test():
+    """run the testsuite to verify the install"""
     # import coverage
     import unittest
     import shutil
