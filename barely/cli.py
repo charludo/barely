@@ -119,7 +119,4 @@ def test():
 
 
 if __name__ == "__main__":
-    os.chdir("blueprints/devroot")
-    init()
-    os.chdir("../..")
     test()
