@@ -4,7 +4,7 @@ from the cli by the user.
 """
 import os
 import sys
-import argparse
+import click
 
 
 def init():
@@ -19,7 +19,15 @@ def init():
         sys.exit()
 
 
+@click.group()
+def run():
+    pass
+
+
+@run.command()
 def track():
+    init()
+
     from barely.core.EventHandler import EventHandler
     from barely.core.ChangeTracker import ChangeTracker
     from barely.plugins.PluginManager import PluginManager
@@ -35,7 +43,10 @@ def track():
     aftermath(PM)
 
 
+@run.command()
 def rebuild():
+    init()
+
     from barely.core.EventHandler import EventHandler
     from barely.plugins.PluginManager import PluginManager
 
@@ -64,19 +75,20 @@ def aftermath(PM):
     print("barely :: exited.")
 
 
+@run.command()
 def test():
     # import coverage
     import unittest
     import shutil
 
     # TEMPORARY
-    testdir = "/home/charlotte/test_barely"
+    testdir = "/home/charlotte/.barely/ACTIVETEST"
 
-    testsuite_dir = os.path.join(os.getcwd(), "barely", "tests")
+    testsuite_dir = os.path.join(os.path.dirname(__file__), "tests")
     shutil.copytree(os.path.join(testsuite_dir, "ressources"), testdir)
 
     os.chdir(testdir)
-    os.environ["barely"] = os.getcwd()
+    os.environ["barely"] = testdir
 
     loader = unittest.TestLoader()
     suite = loader.discover(testsuite_dir)
@@ -94,30 +106,8 @@ def test():
     shutil.rmtree(testdir)
 
 
-def run():
-    parser = argparse.ArgumentParser()
-    FUNCTION_MAP = {
-        "test": test,
-        "build": rebuild,
-        "track": track
-    }
-
-    parser.add_argument("command",
-                        nargs="?",
-                        default="track",
-                        help="command which barely should execute",
-                        choices=FUNCTION_MAP.keys())
-    args = parser.parse_args()
-
-    command = FUNCTION_MAP[args.command]
-
-    init()
-    command()
-
-
 if __name__ == "__main__":
     os.chdir("blueprints/devroot")
     init()
     os.chdir("../..")
-
     test()
