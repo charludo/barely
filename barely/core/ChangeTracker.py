@@ -51,56 +51,55 @@ class ChangeTracker:
     def track(self, loop_action=lambda: None):
         """ start the watchdog configured above """
         if self.handler_available:
-            self.observer.start()
-
+            # setup the livereload server
             server = Server()
             server.watch(config["ROOT"]["WEB"], delay=0)
+            for _ in logging.root.manager.loggerDict:       # because this module just
+                logging.getLogger(_).disabled = True        # WON'T SHUT THE F* UP
+            self.liveserver = Process(target=server.serve, kwargs={"root": config["ROOT"]["WEB"], "open_url_delay": 0})
 
-            self.liveserver = Process(target=self.serve, args=(server,))
             self.liveserver.start()
-
+            self.observer.start()
+            self.tracking = True
             print("barely :: started tracking...")
 
+            # handle SIGINTs. Store the original to later reuse it.
+            self.original_sigint = signal.getsignal(signal.SIGINT)
             signal.signal(signal.SIGINT, self.stop)
-            while True:
+
+            # check buffer every 0.2s; should be enough to catch duplicate events
+            while self.tracking:
                 time.sleep(0.2)
                 loop_action()
                 self.empty_buffer()
         else:
             raise Exception("No available handler. Not tracking.")
 
-    def serve(self, server):
-        # with patch("livereload.server.logger"):
-        for _ in logging.root.manager.loggerDict:
-            # logging.getLogger(_).setLevel(logging.CRITICAL)
-            logging.getLogger(_).disabled = True
-        server.serve(root=config["ROOT"]["WEB"], open_url_delay=0)
-
-    def stop(self, signal, frame):
-        self.observer.stop()
-        self.observer.join()
-        self.liveserver.join()
-        print()
-        print("\033[A\033[A")
-        print("barely :: stopped tracking.")
-        exit(0)
-
     def buffer(self, event):
-        try:
-            relevant_path = event.dest_path
-        except AttributeError:
-            relevant_path = event.src_path
-        event.relevant_path = relevant_path
+        # spares the hassle of dealing with different types of events.
+        event.relevant_path = event.dest_path if hasattr(event, "dest_path") else event.src_path
 
-        irrelevant = []
-        for older in self.eventbuffer:
+        i = 0
+        while i < len(self.eventbuffer):
+            older = self.eventbuffer[i]
             if type(event) is type(older) and event.relevant_path == older.relevant_path:
-                irrelevant.append(older)
-        for i in irrelevant:
-            self.eventbuffer.remove(i)
+                self.eventbuffer.pop(i)
+            i += 1
         self.eventbuffer.append(event)
 
     def empty_buffer(self):
         for event in self.eventbuffer:
             self.EH.notify(event)
         self.eventbuffer = []
+
+    def stop(self, signum, frame):
+        signal.signal(signal.SIGINT, self.original_sigint)
+
+        self.tracking = False
+        self.observer.stop()
+        self.observer.join()
+        self.liveserver.join()
+
+        print()
+        print("\033[A\033[A")
+        print("barely :: stopped tracking.")

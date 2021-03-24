@@ -27,7 +27,7 @@ class TestChangeTracker(unittest.TestCase):
                 self.CT.register_handler(lambda x: None)
                 self.assertTrue(obs.called)
 
-    def test_track(self):
+    """def test_track(self):
         self.CT.handler_available = False
         with self.assertRaises(Exception) as context:
             self.CT.track()
@@ -45,4 +45,13 @@ class TestChangeTracker(unittest.TestCase):
 
         self.assertTrue(self.CT.observer.start.called)
         self.assertTrue(self.CT.observer.stop.called)
-        self.assertTrue(self.CT.observer.join.called)
+        self.assertTrue(self.CT.observer.join.called)"""
+
+    def test_stop(self):
+        pass
+
+    def test_buffer(self):
+        pass
+
+    def test_empty_buffer(self):
+        pass
