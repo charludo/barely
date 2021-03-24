@@ -26,11 +26,13 @@ def init():
 
 
 def track():
-    from barely.core.ChangeTracker import ChangeTracker
     from barely.core.EventHandler import EventHandler
+    from barely.core.ChangeTracker import ChangeTracker
+    from barely.plugins.PluginManager import PluginManager
 
+    PM = PluginManager()
     EH = EventHandler()
-    EH.init_pipeline()
+    EH.init_pipeline(PM)
 
     CT = ChangeTracker()
     CT.register_handler(EH)
@@ -40,9 +42,11 @@ def track():
 
 def rebuild():
     from barely.core.EventHandler import EventHandler
+    from barely.plugins.PluginManager import PluginManager
 
+    PM = PluginManager()
     EH = EventHandler()
-    EH.init_pipeline()
+    EH.init_pipeline(PM)
 
     EH.force_rebuild()
 

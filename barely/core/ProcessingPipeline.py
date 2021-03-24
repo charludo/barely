@@ -19,12 +19,11 @@ from PIL import Image, UnidentifiedImageError
 from jinja2 import Environment, FileSystemLoader
 from jinja2.exceptions import TemplateNotFound
 from barely.common.config import config
-from barely.plugins.PluginManager import PluginManager
 
 
-def init_plugin_manager():
+def init_plugin_manager(PluginManager):
     global PM
-    PM = PluginManager()
+    PM = PluginManager
 
 
 def init_jinja():

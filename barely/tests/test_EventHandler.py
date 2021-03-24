@@ -20,11 +20,9 @@ class TestEventHandler(unittest.TestCase):
         os.chdir("..")
 
     @patch("barely.core.ProcessingPipeline.init_jinja")
-    @patch("barely.core.ProcessingPipeline.init_plugin_manager")
-    def test_init_pipeline(self, jinja, pm):
-        self.EH.init_pipeline()
+    def test_init_pipeline(self, jinja):
+        self.EH.init_pipeline(1)
         self.assertTrue(jinja.called)
-        self.assertTrue(pm.called)
 
     @patch("barely.core.ProcessingPipeline.process")
     @patch("barely.core.EventHandler.EventHandler._determine_type")

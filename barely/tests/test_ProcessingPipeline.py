@@ -32,10 +32,9 @@ class TestProcessingPipeline(unittest.TestCase):
 
     def test_init_plugin_manager(self):
         current_PM = PP.PM
-        with patch.object(PluginManager, "__init__", lambda x: None):
-            PP.init_plugin_manager()
-            PP.PM.hook_content = MagicMock(side_effect=lambda x: [x])
+        PP.init_plugin_manager(1)
         new_PM = PP.PM
+        PP.init_plugin_manager(current_PM)
         self.assertNotEqual(current_PM, new_PM)
 
     def test_init_jinja(self):
