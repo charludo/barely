@@ -56,7 +56,7 @@ class ChangeTracker:
             server.watch(config["ROOT"]["WEB"], delay=0)
             for _ in logging.root.manager.loggerDict:       # because this module just
                 logging.getLogger(_).disabled = True        # WON'T SHUT THE F* UP
-            self.liveserver = Process(target=server.serve, kwargs={"root": config["ROOT"]["WEB"], "open_url_delay": 0})
+            self.liveserver = Process(target=server.serve, kwargs={"root": config["ROOT"]["WEB"], "open_url_delay": 1})
 
             self.liveserver.start()
             self.observer.start()

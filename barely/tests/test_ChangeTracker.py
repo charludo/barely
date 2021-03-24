@@ -41,6 +41,7 @@ class TestChangeTracker(unittest.TestCase):
         self.CT.handler_available = True
         self.CT.observer = observer
         self.CT.observer.start = MagicMock()
+        self.CT.liveserver.start = MagicMock()
         serverprocess.start = MagicMock()
         server.serve = MagicMock()
         server.watch = MagicMock()
@@ -50,7 +51,7 @@ class TestChangeTracker(unittest.TestCase):
             self.CT.tracking = False
         with patch("barely.core.ChangeTracker.ChangeTracker.empty_buffer"):
             self.CT.track(loop_action)
-
+        self.CT.liveserver.kill()
         self.assertTrue(self.CT.observer.start.called)
         self.assertTrue(signal.called)
         self.assertTrue(getsignal.called)
