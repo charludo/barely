@@ -27,25 +27,34 @@ class TestChangeTracker(unittest.TestCase):
                 self.CT.register_handler(lambda x: None)
                 self.assertTrue(obs.called)
 
-    """def test_track(self):
+    @patch("signal.getsignal")
+    @patch("signal.signal")
+    @patch("livereload.Server")
+    @patch("multiprocessing.Process")
+    @patch("watchdog.observers.Observer")
+    def test_track(self, observer, server, serverprocess, signal, getsignal):
         self.CT.handler_available = False
         with self.assertRaises(Exception) as context:
             self.CT.track()
         self.assertTrue("No available handler. Not tracking." in str(context.exception))
 
         self.CT.handler_available = True
-        self.CT.observer = Observer()
+        self.CT.observer = observer
         self.CT.observer.start = MagicMock()
-        self.CT.observer.stop = MagicMock()
-        self.CT.observer.join = MagicMock()
+        serverprocess.start = MagicMock()
+        server.serve = MagicMock()
+        server.watch = MagicMock()
+        getsignal.return_value = None
 
         def loop_action():
-            raise KeyboardInterrupt
-        self.CT.track(loop_action)
+            self.CT.tracking = False
+        with patch("barely.core.ChangeTracker.ChangeTracker.empty_buffer"):
+            self.CT.track(loop_action)
 
         self.assertTrue(self.CT.observer.start.called)
-        self.assertTrue(self.CT.observer.stop.called)
-        self.assertTrue(self.CT.observer.join.called)"""
+        self.assertTrue(signal.called)
+        self.assertTrue(getsignal.called)
+        self.assertTrue(server.watch)
 
     def test_buffer(self):
         self.CT.eventbuffer = []
