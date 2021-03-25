@@ -10,7 +10,6 @@ from watchdog.events import FileDeletedEvent, DirDeletedEvent
 from watchdog.events import FileMovedEvent, DirMovedEvent
 from binaryornot.check import is_binary
 from pathlib import Path
-import shutil
 import os
 import re
 from barely.common.config import config
@@ -54,10 +53,10 @@ class EventHandler():
             parent_page = self._get_parent_page(src_dev)
             self.notify(FileModifiedEvent(src_path=parent_page))
         elif isinstance(event, FileDeletedEvent) or isinstance(event, DirDeletedEvent):
-            self._delete(src_web)
+            PP.delete(src_web)
         elif isinstance(event, FileMovedEvent) or isinstance(event, DirMovedEvent):
             dest_web = self._get_web_path(event.dest_path)
-            self._move(src_web, dest_web)
+            PP.move(src_web, dest_web)
         elif isinstance(event, FileCreatedEvent) or isinstance(event, FileModifiedEvent):
             type, extension = self._determine_type(src_dev)
             item = {
@@ -73,7 +72,7 @@ class EventHandler():
     def force_rebuild(self):
         """ rebuild the entire project by first deleting the devroot, then marking every file as new """
         print("barely :: starting full rebuild...")
-        self._delete(config["ROOT"]["WEB"])
+        PP.delete(config["ROOT"]["WEB"])
         os.makedirs(config["ROOT"]["WEB"], exist_ok=True)
         for root, dirs, files in os.walk(config["ROOT"]["DEV"], topdown=False):
             for path in files:
@@ -195,25 +194,3 @@ class EventHandler():
         except IndexError:
             raise IndexError("Child page has no parent!")
         return parent_page
-
-    @staticmethod
-    def _delete(path):
-        """ delete a file or dir """
-        if os.path.exists(path):
-            if os.path.isfile(path):
-                os.remove(path)
-            elif os.path.isdir(path):
-                shutil.rmtree(path)
-
-    @staticmethod
-    def _move(fro, to):
-        """ move a file or dir """
-        try:
-            if os.path.exists(to):
-                if os.path.isfile(to):
-                    os.remove(to)
-                else:
-                    shutil.rmtree(to)
-            shutil.move(fro, to)
-        except FileNotFoundError:
-            raise FileNotFoundError("No file/dir at notification origin!")
