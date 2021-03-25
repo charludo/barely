@@ -143,8 +143,12 @@ def load_image(items):
 def save_image(items):
     """ filter that saves a PIL object into an image file """
     for item in items:
+        try:
+            quality = item["quality"]
+        except KeyError:
+            quality = 100
         os.makedirs(os.path.dirname(item["destination"]), exist_ok=True)
-        item["image"].save(item["destination"])
+        item["image"].save(item["destination"], optimize=True, quality=quality)
         log(item)
 
 

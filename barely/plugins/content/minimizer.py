@@ -3,50 +3,66 @@ Minimizer exports the singleton Minimzer,
 which in turn provides functons to minimize
 images, javascript,...
 It also functions as a sass/scss parser.
-
+"""
+import os
 import sass
 from PIL import Image
 from calmjs.parse import es5
 from calmjs.parse.unparsers.es5 import minify_print
-from .filereader import FileReader
-from barely.common.config import config
-from barely.common.utils import write_file, get_extension
-from barely.common.decorators import Singleton
+from barely.plugins import PluginBase
 
 
-@Singleton
-class Minimizer(object):
+class Minimizer(PluginBase):
     # Minimizer provides functions to reduce various formats in size
 
     def __init__(self):
-        self.fr = FileReader()
+        try:
+            standard_config = {
+                "PRIORITY": 3,
+                "IMG_QUALITY": 70,
+                "IMG_LONG_EDGE": 1920,
+                "JS_OBFUSCATE": True,
+                "JS_OBFUSCATE_GLOBALS": True,
+                "CSS_OUTPUT_STYLE": "compressed"
+            }
+            self.plugin_config = standard_config | self.config["MINIMIZER"]
+            self.func_map = {
+                "png,jpg,jpeg,gif,tif,tiff,bmp": self.minimize_image,
+                "js": self.minimize_js,
+                "sass,scss,css": self.minimize_css
+            }
+            self.register_for = sum([group.split(",") for group in self.func_map.keys()], [])
+        except KeyError:
+            self.plugin_config = {"PRIORITY": -1}
+            self.register_for = []
 
-    def minimize(self, dev, web):
-        extension = get_extension(dev)
-        if extension in config["FILETYPES"]["COMPRESSABLE"]["CSS"]:
-            self.minimize_css(dev, web)
-        elif extension in config["FILETYPES"]["COMPRESSABLE"]["JS"]:
-            self.minimize_js(dev, web)
-        elif extension in config["FILETYPES"]["COMPRESSABLE"]["IMAGES"]:
-            self.minimize_image(dev, web)
-        else:
-            raise f"Cant minimize {dev} - no minimizer rovided for the extension {extension}"
+    def register(self):
+        return "Minimizer", self.plugin_config["PRIORITY"], self.register_for
 
-    def minimize_css(self, dev, web):
-        compiled = sass.compile(filename=dev, output_style="compressed")  # 1. compile to css and compress
-        write_file(web, compiled)                                         # 2. write & done!
+    def action(self, *args, **kwargs):
+        if "item" in kwargs:
+            item = kwargs["item"]
+            item["action"] = "compiled"
+            item["destination"] = os.path.splitext(item["destination"])[0] + ".css"
+            for key, func in self.func_map.items():
+                if item["extension"] in key:
+                    return func(item)
 
-    def minimize_js(self, dev, web):
-        raw = self.fr.get_raw(dev)
-        minified = minify_print(es5(raw), obfuscate=True, obfuscate_globals=True)  # 1. minify & mangle
-        write_file(web, minified)                                                  # 2. write & done!
+    def minimize_css(self, item):
+        compiled = sass.compile_string(item["content_raw"], output_style=self.plugin_config["CSS_OUTPUT_STYLE"])
+        item["content"] = compiled
+        return item
 
-    def minimize_image(self, dev, web):
-        quality = int(config["IMAGES"]["QUALITY"])                  # load parameter
-        short_side = int(config["IMAGES"]["LONG_SIDE"])
-        size = short_side, short_side                               # apply based on orientation
+    def minimize_js(self, item):
+        minified = minify_print(es5(item["content_raw"]), obfuscate=self.plugin_config["JS_OBFUSCATE"],
+                                obfuscate_globals=self.plugin_config["JS_OBFUSCATE_GLOBALS"])
+        item["content"] = minified
+        return item
 
-        with Image.open(dev) as original:
-            original.thumbnail(size, Image.ANTIALIAS)               # doesn't care about orientation
-            original.save(web, optimize=True, quality=quality)      # should make a nice small size!
-"""
+    def minimize_image(self, item):
+        long_edge = int(self.plugin_config["IMG_LONG_EDGE"])
+        size = long_edge, long_edge
+
+        item["image"].thumbnail(size, Image.ANTIALIAS)
+        item["quality"] = self.plugin_config["IMG_QUALITY"]
+        return item
