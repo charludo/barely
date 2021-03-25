@@ -227,6 +227,7 @@ class TestProcessingPipeline(unittest.TestCase):
         self.assertFalse(ImageChops.difference(test_item["image"], first).getbbox())
 
         test_item["image"] = Image.open("test_save.png")
+        test_item["quality"] = 100
         PP.save_image([test_item])
         second = loadi(test_item)
         self.assertFalse(ImageChops.difference(test_item["image"], second).getbbox())
