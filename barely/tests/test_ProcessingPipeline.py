@@ -254,6 +254,50 @@ class TestProcessingPipeline(unittest.TestCase):
             list(PP.copy_file([self.item]))
         self.assertTrue("No file at specified origin." in str(context.exception))
 
+    def test_delete(self):
+        os.chdir("delete")
+        PP.delete("dir")
+        PP.delete("nothere")
+        PP.delete("file.txt")
+        self.assertFalse(os.path.exists("dir"))
+        self.assertFalse(os.path.exists("file.txt"))
+        os.chdir("..")
+
+    def test_move(self):
+        def readf(path):
+            with open(path, "r") as file:
+                return file.read()
+
+        os.chdir("move")
+
+        with self.assertRaises(FileNotFoundError) as context:
+            PP.move("nothere", "to")
+        self.assertTrue("No file/dir at notification origin!" in str(context.exception))
+
+        PP.move("fro.txt", "moved.txt")
+        self.assertTrue(os.path.isfile("moved.txt"))
+        first = readf("moved.txt")
+
+        PP.move("fro2.txt", "moved.txt")
+        self.assertTrue(os.path.isfile("moved.txt"))
+        second = readf("moved.txt")
+
+        self.assertNotEqual(first, second)
+
+        PP.move("fro", "to")
+        self.assertTrue(os.path.isdir("to"))
+        self.assertTrue(os.path.isfile(os.path.join("to", "collateral")))
+
+        PP.move("fro2", "to")
+        self.assertTrue(os.path.isdir("to"))
+        self.assertTrue(os.path.isfile(os.path.join("to", "collateral")))
+
+        self.assertFalse(os.path.exists("fro"))
+        self.assertFalse(os.path.exists("fro.txt"))
+        self.assertFalse(os.path.exists("fro2.txt"))
+
+        os.chdir("..")
+
     def test_extract_template(self):
         item = {
             "origin": "template.md"

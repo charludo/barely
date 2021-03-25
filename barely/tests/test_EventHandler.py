@@ -26,12 +26,12 @@ class TestEventHandler(unittest.TestCase):
 
     @patch("barely.core.ProcessingPipeline.process")
     @patch("barely.core.EventHandler.EventHandler._determine_type")
-    @patch("barely.core.EventHandler.EventHandler._move")
-    @patch("barely.core.EventHandler.EventHandler._delete")
+    @patch("barely.core.ProcessingPipeline.move")
+    @patch("barely.core.ProcessingPipeline.delete")
     @patch("barely.core.EventHandler.EventHandler._get_parent_page")
     @patch("barely.core.EventHandler.EventHandler._get_affected")
     @patch("barely.core.EventHandler.EventHandler._get_web_path")
-    def test_notify(self, _get_web_path, _get_affected, _get_parent_page, _delete, _move, _determine_type, process):
+    def test_notify(self, _get_web_path, _get_affected, _get_parent_page, delete, move, _determine_type, process):
         def join(*args):
             return os.path.join(*args)
 
@@ -44,8 +44,8 @@ class TestEventHandler(unittest.TestCase):
         _get_web_path.return_value = "destination"
         _get_affected.side_effect = lambda x: [x[10:]]
         _get_parent_page.return_value = "parent"
-        _delete.return_value = None
-        _move.return_value = None
+        delete.return_value = None
+        move.return_value = None
         _determine_type.return_value = ("TYPE", "ext")
         process.side_effect = catch_response
 
@@ -78,11 +78,11 @@ class TestEventHandler(unittest.TestCase):
 
         # deleted
         self.EH.notify(FileDeletedEvent(src_path="trash"))
-        self.assertTrue(_delete.called)
+        self.assertTrue(delete.called)
 
         # moved
         self.EH.notify(DirMovedEvent(src_path="from", dest_path="to"))
-        self.assertTrue(_move.called)
+        self.assertTrue(move.called)
 
         # created file
         golden_item["origin"] = "file.png"
@@ -195,48 +195,4 @@ class TestEventHandler(unittest.TestCase):
         with self.assertRaises(IndexError) as context:
             self.EH._get_parent_page(os.path.join("none", "none", "parentless.md"))
         self.assertTrue("Child page has no parent!" in str(context.exception))
-        os.chdir("..")
-
-    def test__delete(self):
-        os.chdir("delete")
-        self.EH._delete("dir")
-        self.EH._delete("nothere")
-        self.EH._delete("file.txt")
-        self.assertFalse(os.path.exists("dir"))
-        self.assertFalse(os.path.exists("file.txt"))
-        os.chdir("..")
-
-    def test__move(self):
-        def readf(path):
-            with open(path, "r") as file:
-                return file.read()
-
-        os.chdir("move")
-
-        with self.assertRaises(FileNotFoundError) as context:
-            self.EH._move("nothere", "to")
-        self.assertTrue("No file/dir at notification origin!" in str(context.exception))
-
-        self.EH._move("fro.txt", "moved.txt")
-        self.assertTrue(os.path.isfile("moved.txt"))
-        first = readf("moved.txt")
-
-        self.EH._move("fro2.txt", "moved.txt")
-        self.assertTrue(os.path.isfile("moved.txt"))
-        second = readf("moved.txt")
-
-        self.assertNotEqual(first, second)
-
-        self.EH._move("fro", "to")
-        self.assertTrue(os.path.isdir("to"))
-        self.assertTrue(os.path.isfile(os.path.join("to", "collateral")))
-
-        self.EH._move("fro2", "to")
-        self.assertTrue(os.path.isdir("to"))
-        self.assertTrue(os.path.isfile(os.path.join("to", "collateral")))
-
-        self.assertFalse(os.path.exists("fro"))
-        self.assertFalse(os.path.exists("fro.txt"))
-        self.assertFalse(os.path.exists("fro2.txt"))
-
         os.chdir("..")

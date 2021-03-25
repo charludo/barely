@@ -32,7 +32,7 @@ def init_jinja():
 
 
 def log(item):
-    print(f"barely :: {item['action']} {item['origin']} -> {item['destination']}")
+    print(f"       :: {item['action']} {item['origin']} -> {item['destination']}")
 
 
 def process(items):
@@ -157,6 +157,30 @@ def copy_file(items):
         except FileNotFoundError:
             raise FileNotFoundError("No file at specified origin.")
         log(item)
+
+
+def delete(path):
+    """ delete a file or dir """
+    if os.path.exists(path):
+        if os.path.isfile(path):
+            os.remove(path)
+        elif os.path.isdir(path):
+            shutil.rmtree(path)
+        print(f"       :: deleted {path}")
+
+
+def move(fro, to):
+    """ move a file or dir """
+    try:
+        if os.path.exists(to):
+            if os.path.isfile(to):
+                os.remove(to)
+            else:
+                shutil.rmtree(to)
+        shutil.move(fro, to)
+        print(f"       :: moved {fro} -> {to}")
+    except FileNotFoundError:
+        raise FileNotFoundError("No file/dir at notification origin!")
 
 
 ################################
