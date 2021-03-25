@@ -5,18 +5,46 @@ from the cli by the user.
 import os
 import sys
 import click
+import platform
+from pathlib import Path
 
 
 def init():
-    cwd = os.getcwd()
-
     # try to find the config.yaml
     if os.path.exists("config.yaml"):
         # export the cwd as an environment variable
-        os.environ["barely"] = cwd
+        appdir = get_appdir()
+        os.environ["barely"] = os.getcwd()
+        os.environ["barely_appdir"] = appdir
+
+        make_dirs(appdir)
     else:
         print("barely :: could not find 'config.yaml'. Exiting")
         sys.exit()
+
+
+def get_appdir():
+    _platform = platform.system()
+
+    if _platform == ("Linux" or "Darwin"):
+        home = os.path.expanduser("~")
+        return os.path.join(home, ".barely")
+    elif _platform == "Windows":
+        print("Windows")
+    else:
+        sys.exit("Running on unknown platform.")
+
+
+def make_dirs(appdir):
+    needed = [
+        os.path.join("plugins", "content"),
+        os.path.join("plugins", "backup"),
+        os.path.join("plugins", "publication"),
+        "blueprints"
+    ]
+
+    for path in needed:
+        Path(os.path.join(appdir, path)).mkdir(parents=True, exist_ok=True)
 
 
 @click.group(invoke_without_command=True)
@@ -97,14 +125,15 @@ def test(verbose, keep_files):
     import unittest
     import shutil
 
-    # TEMPORARY
-    testdir = "/home/charlotte/.barely/ACTIVETEST"
+    appdir = get_appdir()
+    testdir = os.path.join(appdir, "TESTFILES")
 
     testsuite_dir = os.path.join(os.path.dirname(__file__), "tests")
     shutil.copytree(os.path.join(testsuite_dir, "ressources"), testdir)
 
     os.chdir(testdir)
     os.environ["barely"] = testdir
+    os.environ["barely_appdir"] = appdir
 
     loader = unittest.TestLoader()
     suite = loader.discover(testsuite_dir)
@@ -123,4 +152,4 @@ def test(verbose, keep_files):
 
 
 if __name__ == "__main__":
-    test(False)
+    test()

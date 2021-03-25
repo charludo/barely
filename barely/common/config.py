@@ -31,7 +31,7 @@ class Config:
     def get_plugin_locales():
         barely_dir = os.path.dirname(os.path.dirname(__file__))
         sysplugin_parent = os.path.join(barely_dir, "plugins")
-        userplugin_parent = "/home/charlotte/.barely/plugins"
+        userplugin_parent = os.path.join(os.environ["barely_appdir"], "plugins")
 
         return {
             "SYS": {
