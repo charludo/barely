@@ -63,7 +63,7 @@ def get_blueprints(blueprint=None):
         else:
             print(f"barely :: no blueprint named {blueprint} exists.")
             sys.exit()
-    return set().unison(sys_bps, user_bps)
+    return set(user_bps + sys_bps)
 
 
 @click.group(invoke_without_command=True)
@@ -89,12 +89,13 @@ def new(devroot, webroot, blueprint):
     import shutil
     import yaml
     make_dirs(get_appdir())
+    blueprint_path = get_blueprints(blueprint)
     print("barely :: setting up new project with parameters:")
 
     os.makedirs(webroot)
     print(f"       ->   webroot: {webroot}")
 
-    shutil.copytree(get_blueprints(blueprint), devroot)
+    shutil.copytree(blueprint_path, devroot)
     print(f"       ->   devroot: {devroot}")
     print(f"       -> blueprint: {blueprint}")
 
@@ -109,6 +110,33 @@ def new(devroot, webroot, blueprint):
     print("barely :: setting up basic config...")
     print("barely :: done.")
     os.chdir(devroot)
+
+
+@run.command()
+@click.option("--new", "-n", help="create a reusable blueprint from the current project")
+def blueprints(new):
+    """list all available blueprints, or create a new one"""
+    if new:
+        import shutil
+        import yaml
+        make_dirs(get_appdir())
+        try:
+            with open("config.yaml", "r") as file:
+                meta_raw = file.read()
+                devroot = yaml.safe_load(meta_raw)["ROOT"]["DEV"]
+                new_path = os.path.join(get_appdir(), "blueprints", new)
+            shutil.copy(devroot, new_path)
+            os.remove(os.path.join(new_path, "config.yaml"))
+            print(f"barely :: blueprint \"{new}\" successfully created!")
+        except FileNotFoundError:
+            print("barely :: no valid project found. Can't create blueprint.")
+        except FileExistsError:
+            print("barely :: a blueprint with this name already exists.")
+    else:
+        blueprints = get_blueprints()
+        print(f"barely :: found {len(blueprints)} blueprints:")
+        for blueprint in blueprints:
+            print(f"       -> {blueprint}")
 
 
 @run.command()
