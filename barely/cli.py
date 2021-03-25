@@ -116,16 +116,16 @@ def new(devroot, webroot, blueprint):
 @click.option("--new", "-n", help="create a reusable blueprint from the current project")
 def blueprints(new):
     """list all available blueprints, or create a new one"""
+    make_dirs(get_appdir())
     if new:
         import shutil
         import yaml
-        make_dirs(get_appdir())
         try:
             with open("config.yaml", "r") as file:
                 meta_raw = file.read()
                 devroot = yaml.safe_load(meta_raw)["ROOT"]["DEV"]
                 new_path = os.path.join(get_appdir(), "blueprints", new)
-            shutil.copy(devroot, new_path)
+            shutil.copytree(devroot, new_path)
             os.remove(os.path.join(new_path, "config.yaml"))
             print(f"barely :: blueprint \"{new}\" successfully created!")
         except FileNotFoundError:
