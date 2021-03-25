@@ -153,7 +153,7 @@ class EventHandler():
     def _determine_type(self, path):
         """ determine the type of the file via its extension. return both """
         try:
-            ext = os.path.splitext(path)[1][1:]
+            ext = os.path.splitext(path)[1][1:].lower()
         except IndexError:
             ext = ""
         if ext == config["PAGE_EXT"]:
