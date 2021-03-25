@@ -47,6 +47,25 @@ def make_dirs(appdir):
         Path(os.path.join(appdir, path)).mkdir(parents=True, exist_ok=True)
 
 
+def get_blueprints(blueprint=None):
+    from glob import glob
+    sys_bp_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "blueprints")
+    user_bp_path = os.path.join(get_appdir(), "blueprints")
+
+    sys_bps = [os.path.basename(os.path.dirname(bp)) for bp in glob(sys_bp_path + os.sep + "*" + os.sep)]
+    user_bps = [os.path.basename(os.path.dirname(bp)) for bp in glob(user_bp_path + os.sep + "*" + os.sep)]
+
+    if blueprint:
+        if blueprint in user_bps:
+            return os.path.join(user_bp_path, blueprint)
+        elif blueprint in sys_bps:
+            return os.path.join(sys_bp_path, blueprint)
+        else:
+            print(f"barely :: no blueprint named {blueprint} exists.")
+            sys.exit()
+    return set().unison(sys_bps, user_bps)
+
+
 @click.group(invoke_without_command=True)
 @click.pass_context
 def run(context):
@@ -59,6 +78,37 @@ def run(context):
     """
     if context.invoked_subcommand is None:
         live()
+
+
+@run.command()
+@click.option("--blueprint", "-b", help="instantiate project from a blueprint", default="default")
+@click.option("--webroot", "-w", help="location for the generated static files", default="webroot")
+@click.option("--devroot", "-d", help="project directory, for development files", default="devroot")
+def new(devroot, webroot, blueprint):
+    """create a new barely project (optionally with a blueprint)"""
+    import shutil
+    import yaml
+    make_dirs(get_appdir())
+    print("barely :: setting up new project with parameters:")
+
+    os.makedirs(webroot)
+    print(f"       ->   webroot: {webroot}")
+
+    shutil.copytree(get_blueprints(blueprint), devroot)
+    print(f"       ->   devroot: {devroot}")
+    print(f"       -> blueprint: {blueprint}")
+
+    config = {
+        "ROOT": {
+            "DEV": os.path.abspath(os.path.join(os.getcwd(), devroot)),
+            "WEB": os.path.abspath(os.path.join(os.getcwd(), webroot))
+        }
+    }
+    with open(os.path.join(devroot, "config.yaml"), "w+") as file:
+        file.write(yaml.dump(config))
+    print("barely :: setting up basic config...")
+    print("barely :: done.")
+    os.chdir(devroot)
 
 
 @run.command()
