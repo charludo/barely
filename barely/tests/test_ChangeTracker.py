@@ -38,6 +38,7 @@ class TestChangeTracker(unittest.TestCase):
             self.CT.track()
         self.assertTrue("No available handler. Not tracking." in str(context.exception))
 
+        self.CT.verbose = False
         self.CT.handler_available = True
         self.CT.observer = observer
         self.CT.observer.start = MagicMock()

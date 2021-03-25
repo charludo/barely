@@ -26,6 +26,7 @@ class ChangeTracker:
         else:
             self.handler_available = False
         self.eventbuffer = []
+        self.verbose = False
 
     def register_handler(self, EH):
         """ register an event handler. The EH gets notified about observed changes """
@@ -54,8 +55,9 @@ class ChangeTracker:
             # setup the livereload server
             server = Server()
             server.watch(config["ROOT"]["WEB"], delay=0)
-            for _ in logging.root.manager.loggerDict:       # because this module just
-                logging.getLogger(_).disabled = True        # WON'T SHUT THE F* UP
+            if not self.verbose:
+                for _ in logging.root.manager.loggerDict:       # because this module just
+                    logging.getLogger(_).disabled = True        # WON'T SHUT THE F* UP
             self.liveserver = Process(target=server.serve, kwargs={"root": config["ROOT"]["WEB"], "open_url_delay": 1})
 
             self.liveserver.start()
