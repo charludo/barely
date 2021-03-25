@@ -1,0 +1,4 @@
+ROOT:
+    DEV: .
+    WEB: web
+PAGE_EXT: md

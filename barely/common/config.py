@@ -3,10 +3,8 @@ Load the config and return it as a dict
 """
 import os
 import yaml
-from .decorators import Singleton
 
 
-@Singleton
 class Config:
     """ just here to return the config """
     config = {}
@@ -26,7 +24,27 @@ class Config:
         config_dict = yaml.safe_load(raw_config)
 
         config_dict = empty_dict | config_dict
+        config_dict["PLUGIN_PATHS"] = self.get_plugin_locales()
         self.config = config_dict
+
+    @staticmethod
+    def get_plugin_locales():
+        barely_dir = os.path.dirname(os.path.dirname(__file__))
+        sysplugin_parent = os.path.join(barely_dir, "plugins")
+        userplugin_parent = os.path.join(os.environ["barely_appdir"], "plugins")
+
+        return {
+            "SYS": {
+                "CONTENT": os.path.join(sysplugin_parent, "content"),
+                "BACKUP": os.path.join(sysplugin_parent, "backup"),
+                "PUBLICATION": os.path.join(sysplugin_parent, "publication")
+            },
+            "USER": {
+                "CONTENT": os.path.join(userplugin_parent, "content"),
+                "BACKUP": os.path.join(userplugin_parent, "backup"),
+                "PUBLICATION": os.path.join(userplugin_parent, "publication")
+            }
+        }
 
     def get_config(self):
         """ return the config """
@@ -37,4 +55,4 @@ class Config:
         self.config = new_config
 
 
-config = Config.instance().get_config()
+config = Config().get_config()
