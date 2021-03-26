@@ -199,32 +199,45 @@ def aftermath(PM):
 @click.option("--verbose", "-v", help="diable the unittest buffer", is_flag=True)
 def test(verbose, keep_files):
     """run the testsuite to verify the install"""
-    # import coverage
     import unittest
     import shutil
 
+    #
+    #   general setup
+    #
+
+    buffer = not verbose
     appdir = get_appdir()
     testdir = os.path.join(appdir, "TESTFILES")
-
     testsuite_dir = os.path.join(os.path.dirname(__file__), "tests")
     shutil.copytree(os.path.join(testsuite_dir, "ressources"), testdir)
-
     os.chdir(testdir)
     os.environ["barely"] = testdir
     os.environ["barely_appdir"] = appdir
 
+    #
+    #   barely core tests
+    #
+
     loader = unittest.TestLoader()
     suite = loader.discover(testsuite_dir)
-
-    # cov = coverage.Coverage()
-    # cov.start()
-    buffer = not verbose
     runner = unittest.TextTestRunner(buffer=buffer)
     runner.run(suite)
 
-    # cov.stop()
-    # cov.save()
-    # cov.html_report()
+    #
+    #   system plugin tests
+    #
+
+    plugins_path = os.path.join(os.path.dirname(__file__), "plugins")
+    plugin_loader = unittest.TestLoader()
+    plugin_suite = plugin_loader.discover(plugins_path)
+    plugin_runner = unittest.TextTestRunner(buffer=buffer)
+    plugin_runner.run(plugin_suite)
+
+    #
+    #   cleanup
+    #
+
     if not keep_files:
         shutil.rmtree(testdir)
 
