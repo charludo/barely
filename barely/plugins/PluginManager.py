@@ -37,14 +37,15 @@ class PluginBase:
 class PluginManager:
     """ finds, registers and pipes in plugins """
 
+    plugin_count = 0
+
     def __init__(self):
         print("barely :: registering plugins...")
         self.plugins_content = self.discover_plugins([config["PLUGIN_PATHS"]["SYS"]["CONTENT"], config["PLUGIN_PATHS"]["USER"]["CONTENT"]])
         self.plugins_backup = self.discover_plugins([config["PLUGIN_PATHS"]["SYS"]["BACKUP"], config["PLUGIN_PATHS"]["USER"]["BACKUP"]], type_content=False)
         self.plugins_publication = self.discover_plugins([config["PLUGIN_PATHS"]["SYS"]["PUBLICATION"],
                                                          config["PLUGIN_PATHS"]["USER"]["PUBLICATION"]], type_content=False)
-        plugin_count = len(self.plugins_content) + len(self.plugins_backup) + len(self.plugins_publication)
-        print(f"barely :: {plugin_count} plugins registered.")
+        print(f"barely :: {self.plugin_count} plugins registered.")
 
     def discover_plugins(self, paths, type_content=True):
         """ checks the path for plugin files, then imports them """
@@ -64,6 +65,7 @@ class PluginManager:
 
                 # necessary to filter out the imported parent class
                 if isclass(attribute) and issubclass(attribute, PluginBase) and not issubclass(PluginBase, attribute):
+                    self.plugin_count += 1
                     if type_content:
                         name, priority, registered_for = attribute().register()
                         if priority > -1:
