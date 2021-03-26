@@ -79,25 +79,25 @@ class TestPluginManager(unittest.TestCase):
         self.assertIn("png", test_dict)
 
         self.assertEqual(1, len(test_dict["md"]))
-        self.assertTrue(issubclass(test_dict["md"][0], PluginBase))
+        self.assertTrue(issubclass(type(test_dict["md"][0]), PluginBase))
 
         self.assertEqual(2, len(test_dict["png"]))
-        self.assertTrue(issubclass(test_dict["png"][0], PluginBase))
-        self.assertTrue(issubclass(test_dict["png"][1], PluginBase))
+        self.assertTrue(issubclass(type(test_dict["png"][0]), PluginBase))
+        self.assertTrue(issubclass(type(test_dict["png"][1]), PluginBase))
 
-        self.assertTrue(test_dict["png"][0]().register()[0] == "P2")
-        self.assertTrue(test_dict["png"][1]().register()[0] == "P1")
+        self.assertTrue(test_dict["png"][0].register()[0] == "P2")
+        self.assertTrue(test_dict["png"][1].register()[0] == "P1")
 
         self.assertEqual(1, len(test_dict["pdf"]))
-        self.assertTrue(issubclass(test_dict["pdf"][0], PluginBase))
+        self.assertTrue(issubclass(type(test_dict["pdf"][0]), PluginBase))
 
         # Backup/Publication Plugins only register with their class
         test_list = self.PM.discover_plugins(["other"], type_content=False)
         self.assertEqual(2, len(test_list))
-        self.assertTrue(issubclass(test_list[0], PluginBase))
-        self.assertTrue(issubclass(test_list[1], PluginBase))
-        self.assertTrue(test_list[0]().register()[0] == "P4")
-        self.assertTrue(test_list[1]().register()[0] == "P3")
+        self.assertTrue(issubclass(type(test_list[0]), PluginBase))
+        self.assertTrue(issubclass(type(test_list[1]), PluginBase))
+        self.assertTrue(test_list[0].register()[0] == "P4")
+        self.assertTrue(test_list[1].register()[0] == "P3")
 
     def test_hook_content(self):
         # Sample Item, to be processed by plugins registered for the "test" extension
