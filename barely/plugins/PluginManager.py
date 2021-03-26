@@ -65,16 +65,18 @@ class PluginManager:
 
                 # necessary to filter out the imported parent class
                 if isclass(attribute) and issubclass(attribute, PluginBase) and not issubclass(PluginBase, attribute):
-                    self.plugin_count += 1
+                    plugin_instance = attribute()
                     if type_content:
-                        name, priority, registered_for = attribute().register()
+                        name, priority, registered_for = plugin_instance.register()
                         if priority > -1:
+                            self.plugin_count += 1
                             for extension in registered_for:
-                                found_plugins.setdefault(extension, []).append((attribute(), priority))
+                                found_plugins.setdefault(extension, []).append((plugin_instance, priority))
                     else:
-                        name, priority = attribute().register()
+                        name, priority = plugin_instance.register()
                         if priority > -1:
-                            found_plugins.append((attribute(), priority))
+                            self.plugin_count += 1
+                            found_plugins.append((plugin_instance, priority))
 
         sys.path = list(set(sys.path) - set(module_paths))                      # remove our added entries to path
 
