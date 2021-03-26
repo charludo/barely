@@ -24,13 +24,14 @@ class Minimizer(PluginBase):
                 "IMG_LONG_EDGE": 1920,
                 "JS_OBFUSCATE": True,
                 "JS_OBFUSCATE_GLOBALS": True,
+                "CSS_INCLUDE_COMMENTS": False,
                 "CSS_OUTPUT_STYLE": "compressed"
             }
             self.plugin_config = standard_config | self.config["MINIMIZER"]
             self.func_map = {
                 "png,jpg,jpeg,gif,tif,tiff,bmp": self.minimize_image,
                 "js": self.minimize_js,
-                "sass,scss,css": self.minimize_css
+                "sass,scss": self.minimize_css
             }
             self.register_for = sum([group.split(",") for group in self.func_map.keys()], [])
         except KeyError:
@@ -48,16 +49,18 @@ class Minimizer(PluginBase):
                     yield func(item)
 
     def minimize_css(self, item):
-        compiled = sass.compile_string(item["content_raw"], output_style=self.plugin_config["CSS_OUTPUT_STYLE"])
+        indented = True if item["extension"] == "sass" else False
+        compiled = sass.compile(string=item["output"], output_style=self.plugin_config["CSS_OUTPUT_STYLE"],
+                                indented=indented, source_comments=self.plugin_config["CSS_INCLUDE_COMMENTS"])
         item["destination"] = os.path.splitext(item["destination"])[0] + ".css"
         item["action"] = "compiled"
-        item["content"] = compiled
+        item["output"] = compiled
         return item
 
     def minimize_js(self, item):
-        minified = minify_print(es5(item["content_raw"]), obfuscate=self.plugin_config["JS_OBFUSCATE"],
+        minified = minify_print(es5(item["output"]), obfuscate=self.plugin_config["JS_OBFUSCATE"],
                                 obfuscate_globals=self.plugin_config["JS_OBFUSCATE_GLOBALS"])
-        item["content"] = minified
+        item["output"] = minified
         item["action"] = "compiled"
         return item
 
