@@ -68,11 +68,11 @@ class PluginManager:
                         name, priority, registered_for = attribute().register()
                         if priority > -1:
                             for extension in registered_for:
-                                found_plugins.setdefault(extension, []).append((attribute, priority))
+                                found_plugins.setdefault(extension, []).append((attribute(), priority))
                     else:
                         name, priority = attribute().register()
                         if priority > -1:
-                            found_plugins.append((attribute, priority))
+                            found_plugins.append((attribute(), priority))
 
         sys.path = list(set(sys.path) - set(module_paths))                      # remove our added entries to path
 

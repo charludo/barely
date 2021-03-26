@@ -16,6 +16,7 @@ class Minimizer(PluginBase):
     # Minimizer provides functions to reduce various formats in size
 
     def __init__(self):
+        super().__init__()
         try:
             standard_config = {
                 "PRIORITY": 3,
@@ -42,14 +43,14 @@ class Minimizer(PluginBase):
     def action(self, *args, **kwargs):
         if "item" in kwargs:
             item = kwargs["item"]
-            item["action"] = "compiled"
-            item["destination"] = os.path.splitext(item["destination"])[0] + ".css"
             for key, func in self.func_map.items():
                 if item["extension"] in key:
-                    return func(item)
+                    yield func(item)
 
     def minimize_css(self, item):
         compiled = sass.compile_string(item["content_raw"], output_style=self.plugin_config["CSS_OUTPUT_STYLE"])
+        item["destination"] = os.path.splitext(item["destination"])[0] + ".css"
+        item["action"] = "compiled"
         item["content"] = compiled
         return item
 
@@ -57,6 +58,7 @@ class Minimizer(PluginBase):
         minified = minify_print(es5(item["content_raw"]), obfuscate=self.plugin_config["JS_OBFUSCATE"],
                                 obfuscate_globals=self.plugin_config["JS_OBFUSCATE_GLOBALS"])
         item["content"] = minified
+        item["action"] = "compiled"
         return item
 
     def minimize_image(self, item):
@@ -64,5 +66,6 @@ class Minimizer(PluginBase):
         size = long_edge, long_edge
 
         item["image"].thumbnail(size, Image.ANTIALIAS)
-        item["quality"] = self.plugin_config["IMG_QUALITY"]
+        item["quality"] = int(self.plugin_config["IMG_QUALITY"])
+        item["action"] = "compressed"
         return item
