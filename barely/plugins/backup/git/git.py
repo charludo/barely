@@ -8,7 +8,7 @@ from datetime import datetime
 from barely.plugins import PluginBase
 
 
-class LocalBackup(PluginBase):
+class Git(PluginBase):
     # add changes / commit them / push them to origin
 
     def __init__(self):
