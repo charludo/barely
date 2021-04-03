@@ -140,15 +140,16 @@ class EventHandler():
             # open them to check their contents
             with open(path, "r") as file:
                 content = file.read()
-                matches = re.findall(r'{%\s*extends\s+[\"|\']([^\"]+)[\"|\']\s*%}', content)
-                # if an {% extends %} tag is found, this template is potentially affected!
+                matches = re.findall(r'{%\s*(?:extends|include)\s+[\"|\']([^\"]+)[\"|\']\s*%}', content)
+                # if an {% extends %} or {% include %} tag is found, this template is potentially affected!
                 # check if it extends the one we're looking for.
                 # return the children of the child (recursion!)
                 # return the child
                 if len(matches):
-                    if matches[0] == parent:
-                        yield from self._find_children(str(path))
-                        yield str(path)
+                    for match in matches:
+                        if match == parent:
+                            yield from self._find_children(str(path))
+                            yield str(path)
 
     def _determine_type(self, path):
         """ determine the type of the file via its extension. return both """

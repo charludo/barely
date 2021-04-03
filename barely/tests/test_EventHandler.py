@@ -140,14 +140,19 @@ class TestEventHandler(unittest.TestCase):
         base = join("base")
         extendsdeeper = join("extendsdeeper")
         l_extendsbase = join("left", "extendsbase")
+        l_parentless = join("left", "parentless")
         l_l_extendsbase = join("left", "left", "extendsbase")
         l_l_extendschild = join("left", "left", "extendschild")
         r_l_deeper = join("right", "left", "deeper")
+        r_r_extendsparentless = join("right", "right", "extendsparentless")
 
         os.chdir("affected")
 
         golden_base = {l_extendsbase, l_l_extendsbase, l_l_extendschild}
         self.assertSetEqual(golden_base, set(self.EH._find_children(base)))
+
+        golden_parentless = {l_extendsbase, r_r_extendsparentless, l_l_extendschild}
+        self.assertSetEqual(golden_parentless, set(self.EH._find_children(l_parentless)))
 
         golden_childless = set()
         self.assertSetEqual(golden_childless, set(self.EH._find_children(extendsdeeper)))
