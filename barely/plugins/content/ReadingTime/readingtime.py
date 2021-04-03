@@ -25,7 +25,7 @@ class ReadingTime(PluginBase):
     def action(self, *args, **kwargs):
         if "item" in kwargs:
             item = kwargs["item"]
-            word_count = len(item["content"].split())
+            word_count = len(item["content_raw"].split())
             slow = word_count // int(self.plugin_config["WPM_SLOW"])
             fast = word_count // int(self.plugin_config["WPM_FAST"])
             item["meta"]["reading_time"] = fast + " - " + slow
