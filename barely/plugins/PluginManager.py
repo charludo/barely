@@ -33,6 +33,9 @@ class PluginBase:
         else:
             pass
 
+    def finalize(self):
+        pass
+
 
 class PluginManager:
     """ finds, registers and pipes in plugins """
@@ -103,6 +106,11 @@ class PluginManager:
                     returned_items.append(returned)
             item_list = returned_items
         return item_list
+
+    def finalize_content(self):
+        for ext in self.plugins_content:
+            for plugin in self.plugins_content[ext]:
+                plugin.finalize()
 
     def hook_backup(self):
         for plugin in self.plugins_backup:
