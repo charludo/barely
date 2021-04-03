@@ -158,6 +158,8 @@ def live(verbose):
     CT.verbose = verbose
 
     CT.track()
+    EH.force_rebuild()
+    PM.finalize_content()
     aftermath(PM)
 
 
@@ -174,6 +176,8 @@ def rebuild():
     EH.init_pipeline(PM)
 
     EH.force_rebuild()
+    PM.finalize_content()
+
     aftermath(PM)
 
 
