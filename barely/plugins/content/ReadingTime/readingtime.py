@@ -9,13 +9,15 @@ class ReadingTime(PluginBase):
 
     def __init__(self):
         super().__init__()
-        try:
-            standard_config = {
-                "PRIORITY": 850
+        standard_config = {
+            "PRIORITY": 850,
+            "WPM_FAST": 265,
+            "WPM_SLOW": 90
             }
+        try:
             self.plugin_config = standard_config | self.config["READING_TIME"]
         except KeyError:
-            self.plugin_config = {"PRIORITY": 850}
+            self.plugin_config = standard_config
 
     def register(self):
         return "ReadingTime", self.plugin_config["PRIORITY"], self.config["PAGE_EXT"]
@@ -24,7 +26,7 @@ class ReadingTime(PluginBase):
         if "item" in kwargs:
             item = kwargs["item"]
             word_count = len(item["content"].split())
-            slow = word_count // 90
-            fast = word_count // 265
+            slow = word_count // int(self.plugin_config["WPM_SLOW"])
+            fast = word_count // int(self.plugin_config["WPM_FAST"])
             item["meta"]["reading_time"] = fast + " - " + slow
             yield item
