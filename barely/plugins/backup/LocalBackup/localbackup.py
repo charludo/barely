@@ -36,10 +36,16 @@ class LocalBackup(PluginBase):
 
     def action(self, *args, **kwargs):
         backup_name = "BACKUP--" + datetime.now().strftime("%Y-%m-%d--%H-%M-%S")
-        shutil.copytree(self.config["ROOT"]["DEV"], os.path.join(self.plugin_config["BAKROOT"], backup_name), symlinks=False)
+        backup_path = os.path.join(self.plugin_config["BAKROOT"], backup_name)
+        shutil.copytree(self.config["ROOT"]["DEV"], backup_path, symlinks=False)
 
-        existing = sorted(glob.glob(os.path.join(self.root_bak, "BACKUP--*"), reverse=True))
+        existing = sorted(glob.glob(os.path.join(self.plugin_config["BAKROOT"], "BACKUP--*"), reverse=True))
         while len(existing) > self.plugin_config["MAX"]:
             shutil.rmtree(existing.pop(-1))
+
+        try:
+            shutil.rmtree(os.path.join(backup_path, ".git"))
+        except FileNotFoundError:
+            pass
 
         print(f"barely :: created backup: {backup_name}")

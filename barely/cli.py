@@ -132,6 +132,11 @@ def blueprints(new):
             print("barely :: no valid project found. Can't create blueprint.")
         except FileExistsError:
             print("barely :: a blueprint with this name already exists.")
+
+        try:
+            shutil.rmtree(os.path.join(new_path, ".git"))
+        except FileNotFoundError:
+            pass
     else:
         blueprints = get_blueprints()
         print(f"barely :: found {len(blueprints)} blueprints:")
