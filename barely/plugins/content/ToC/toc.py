@@ -53,8 +53,8 @@ class ToC(PluginBase):
 
         yield '<div class="toc">'
         for level, heading, slug in self.TOC:
-            if level > cur_lvl:
-                cur_lvl = level
+            while level > cur_lvl:
+                cur_lvl += 1
                 yield f"<{self.plugin_config['LIST_ELEMENT']}>"
             while level < cur_lvl:
                 cur_lvl -= 1
