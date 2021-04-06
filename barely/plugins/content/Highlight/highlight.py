@@ -46,6 +46,7 @@ class Highlight(PluginBase):
             item["content"] = re.sub(r"<pre><code>(.*)</code></pre>", self._handle_code, item["content"])
             item["action"] += ", highlighted"
             item["additional_styles"] = list(self.additional_styles)
+            yield item
 
     def _handle_code(self, match):
         code = match.group(1)
