@@ -2,10 +2,12 @@
 highlight <code> blocks with pygments
 """
 import re
+import os
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import guess_lexer, get_lexer_by_name
 from barely.plugins import PluginBase
+from barely.core.ProcessingPipeline import write_file
 
 
 class Highlight(PluginBase):
@@ -33,6 +35,7 @@ class Highlight(PluginBase):
     def action(self, *args, **kwargs):
         if "item" in kwargs:
             item = kwargs["item"]
+            self.additional_styles = set()
 
             # accept page-level config for this plugin
             try:
@@ -42,6 +45,7 @@ class Highlight(PluginBase):
 
             item["content"] = re.sub(r"<pre><code>(.*)</code></pre>", self._handle_code, item["content"])
             item["action"] += ", highlighted"
+            item["additional_styles"] = list(self.additional_styles)
 
     def _handle_code(self, match):
         code = match.group(1)
@@ -63,6 +67,7 @@ class Highlight(PluginBase):
         try:
             lexer_name = re.match(r"^\[lexer:\s*(.+)\]$", code).group(1)
             lexer = get_lexer_by_name(lexer_name, **lexer_args)
+            code.partition("\n")[1]
         except Exception:
             pass
 
@@ -72,5 +77,17 @@ class Highlight(PluginBase):
             "style": self.page_config["THEME"]
         }
         formatter = HtmlFormatter(**formatter_args)
+
+        css = formatter.get_style_defs(self.page_config["CLASS_PREFIX"])
+        css_path = os.path.join(self.config["ROOT"]["DEV"], "assets", "highlight", self.page_config["THEME"]) + ".css"
+        self.additional_styles.append("/assets/highlight/" + self.page_config["THEME"] + ".css")
+        write_file([
+            {
+                "destination": css_path,
+                "origin": "Code Hightlight",
+                "action": "generated styles",
+                "output": css
+            }
+        ])
 
         return highlight(code, lexer, formatter)
