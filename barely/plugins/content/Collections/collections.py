@@ -62,6 +62,8 @@ class Collections(PluginBase):
                 collectible["href"] = item["destination"].replace(self.plugin_config["ROOT"]["WEB"], "")
                 collectible["timestamp"] = os.path.getmtime(item["origin"])
 
+                # we'd also really like to get the first image of the blog
+
                 # for integration with Timestamps
                 if "last_edited" in item["meta"]:
                     collectible["date"] = item["meta"]["last_edited"]
@@ -71,8 +73,9 @@ class Collections(PluginBase):
                     collectible["date"] = "?"
 
                 # for integration with ReadingTime
-                if "reading_time" in item["meta"]:
-                    collectible["reading_time"] = item["meta"]["reading_time"]
+                if "title_image" in item["meta"]:
+                    img_abspath = os.path.join(os.path.dirname(item["destination"]), item["meta"]["title_image"])
+                    collectible["image"] = img_abspath
 
                 # append the collectible to the appropriate ccllections
                 # make sure there are no duplicatesthough! (determined by href)
