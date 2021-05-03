@@ -71,6 +71,7 @@ class PluginManager:
                     plugin_instance = attribute()
                     if type_content:
                         name, priority, registered_for = plugin_instance.register()
+                        priority = int(priority)
                         if priority > -1:
                             self.plugin_count += 1
                             for extension in registered_for:
