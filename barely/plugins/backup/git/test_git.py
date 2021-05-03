@@ -1,5 +1,5 @@
 import unittest
-from .git import Git
+from barely.plugins.backup.git.git import Git
 
 
 class TestGit(unittest.TestCase):

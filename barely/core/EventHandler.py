@@ -44,7 +44,7 @@ class EventHandler():
                 for affected in self._get_affected(src_dev):
                     self.notify(FileModifiedEvent(src_path=affected))
                 print(f"       -> done handling event at {src_dev}")
-        elif "config.yaml" in src_dev:
+        elif "config.yaml" in src_dev or any(ignored in src_dev for ignored in config["IGNORE"]):
             # don't do anything. Config changes at runtime are not respected.
             pass
         elif "metadata.yaml" in src_dev:
@@ -80,6 +80,7 @@ class EventHandler():
                 if (config["TEMPLATES_DIR"] not in path
                     and "config.yaml" not in path
                     and "metadata.yaml" not in path
+                    and not any(ignored in path for ignored in config["IGNORE"])
                         and not re.search(rf"[\\|\/]?_\S+[\\|\/]\S+\.{config['PAGE_EXT']}", path)):
                     self.notify(FileCreatedEvent(src_path=path))
         print("barely :: full rebuild complete.")

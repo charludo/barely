@@ -89,8 +89,9 @@ class TestEventHandler(unittest.TestCase):
         self.EH.notify(FileCreatedEvent(src_path="file.png"))
         self.assertDictEqual(golden_item, response_items[-1])
 
-        # config.yaml (other/pointless)
+        # config.yaml, .git (other/pointless)
         self.EH.notify(FileModifiedEvent(src_path="config.yaml"))
+        self.EH.notify(FileModifiedEvent(src_path=".git"))
 
         # DirModifiedEvent (other/pointless)
         self.EH.notify(DirModifiedEvent(src_path="dir"))
