@@ -29,7 +29,7 @@ class Git(PluginBase):
     def action(self, *args, **kwargs):
         try:
             repo = Repo(os.path.join(self.config["ROOT"]["DEV"], ".git"))
-            repo.git.add(update=True)
+            repo.git.add(all=True)
             repo.index.commit(datetime.now().strftime("%Y-%m-%d--%H-%M-%S") + " " + self.plugin_config["MESSAGE"])
             origin = repo.remote(name=self.plugin_config["REMOTE_NAME"])
             origin.push()
