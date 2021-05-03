@@ -8,6 +8,7 @@ new/update events to the ProcessingPipeline
 from watchdog.events import FileCreatedEvent, FileModifiedEvent
 from watchdog.events import FileDeletedEvent, DirDeletedEvent
 from watchdog.events import FileMovedEvent, DirMovedEvent
+from watchdog.events import DirModifiedEvent
 from binaryornot.check import is_binary
 from pathlib import Path
 import os
@@ -26,6 +27,9 @@ class EventHandler():
 
     def notify(self, event):
         """ anyone (but usually, the watchdog) can issue a notice of a file event """
+        if isinstance(event, DirModifiedEvent):
+            return
+
         src_dev = event.src_path
         src_web = self._get_web_path(src_dev)
 
@@ -35,15 +39,14 @@ class EventHandler():
             dest_dev = ""
         print(f"barely :: event at {src_dev}{dest_dev}")
 
-        if config["TEMPLATES_DIR"] in src_dev:
-            if not isinstance(event, FileDeletedEvent) and not isinstance(event, DirDeletedEvent):
-                if isinstance(event, FileMovedEvent) or isinstance(event, DirMovedEvent):
-                    src_dev = event.dest_path
+        if config["TEMPLATES_DIR"] in src_dev and not isinstance(event, FileDeletedEvent) and not isinstance(event, DirDeletedEvent):
+            if isinstance(event, FileMovedEvent) or isinstance(event, DirMovedEvent):
+                src_dev = event.dest_path
 
-                print(f"       -> event at {src_dev} affected pages:")
-                for affected in self._get_affected(src_dev):
-                    self.notify(FileModifiedEvent(src_path=affected))
-                print(f"       -> done handling event at {src_dev}")
+            print(f"       -> event at {src_dev} affected pages:")
+            for affected in self._get_affected(src_dev):
+                self.notify(FileModifiedEvent(src_path=affected))
+            print(f"       -> done handling event at {src_dev}")
         elif "config.yaml" in src_dev or any(ignored in src_dev for ignored in config["IGNORE"]):
             # don't do anything. Config changes at runtime are not respected.
             pass
@@ -56,7 +59,10 @@ class EventHandler():
             PP.delete(src_web)
         elif isinstance(event, FileMovedEvent) or isinstance(event, DirMovedEvent):
             dest_web = self._get_web_path(event.dest_path)
-            PP.move(src_web, dest_web)
+            if src_web == dest_web and isinstance(event, FileMovedEvent):
+                self.notify(FileModifiedEvent(src_path=event.dest_path))
+            else:
+                PP.move(src_web, dest_web)
         elif isinstance(event, FileCreatedEvent) or isinstance(event, FileModifiedEvent):
             type, extension = self._determine_type(src_dev)
             item = {
@@ -66,8 +72,6 @@ class EventHandler():
                 "extension": extension
             }
             PP.process([item])
-        else:
-            pass
 
     def force_rebuild(self):
         """ rebuild the entire project by first deleting the devroot, then marking every file as new """

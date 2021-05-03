@@ -62,7 +62,7 @@ class TestChangeTracker(unittest.TestCase):
         self.CT.eventbuffer = []
 
         event_1a = type('obj', (object,), {"src_path": 1})
-        event_1b = type('obj', (object,), {"dest_path": 1})
+        event_1b = type('obj', (object,), {"dest_path": 1, "src_path": 123})
         event_2 = type('obj', (object,), {"src_path": 2})
 
         self.CT.buffer(event_1a)

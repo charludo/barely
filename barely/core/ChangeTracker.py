@@ -54,7 +54,7 @@ class ChangeTracker:
         if self.handler_available:
             # setup the livereload server
             server = Server()
-            server.watch(config["ROOT"]["WEB"], delay=0)
+            server.watch(config["ROOT"]["WEB"], delay=0.1)
             if not self.verbose:
                 for _ in logging.root.manager.loggerDict:       # because this module just
                     logging.getLogger(_).disabled = True        # WON'T SHUT THE F* UP

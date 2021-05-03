@@ -81,8 +81,10 @@ class TestEventHandler(unittest.TestCase):
         self.assertTrue(delete.called)
 
         # moved
+        _get_web_path.side_effect = lambda x: x
         self.EH.notify(DirMovedEvent(src_path="from", dest_path="to"))
         self.assertTrue(move.called)
+        _get_web_path.side_effect = None
 
         # created file
         golden_item["origin"] = "file.png"
