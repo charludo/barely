@@ -190,11 +190,11 @@ def aftermath(PM):
     print("barely :: Do you want to Publish / Backup / do both?")
     action = input("       -> [n]othing | [p]ublish | [b]ackup | *[Y]do both :: ").lower()
 
-    if action.startswith("p") or action.startswith("y") or action == "":
+    if action.startswith("p") or action.startswith("y"):     # or action == "":
         print("barely :: publishing...")
         PM.hook_publication()
         print("       -> ...done.")
-    if action.startswith("b") or action.startswith("y") or action == "":
+    if action.startswith("b") or action.startswith("y"):     # or action == "":
         print("barely :: backuping...")
         PM.hook_backup()
         print("       -> ...done.")
