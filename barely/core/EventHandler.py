@@ -52,7 +52,7 @@ class EventHandler():
             pass
         elif "metadata.yaml" in src_dev:
             self.notify(FileModifiedEvent(src_path=config["TEMPLATES_DIR"]))
-        elif re.match(rf"[\\|\/]?_\S+[\\|\/]\S+\.{config['PAGE_EXT']}", src_dev):
+        elif re.search(rf"[\\|\/]?_\S+[\\|\/]\S+\.{config['PAGE_EXT']}", src_dev):
             parent_page = self._get_parent_page(src_dev)
             self.notify(FileModifiedEvent(src_path=parent_page))
         elif isinstance(event, FileDeletedEvent) or isinstance(event, DirDeletedEvent):
