@@ -118,6 +118,12 @@ def read_file(items):
 def write_file(items):
     """ filter that writes a text based file to its appropriate location """
     for item in items:
+        # Change file extension if so configured
+        try:
+            path = os.path.splitext(item["destination"])[0]
+            item["destination"] = path + "." + item["meta"]["extension"]
+        except KeyError:
+            pass
         try:
             os.makedirs(os.path.dirname(item["destination"]), exist_ok=True)
             with open(item["destination"], 'w+') as file:

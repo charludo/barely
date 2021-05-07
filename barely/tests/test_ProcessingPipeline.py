@@ -192,6 +192,23 @@ class TestProcessingPipeline(unittest.TestCase):
         PP.write_file([test_item])
         self.assertEqual(test_item["output"], readf(test_item))
 
+        test_item_ext = {
+            "destination": "new/new.txt",
+            "output": "multi\nline",
+            "action": "",
+            "origin": "",
+            "meta": {
+                "extension": "md"
+            }
+        }
+
+        test_item_ext_gold = {
+            "destination": "new/new.md"
+        }
+
+        PP.write_file([test_item_ext])
+        self.assertEqual(test_item["output"], readf(test_item_ext_gold))
+
     def test_load_image(self):
         item = self.item | {
             "origin": "test_load.png"
@@ -382,13 +399,11 @@ class TestProcessingPipeline(unittest.TestCase):
         self.assertEqual("test", get_output("template.html", "test"))
         self.assertEqual("", get_output("template.html"))
 
-        with self.assertRaises(TemplateNotFound) as context:
-            get_output("")
-        self.assertTrue("Non-existant or no template specified, can't render." in str(context.exception))
-
-        with self.assertRaises(TemplateNotFound) as context:
-            get_output("nonexistant.html")
-        self.assertTrue("Non-existant or no template specified, can't render." in str(context.exception))
+        PP.render_page([{
+            "template": "",
+            "content": "",
+            "meta": {}
+            }])
 
     def test_hook_plugins(self):
         hooked = list(PP.hook_plugins([{"test": "a"}]))[0]
