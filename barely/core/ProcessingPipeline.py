@@ -307,7 +307,7 @@ def render_page(items):
             item["output"] = page_template.render(content=item["content"], **item["meta"])
             yield item
         except TemplateNotFound:
-            raise TemplateNotFound("Non-existant or no template specified, can't render.")
+            print(f"barely :: [WARN] template \"{item['template']}\" not found")
 
 
 ################################
