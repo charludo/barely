@@ -1,14 +1,60 @@
 import unittest
+from mock import patch
+from unittest.mock import MagicMock
 from barely.plugins.backup.git.git import Git
 
 
 class TestGit(unittest.TestCase):
 
     def test___init__(self):
-        pass
+        git = Git()
+        self.assertDictEqual({"PRIORITY": -1}, git.plugin_config)
+
+        git.config["GIT"] = {"PRIORITY": 2}
+        git.__init__()
+
+        golden = {
+            "PRIORITY": 2,
+            "MESSAGE": "barely auto commit",
+            "REMOTE_NAME": "origin"
+        }
+
+        self.assertDictEqual(golden, git.plugin_config)
+
+        # reset
+        git.config["GIT"] = {"PRIORITY": -1}
 
     def test_register(self):
-        pass
+        git = Git()
+        name, prio = git.register()
 
-    def test_action(self):
-        pass
+        self.assertEqual(name, "git")
+        self.assertEqual(prio, -1)
+
+    @patch("barely.plugins.backup.git.git.Repo")
+    def test_action(self, r):
+        repo = MagicMock()
+
+        repo.git.add = MagicMock()
+        repo.index.commit = MagicMock()
+
+        repo.remote = MagicMock()
+
+        r.return_value = repo
+
+        git = Git()
+        git.action()
+
+        repo.git.add.assert_called()
+        repo.index.commit.assert_called()
+
+        repo.remote.assert_called()
+
+        def error():
+            raise Exception
+
+        repo.git.add = MagicMock(side_effect=error)
+
+        with self.assertRaises(Exception) as context:
+            git.action()
+            self.assertTrue('barely :: an error occurred while pushing to origin' in str(context.exception))
