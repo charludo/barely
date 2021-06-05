@@ -28,14 +28,17 @@ class ToC(PluginBase):
             self.plugin_config = standard_config
 
     def register(self):
-        return "ToC", self.plugin_config["PRIORITY"], self.config["PAGE_EXT"]
+        return "ToC", self.plugin_config["PRIORITY"], [self.config["PAGE_EXT"]]
 
     def action(self, *args, **kwargs):
         if "item" in kwargs:
             self.TOC = []
             item = kwargs["item"]
-            item["content"] = re.sub(r"<h(\d{1})>(.+)<\/h\d{1}>", self._handle_matches, item["content"])
-            item["meta"]["toc"] = "\n".join(self._generate_toc())
+            # should the generation be attempted a second time, the result will be an empty ToC!
+            if "toc" not in item["meta"]:
+                item["content"] = re.sub(r"<h(\d{1})>(.+)<\/h\d{1}>", self._handle_matches, item["content"])
+                item["meta"]["toc"] = "\n".join(self._generate_toc())
+            print(item["meta"])
         yield item
 
     def _handle_matches(self, match):

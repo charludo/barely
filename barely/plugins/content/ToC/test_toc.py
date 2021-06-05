@@ -32,7 +32,7 @@ class TestSFTP(unittest.TestCase):
 
         self.assertEqual(name, "ToC")
         self.assertEqual(prio, 2)
-        self.assertEqual(ext, "md")
+        self.assertEqual(ext, ["md"])
 
     def test_action(self):
         item = {
