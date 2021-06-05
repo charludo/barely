@@ -12,7 +12,8 @@ class ReadingTime(PluginBase):
         standard_config = {
             "PRIORITY": 850,
             "WPM_FAST": 265,
-            "WPM_SLOW": 90
+            "WPM_SLOW": 90,
+            "SEPARATOR": " - "
             }
         try:
             self.plugin_config = standard_config | self.config["READING_TIME"]
@@ -20,7 +21,7 @@ class ReadingTime(PluginBase):
             self.plugin_config = standard_config
 
     def register(self):
-        return "ReadingTime", self.plugin_config["PRIORITY"], self.config["PAGE_EXT"]
+        return "ReadingTime", self.plugin_config["PRIORITY"], [self.config["PAGE_EXT"]]
 
     def action(self, *args, **kwargs):
         if "item" in kwargs:
@@ -28,5 +29,5 @@ class ReadingTime(PluginBase):
             word_count = len(item["content_raw"].split())
             slow = word_count // int(self.plugin_config["WPM_SLOW"])
             fast = word_count // int(self.plugin_config["WPM_FAST"])
-            item["meta"]["reading_time"] = fast + " - " + slow
+            item["meta"]["reading_time"] = f"{fast}{self.plugin_config['SEPARATOR']}{slow}"
             yield item
