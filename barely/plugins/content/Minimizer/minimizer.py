@@ -29,7 +29,7 @@ class Minimizer(PluginBase):
             }
             self.plugin_config = standard_config | self.config["MINIMIZER"]
             self.func_map = {
-                "png,jpg,jpeg,gif,tif,tiff,bmp": self.minimize_image,
+                "png,jpg,jpeg,tif,tiff,bmp": self.minimize_image,
                 "js": self.minimize_js,
                 "sass,scss": self.minimize_css
             }
