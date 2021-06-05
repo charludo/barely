@@ -35,7 +35,7 @@ class ToC(PluginBase):
             self.TOC = []
             item = kwargs["item"]
             item["content"] = re.sub(r"<h(\d{1})>(.+)<\/h\d{1}>", self._handle_matches, item["content"])
-            item["toc"] = "\n".join(self._generate_toc())
+            item["meta"]["toc"] = "\n".join(self._generate_toc())
         yield item
 
     def _handle_matches(self, match):

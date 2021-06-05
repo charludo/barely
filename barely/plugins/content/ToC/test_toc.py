@@ -59,7 +59,8 @@ class TestSFTP(unittest.TestCase):
                 <p></p>
                 </body>
                 </html>
-            """
+            """,
+            "meta": {}
         }
 
         golden = {
@@ -87,28 +88,30 @@ class TestSFTP(unittest.TestCase):
                 </body>
                 </html>
             """,
-            "toc": """
-            <div class="toc">
-            <ul>
-            <ul>
-            <li><a href="#a-2">A 2</a></li>
-            <li><a href="#b-2">B 2</a></li>
-            <ul>
-            <li><a href="#c-3">C 3</a></li>
-            </ul>
-            <li><a href="#d-2">D 2</a></li>
-            <ul>
-            <li><a href="#e-3">E 3</a></li>
-            <ul>
-            <li><a href="#f-4">F 4</a></li>
-            <li><a href="#g-4">G 4</a></li>
-            </ul>
-            <li><a href="#h-3">H 3</a></li>
-            </ul>
-            </ul>
-            </ul>
-            </div>
-            """
+            "meta": {
+                "toc": """
+                <div class="toc">
+                <ul>
+                <ul>
+                <li><a href="#a-2">A 2</a></li>
+                <li><a href="#b-2">B 2</a></li>
+                <ul>
+                <li><a href="#c-3">C 3</a></li>
+                </ul>
+                <li><a href="#d-2">D 2</a></li>
+                <ul>
+                <li><a href="#e-3">E 3</a></li>
+                <ul>
+                <li><a href="#f-4">F 4</a></li>
+                <li><a href="#g-4">G 4</a></li>
+                </ul>
+                <li><a href="#h-3">H 3</a></li>
+                </ul>
+                </ul>
+                </ul>
+                </div>
+                """
+            }
         }
 
         toc = ToC()
@@ -116,4 +119,4 @@ class TestSFTP(unittest.TestCase):
         self.assertEqual(1, len(result))
 
         self.assertEqual(item["content"], golden["content"])
-        self.assertEqual(re.sub(r'[\s+]', '', item["toc"]), re.sub(r'[\s+]', '', golden["toc"]))
+        self.assertEqual(re.sub(r'[\s+]', '', item["meta"]["toc"]), re.sub(r'[\s+]', '', golden["meta"]["toc"]))
