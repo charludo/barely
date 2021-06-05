@@ -61,7 +61,7 @@ class ToC(PluginBase):
                 yield f"</{self.plugin_config['LIST_ELEMENT']}>"
             yield f'<li><a href="#{slug}">{heading}</a></li>'
 
-        while self.plugin_config["MIN_DEPTH"] < cur_lvl:
+        while self.plugin_config["MIN_DEPTH"] <= cur_lvl:
             cur_lvl -= 1
             yield f"</{self.plugin_config['LIST_ELEMENT']}>"
         yield "</div>"
