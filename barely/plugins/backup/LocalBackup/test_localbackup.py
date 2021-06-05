@@ -23,7 +23,8 @@ class TestLocalBackup(unittest.TestCase):
         self.assertDictEqual(golden, lb.plugin_config)
 
         # reset
-        lb.config["LOCAL_BACKUP"] = {"PRIORITY": -1}
+        del lb.config["LOCAL_BACKUP"]
+        lb.__init__()
 
     def test_register(self):
         lb = LocalBackup()
@@ -42,6 +43,7 @@ class TestLocalBackup(unittest.TestCase):
 
         lb = LocalBackup()
         lb.plugin_config["MAX"] = 2
+        lb.plugin_config["BAKROOT"] = "backups"
         lb.action()
 
         self.assertTrue(shutil.copytree.called)

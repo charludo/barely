@@ -22,7 +22,8 @@ class TestGit(unittest.TestCase):
         self.assertDictEqual(golden, git.plugin_config)
 
         # reset
-        git.config["GIT"] = {"PRIORITY": -1}
+        del git.config["GIT"]
+        git.__init__()
 
     def test_register(self):
         git = Git()
@@ -43,6 +44,11 @@ class TestGit(unittest.TestCase):
         r.return_value = repo
 
         git = Git()
+        git.plugin_config = {
+            "PRIORITY": 2,
+            "MESSAGE": "barely auto commit",
+            "REMOTE_NAME": "origin"
+        }
         git.action()
 
         repo.git.add.assert_called()
