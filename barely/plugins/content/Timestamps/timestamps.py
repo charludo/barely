@@ -4,6 +4,7 @@ and latest edit date, however do
 respect user overrides
 """
 from datetime import datetime
+from os.path import getctime, getmtime
 from barely.plugins import PluginBase
 
 
@@ -22,17 +23,18 @@ class Timestamps(PluginBase):
             self.plugin_config = {"PRIORITY": -1}
 
     def register(self):
-        return "Timestamps", self.plugin_config["PRIORITY"], self.config["PAGE_EXT"]
+        return "Timestamps", self.plugin_config["PRIORITY"], [self.config["PAGE_EXT"]]
 
     def action(self, *args, **kwargs):
         if "item" in kwargs:
             item = kwargs["item"]
-            if "last_edited" not in item["meta"]:                   # if last_edited set by user, we don't care
-                now = datetime.now()                                # get current time to use as timestamp
-                now = now.strftime(self.plugin_config["FORMAT"])    # format the time according to config
 
-                if "created" in item["meta"]:                       # set creation date, wants latest edit date
-                    item["meta"]["last_edited"] = now
-                else:                                               # new file or doesn't care or wants always latest date
-                    item["meta"]["created"] = now
+            ctime = datetime.fromtimestamp(getctime(item["origin"])).strftime(self.plugin_config["FORMAT"])
+            mtime = datetime.fromtimestamp(getmtime(item["origin"])).strftime(self.plugin_config["FORMAT"])
+
+            if "created" not in item["meta"]:              # if not set by user, set Created Time
+                item["meta"]["created"] = ctime
+            if "edited" not in item["meta"]:               # if not set by user, set Modified Time
+                item["meta"]["edited"] = mtime
+
             yield item

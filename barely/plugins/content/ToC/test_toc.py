@@ -3,7 +3,7 @@ import unittest
 from barely.plugins.content.ToC.toc import ToC
 
 
-class TestSFTP(unittest.TestCase):
+class TestToC(unittest.TestCase):
 
     def test___init__(self):
         golden = {
