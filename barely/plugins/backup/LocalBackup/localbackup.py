@@ -22,12 +22,9 @@ class LocalBackup(PluginBase):
             standard_config = {
                 "PRIORITY": 30,
                 "MAX": 10,
-                "BAKROOT": self.config["ROOT"]["BAK"]
+                "BAKROOT": os.path.join(os.path.dirname(self.config["ROOT"]["DEV"]), "backups")
             }
-            if "LOCAL_BACKUP" in self.config:
-                self.plugin_config = standard_config | self.config["TIMESTAMPS"]
-            else:
-                self.plugin_config = standard_config
+            self.plugin_config = standard_config | self.config["LOCAL_BACKUP"]
         except KeyError:
             self.plugin_config = {"PRIORITY": -1}
 
@@ -40,9 +37,11 @@ class LocalBackup(PluginBase):
         shutil.copytree(self.config["ROOT"]["DEV"], backup_path, symlinks=False)
 
         existing = sorted(glob.glob(os.path.join(self.plugin_config["BAKROOT"], "BACKUP--*"), reverse=True))
-        while len(existing) > self.plugin_config["MAX"]:
+        while len(existing) >= self.plugin_config["MAX"]:
             shutil.rmtree(existing.pop(-1))
+            print("HALLO")
 
+        # we don't want to backup any existing git stuff
         try:
             shutil.rmtree(os.path.join(backup_path, ".git"))
         except FileNotFoundError:
