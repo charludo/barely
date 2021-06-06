@@ -2,7 +2,7 @@
 auto-generate category pages from "collection"
 meta-tags on the pages
 """
-from os import walk
+from os import walk, sep
 from os.path import join, getmtime, dirname, splitext
 from watchdog.events import FileModifiedEvent
 from barely.plugins import PluginBase
@@ -107,14 +107,15 @@ class Collections(PluginBase):
                         wanted_exhibits[exhibit] = self.COLLECTION[exhibit]
                     except KeyError:
                         wanted_exhibits[exhibit] = []
-                item["meta"]["collectibles"] = wanted_exhibits  # now contains all (current) exhibition-pieces from wanted collections
+                item["meta"]["exhibits"] = wanted_exhibits  # now contains all (current) exhibition-pieces from wanted collections
             except KeyError:
                 pass
 
             yield item
 
     def finalize(self):
-        for exhibitor in self.EXHIBITS:
+        frozen_exhibits = self.EXHIBITS
+        for exhibitor in frozen_exhibits:
             EH.notify(FileModifiedEvent(src_path=exhibitor))
 
         for col_name in self.COLLECTION:
@@ -152,7 +153,7 @@ class Collections(PluginBase):
                 collections.append({
                     "name": c,
                     "size": len(self.COLLECTION[c]),
-                    "href": join(self.config["ROOT"]["WEB"], self.plugin_config["PAGE"], c.lower(), "index.html")
+                    "href": join(sep, self.plugin_config["PAGE"], c.lower(), "index.html")
                 })
             collections = sorted(collections, key=lambda k: k["size"], reverse=True)
 

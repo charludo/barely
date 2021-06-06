@@ -52,8 +52,12 @@ class TestCollections(unittest.TestCase):
         self.assertEqual(prio, -1)
         self.assertEqual(ext, ["md"])
 
+    @patch("barely.plugins.content.Collections.collections.write_file")
+    @patch("barely.plugins.content.Collections.collections.render_page")
+    @patch("barely.plugins.content.Collections.collections.parse_meta")
+    @patch("barely.plugins.content.Collections.collections.EH")
     @patch("barely.plugins.content.Collections.collections.getmtime")
-    def test_action(self, getmtime):
+    def test_action_and_finalize(self, getmtime, EH, parse_meta, render_page, write_file):
         item_1 = {
             "meta": {
                 "title": "Test",
@@ -119,7 +123,7 @@ class TestCollections(unittest.TestCase):
         }
         self.assertDictEqual(golden_collection, col.COLLECTION)
 
-        item_2["meta"]["collectibles"] = {
+        item_2["meta"]["exhibits"] = {
             "col2": [collectible_1, collectible_2],
             "col4": []
         }
@@ -129,10 +133,90 @@ class TestCollections(unittest.TestCase):
         self.assertDictEqual(item_1, result_1)
         self.assertDictEqual(item_1, result_1b)
         self.assertDictEqual(item_2, result_2)
+
+        #
+        #   FINALIZE
+        #
+
+        EH.notify = MagicMock()
+
+        col.plugin_config["OVERVIEW_TITLE"] = "overview"
+        col.plugin_config["OVERVIEW_TEMPLATE"] = "placeholder-overview"
+        col.plugin_config["COLLECTION_TEMPLATE"] = "placeholder"
+
+        col.finalize()
+
+        golden_args = [
+            {
+                "template": "placeholder",
+                "destination": "web/categories/col1/index.html",
+                "meta": {
+                    "title": "col1",
+                    "collectibles": [collectible_1]
+                },
+                "content": "",
+                "content_raw": "",
+                "action": "collected",
+                "origin": "col1"
+            },
+            {
+                "template": "placeholder",
+                "destination": "web/categories/col2/index.html",
+                "meta": {
+                    "title": "col2",
+                    "collectibles": [collectible_1, collectible_2]
+                },
+                "content": "",
+                "content_raw": "",
+                "action": "collected",
+                "origin": "col2"
+            },
+            {
+                "template": "placeholder",
+                "destination": "web/categories/col3/index.html",
+                "meta": {
+                    "title": "col3",
+                    "collectibles": [collectible_2]
+                },
+                "content": "",
+                "content_raw": "",
+                "action": "collected",
+                "origin": "col3"
+            },
+            {
+                "template": "placeholder-overview",
+                "destination": "web/categories/index.html",
+                "meta": {
+                    "title": "overview",
+                    "collections": [
+                        {
+                            "name": "col2",
+                            "size": 2,
+                            "href": "/categories/col2/index.html"
+                        },
+                        {
+                            "name": "col1",
+                            "size": 1,
+                            "href": "/categories/col1/index.html"
+                        },
+                        {
+                            "name": "col3",
+                            "size": 1,
+                            "href": "/categories/col3/index.html"
+                        }
+                    ]
+                },
+                "content": "",
+                "content_raw": "",
+                "action": "created overview",
+                "origin": "all collections"
+            }
+        ]
+
+        actual_args = [args[0][0] for args, kwargs in parse_meta.call_args_list]
+        self.assertCountEqual(golden_args, actual_args)
+
         del col.config["COLLECTIONS"]
         col.COLLECTION = {}
         col.EXHIBITS = set()
         col.__init__()
-
-    def test_finalize(self):
-        pass
