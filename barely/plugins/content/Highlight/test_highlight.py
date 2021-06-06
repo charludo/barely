@@ -1,11 +1,10 @@
 import re
 import unittest
 from mock import patch
-from unittest.mock import MagicMock
 from barely.plugins.content.Highlight.highlight import Highlight
 
 
-class TestMinimizer(unittest.TestCase):
+class TestHighlight(unittest.TestCase):
 
     maxDiff = None
 
@@ -58,7 +57,18 @@ class TestMinimizer(unittest.TestCase):
         }
 
         golden_hl = """
-        <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>\n<span class="normal">2</span>\n<span class="normal">3</span>\n<span class="normal">4</span>\n<span class="normal">5</span>\n<span class="normal">6</span>\n<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hlk">def</span> <span class="hlnf">test_register</span><span class="hlp">(</span><span class="hlbp">self</span><span class="hlp">):</span>\n        <span class="hln">hl</span> <span class="hlo">=</span> <span class="hln">Highlight</span><span class="hlp">()</span>\n        <span class="hln">name</span><span class="hlp">,</span> <span class="hln">prio</span><span class="hlp">,</span> <span class="hln">ext</span> <span class="hlo">=</span> <span class="hln">hl</span><span class="hlo">.</span><span class="hln">register</span><span class="hlp">()</span>\n\n        <span class="hlbp">self</span><span class="hlo">.</span><span class="hln">assertEqual</span><span class="hlp">(</span><span class="hln">name</span><span class="hlp">,</span> <span class="hls2">&quot;Highlight&quot;</span><span class="hlp">)</span>\n        <span class="hlbp">self</span><span class="hlo">.</span><span class="hln">assertEqual</span><span class="hlp">(</span><span class="hln">prio</span><span class="hlp">,</span> <span class="hlmi">20</span><span class="hlp">)</span>\n        <span class="hlbp">self</span><span class="hlo">.</span><span class="hln">assertEqual</span><span class="hlp">(</span><span class="hln">ext</span><span class="hlp">,</span> <span class="hlp">[</span><span class="hls2">&quot;md&quot;</span><span class="hlp">])</span>\n</pre></div>\n</td></tr></table>
+        <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>\n<span class="normal">2</span>\n<span
+        class="normal">3</span>\n<span class="normal">4</span>\n<span class="normal">5</span>\n<span class="normal">6</span>\n<span class="normal">7</span>
+        </pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hlk">def</span> <span class="hlnf">test_register</span><span
+        class="hlp">(</span><span class="hlbp">self</span><span class="hlp">):</span>\n        <span class="hln">hl</span> <span class="hlo">=</span>
+        <span class="hln">Highlight</span><span class="hlp">()</span>\n        <span class="hln">name</span><span class="hlp">,</span> <span class="hln">prio
+        </span><span class="hlp">,</span> <span class="hln">ext</span> <span class="hlo">=</span> <span class="hln">hl</span><span class="hlo">.</span>
+        <span class="hln">register</span><span class="hlp">()</span>\n\n        <span class="hlbp">self</span><span class="hlo">.</span><span class="hln">
+        assertEqual</span><span class="hlp">(</span><span class="hln">name</span><span class="hlp">,</span> <span class="hls2">&quot;Highlight&quot;</span><span
+        class="hlp">)</span>\n        <span class="hlbp">self</span><span class="hlo">.</span><span class="hln">assertEqual</span><span class="hlp">(</span>
+        <span class="hln">prio</span><span class="hlp">,</span> <span class="hlmi">20</span><span class="hlp">)</span>\n        <span class="hlbp">self</span>
+        <span class="hlo">.</span><span class="hln">assertEqual</span><span class="hlp">(</span><span class="hln">ext</span><span class="hlp">,</span>
+        <span class="hlp">[</span><span class="hls2">&quot;md&quot;</span><span class="hlp">])</span>\n</pre></div>\n</td></tr></table>
         """
 
         hl = Highlight()
@@ -90,7 +100,11 @@ class TestMinimizer(unittest.TestCase):
         }
 
         golden_hl = """
-        <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>\n<span class="normal">2</span>\n<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hlk">fn</span> <span class="hlnf">main</span><span class="hlp">()</span><span class="hlw"> </span><span class="hlp">{</span><span class="hlw"></span>\n<span class="hlw">                </span><span class="hlfm">println!</span><span class="hlp">(</span><span class="hls">&quot;Hello World!&quot;</span><span class="hlp">);</span><span class="hlw"></span>\n<span class="hlw">            </span><span class="hlp">}</span><span class="hlw"></span>\n</pre></div>\n</td></tr></table>
+        <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>\n<span class="normal">2</span>\n
+        <span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hlk">fn</span> <span class="hlnf">
+        main</span><span class="hlp">()</span><span class="hlw"> </span><span class="hlp">{</span><span class="hlw"></span>\n<span class="hlw">
+        </span><span class="hlfm">println!</span><span class="hlp">(</span><span class="hls">&quot;Hello World!&quot;</span><span class="hlp">);</span>
+        <span class="hlw"></span>\n<span class="hlw">            </span><span class="hlp">}</span><span class="hlw"></span>\n</pre></div>\n</td></tr></table>
         """
 
         result = list(hl.action(item=item.copy()))[0]

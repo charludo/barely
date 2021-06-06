@@ -2,7 +2,8 @@
 auto-generate category pages from "collection"
 meta-tags on the pages
 """
-import os
+from os import walk
+from os.path import join, getmtime, dirname, splitext
 from watchdog.events import FileModifiedEvent
 from barely.plugins import PluginBase
 from barely.core.EventHandler import EventHandler as EH
@@ -29,10 +30,10 @@ class Collections(PluginBase):
             self.plugin_config = standard_config | self.config["COLLECTIONS"]
 
             # need to get a full read on the current collections-situation.
-            for root, dirs, files in os.walk(self.config["ROOT"]["DEV"], topdown=False):
+            for root, dirs, files in walk(self.config["ROOT"]["DEV"], topdown=False):
                 for path in files:
-                    path = os.path.join(root, path)
-                    if os.path.splitext(path)[1] == self.config["PAGE_EXT"]:
+                    path = join(root, path)
+                    if splitext(path)[1] == self.config["PAGE_EXT"]:
                         item = {
                             "origin": path
                         }
@@ -42,7 +43,7 @@ class Collections(PluginBase):
             self.plugin_config = {"PRIORITY": -1}
 
     def register(self):
-        return "Collections", self.plugin_config["PRIORITY"], self.config["PAGE_EXT"]
+        return "Collections", self.plugin_config["PRIORITY"], [self.config["PAGE_EXT"]]
 
     def action(self, *args, **kwargs):
         # PAGE can be part of COLLECTIONS
@@ -59,26 +60,30 @@ class Collections(PluginBase):
                 collectible = {}
                 collectible["title"] = item["meta"]["title"]
                 collectible["preview"] = item["content"][:self.plugin_config["SUMMARY_LENGTH"]] + "..."
-                collectible["href"] = item["destination"].replace(self.plugin_config["ROOT"]["WEB"], "")
-                collectible["timestamp"] = os.path.getmtime(item["origin"])
+                collectible["href"] = item["destination"].replace(self.config["ROOT"]["WEB"], "", 1)
+                collectible["timestamp"] = getmtime(item["origin"])
 
                 # we'd also really like to get the first image of the blog
+                if "title_image" in item["meta"]:
+                    img_abspath = join(dirname(item["destination"].replace(self.config["ROOT"]["WEB"], "", 1)), item["meta"]["title_image"])
+                    collectible["image"] = img_abspath
 
                 # for integration with Timestamps
-                if "last_edited" in item["meta"]:
-                    collectible["date"] = item["meta"]["last_edited"]
+                if "edited" in item["meta"]:
+                    collectible["date"] = item["meta"]["edited"]
                 elif "created" in item["meta"]:
                     collectible["date"] = item["meta"]["created"]
                 else:
-                    collectible["date"] = "?"
+                    collectible["date"] = ""
 
                 # for integration with ReadingTime
-                if "title_image" in item["meta"]:
-                    img_abspath = os.path.join(os.path.dirname(item["destination"]), item["meta"]["title_image"])
-                    collectible["image"] = img_abspath
+                try:
+                    collectible["reading_time"] = item["meta"]["reading_time"]
+                except KeyError:
+                    pass
 
                 # append the collectible to the appropriate ccllections
-                # make sure there are no duplicatesthough! (determined by href)
+                # make sure there are no duplicates though! (determined by href)
                 for c in collections:
                     self.COLLECTION.setdefault(c, [])
 
@@ -95,14 +100,14 @@ class Collections(PluginBase):
             # PAGE can want to display EXHIBITS
             try:
                 exhibits = item["meta"]["exhibits"]
-                self.EXHIBITS.append(item["origin"])        # store for later (finalize re-renders these)
+                self.EXHIBITS.add(item["origin"])        # store for later (finalize re-renders these)
                 wanted_exhibits = {}
                 for exhibit in exhibits:
                     try:
                         wanted_exhibits[exhibit] = self.COLLECTION[exhibit]
                     except KeyError:
                         wanted_exhibits[exhibit] = []
-                item["meta"]["exhibits"] = wanted_exhibits  # now contains all (current) exhibition-pieces from wanted collections
+                item["meta"]["collectibles"] = wanted_exhibits  # now contains all (current) exhibition-pieces from wanted collections
             except KeyError:
                 pass
 
@@ -126,7 +131,7 @@ class Collections(PluginBase):
                 # - action, origin: for logging
                 page = {
                     "template": self.plugin_config["COLLECTION_TEMPLATE"],
-                    "destination": os.path.join(self.config["ROOT"]["WEB"], self.plugin_config["PAGE"], col_name.lower(), "index.html"),
+                    "destination": join(self.config["ROOT"]["WEB"], self.plugin_config["PAGE"], col_name.lower(), "index.html"),
                     "meta": {
                         "title": col_name,
                         "collectibles": collectibles
@@ -147,13 +152,13 @@ class Collections(PluginBase):
                 collections.append({
                     "name": c,
                     "size": len(self.COLLECTION[c]),
-                    "href": os.path.join(self.config["ROOT"]["WEB"], self.plugin_config["PAGE"], c.lower(), "index.html")
+                    "href": join(self.config["ROOT"]["WEB"], self.plugin_config["PAGE"], c.lower(), "index.html")
                 })
             collections = sorted(collections, key=lambda k: k["size"], reverse=True)
 
             page = {
                 "template": self.plugin_config["OVERVIEW_TEMPLATE"],
-                "destination": os.path.join(self.config["ROOT"]["WEB"], self.plugin_config["PAGE"], "index.html"),
+                "destination": join(self.config["ROOT"]["WEB"], self.plugin_config["PAGE"], "index.html"),
                 "meta": {
                     "title": self.plugin_config["OVERVIEW_TITLE"],
                     "collections": collections
