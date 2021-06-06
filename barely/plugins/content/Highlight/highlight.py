@@ -22,7 +22,8 @@ class Highlight(PluginBase):
             "TABSIZE": 4,
             "ENCODING": "utf-8",
             "THEME": "default",
-            "LEXER": ""
+            "LEXER": "",
+            "ASSETS_DIR": "assets"
             }
         try:
             self.plugin_config = standard_config | self.config["HIGHLIGHT"]
@@ -30,7 +31,7 @@ class Highlight(PluginBase):
             self.plugin_config = standard_config
 
     def register(self):
-        return "Highlight", self.plugin_config["PRIORITY"], self.config["PAGE_EXT"]
+        return "Highlight", self.plugin_config["PRIORITY"], [self.config["PAGE_EXT"]]
 
     def action(self, *args, **kwargs):
         if "item" in kwargs:
@@ -43,7 +44,7 @@ class Highlight(PluginBase):
             except KeyError:
                 self.page_config = self.plugin_config.copy()
 
-            item["content"] = re.sub(r"<pre><code>(.*)</code></pre>", self._handle_code, item["content"])
+            item["content"] = re.sub(r"<pre><code>(.*)</code></pre>", self._handle_code, item["content"], flags=re.S)
             item["action"] += ", highlighted"
             item["additional_styles"] = list(self.additional_styles)
             yield item
@@ -66,9 +67,10 @@ class Highlight(PluginBase):
 
         # "best case": lexer is set right in the code snippet; obviously use it
         try:
-            lexer_name = re.match(r"^\[lexer:\s*(.+)\]$", code).group(1)
+            matches = re.search(r"\[lexer:\s*(.+)\]$[\s]*([\s\S]*)", code, re.MULTILINE)
+            lexer_name = matches.group(1)
+            code = matches.group(2)
             lexer = get_lexer_by_name(lexer_name, **lexer_args)
-            code.partition("\n")[1]
         except Exception:
             pass
 
@@ -80,12 +82,12 @@ class Highlight(PluginBase):
         formatter = HtmlFormatter(**formatter_args)
 
         css = formatter.get_style_defs(self.page_config["CLASS_PREFIX"])
-        css_path = os.path.join(self.config["ROOT"]["DEV"], "assets", "highlight", self.page_config["THEME"]) + ".css"
-        self.additional_styles.append("/assets/highlight/" + self.page_config["THEME"] + ".css")
+        css_path = os.path.join(self.config["ROOT"]["DEV"], self.page_config["ASSETS_DIR"], "highlight", self.page_config["THEME"]) + ".css"
+        self.additional_styles.add(f"/{self.page_config['ASSETS_DIR']}/highlight/{self.page_config['THEME']}.css")
         write_file([
             {
                 "destination": css_path,
-                "origin": "Code Hightlight",
+                "origin": f"Code Hightlight Style: {self.page_config['THEME']}",
                 "action": "generated styles",
                 "output": css
             }

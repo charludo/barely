@@ -37,8 +37,6 @@ class TestMinimizer(unittest.TestCase):
         mini = Minimizer()
         name, prio, ext = mini.register()
 
-        print(mini.config)
-
         self.assertEqual(name, "Minimizer")
         self.assertEqual(prio, -1)
         self.assertEqual(ext, [])
