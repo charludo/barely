@@ -51,8 +51,14 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
-	<li><a href="#plugins">Plugins</a></li>
+    <li><a href="#usage">Usage</a>
+		<ul>
+			<li><a href="#basics">Basics</a></li>
+			<li><a href="#detailed-overview">Detailed Overview</a></li>
+			<li><a href="#plugins">Plugins</a></li>
+			<li><a href="#blueprints">Blueprints</a></li>
+		</ul>
+	</li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -141,8 +147,18 @@ That's it! Congrats!
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Type `barely --help` to get an overview over available commands and options:
-```sh
+<ul>
+	<li><a href="#basics">Basics</a></li>
+	<li><a href="#detailed-overview">Detailed Overview</a></li>
+	<li><a href="#plugins">Plugins</a></li>
+	<li><a href="#blueprints">Blueprints</a></li>
+</ul>
+
+### Basics
+Now let's get familiar with using barely!
+
+1. Type `barely --help` to get an overview over available commands and options:
+```console
 $ barely --help
 Usage: barely [OPTIONS] COMMAND [ARGS]...
 
@@ -160,7 +176,61 @@ Commands:
   new         create a new barely project (optionally with a blueprint)
   rebuild     (re)build the entire project
   test        run the testsuite to verify the install
+```
 
+2. Try typing `barely`, `barely live`, or `barely rebuild`:
+```console
+$ barely
+> barely :: could not find 'config.yaml'. Exiting
+```
+What happened? barely is telling us that we aren't currently in a barely project directory. For a direcctory to count as a project, it has to contain a `config.yaml` file, which in turn has to specify the devroot (where we will work) and the webroot (where barely renders to).
+
+So lets change that!
+
+3. Create a new project with `barely new`:
+```console
+$ barely new
+barely :: setting up new project with parameters:
+       ->   webroot: webroot
+       ->   devroot: devroot
+       -> blueprint: default
+barely :: setting up basic config...
+barely :: done.
+```
+Sweet! barely created two new subdirs, `devroot` and `webroot`. The project was also created with a blueprint, namely `default`, which is why our `devroot` is not empty. We will learn about blueprints in a second.
+
+BTW: you can easily change the project creation parameters, see for reference:
+```console
+barely new --help
+Usage: barely new [OPTIONS]
+
+ create a new barely project (optionally with a blueprint)
+
+Options:
+ -b, --blueprint TEXT  instantiate project from a blueprint
+ -w, --webroot TEXT    location for the generated static files
+ -d, --devroot TEXT    project directory, for development files
+ --help                Show this message and exit.
+```
+
+4. Let's have a look around!
+```console
+$ cd devroot
+$ tree .
+.
+├── config.yaml
+├── metadata.yaml
+├── template.md
+└── templates
+    ├── template2.html
+    └── template.html
+
+1 directory, 5 files
+```
+- `config.yaml` contains all the configuration for barely and its plugins. Right now, it only contains the absolute paths for the devroot and webroot.
+- `metadata.yaml` is a place you can put any values you want to use in multiple places across your project, be it metadata or anythin else
+- `template.md` is the markdown file for the root page of the website. Its content will get rendered into webroot/index.html with the templates/template.md template.
+- `templates/` contains all your templates
 
 
 <!-- ROADMAP -->
