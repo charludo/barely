@@ -201,7 +201,7 @@ Sweet! barely created two new subdirs, `devroot` and `webroot`. The project was 
 
 BTW: you can easily change the project creation parameters, see for reference:
 ```console
-barely new --help
+$ barely new --help
 Usage: barely new [OPTIONS]
 
  create a new barely project (optionally with a blueprint)
@@ -231,6 +231,40 @@ $ tree .
 - `metadata.yaml` is a place you can put any values you want to use in multiple places across your project, be it metadata or anythin else
 - `template.md` is the markdown file for the root page of the website. Its content will get rendered into webroot/index.html with the templates/template.md template.
 - `templates/` contains all your templates
+
+6. Let's build the project!
+```console
+$ barely rebuild
+barely :: registering plugins...
+barely :: 8 plugins registered.
+barely :: starting full rebuild...
+       :: deleted [...]/test/webroot
+barely :: event at [...]/test/devroot/template.md
+       :: rendered, highlighted [...]/template.md -> [...]/webroot/index.html
+barely :: full rebuild complete.
+barely ..
+barely :: Do you want to Publish / Backup / do both?
+       -> [n]othing | [p]ublish | [b]ackup | *[Y]do both :: n
+barely :: exited.
+```
+
+And then let's start the live server:
+```console
+$ barely
+barely :: registering plugins...
+barely :: 8 plugins registered.
+barely :: started tracking...
+```
+
+Your favorite browser should open, and you will be greeted with the rendered version of `template.md`.
+
+Now is a good time to play around a bit with your sample project - make some changes to the contents, the templates or add a stylesheet and watch the page update in real time!
+
+When you feel comfortable with the workings of barely, move on to the next section.
+
+
+### Detailed Overview
+
 
 
 <!-- ROADMAP -->
