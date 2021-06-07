@@ -297,8 +297,8 @@ There are a couple of things that are important to know. If you've used similar 
 	title: "Page title for use in a template!"
 	description: "..."
 	nested:
-		- value
-		- something else
+	  - value
+	  - something else
 	---
 	```
 	These variables can be used like this in your templates: `{{ title }}`.
@@ -343,7 +343,7 @@ But most of the time, you will want at least a little more functionality. That's
 
 barely knows three kinds of plugins:
 
-	1. **Content Plugins:** these look out for certain file extensions, which they will further process than barely normally would. Some also perform some additional tasks right after you're finished editing the project.
+	1. Content Plugins: these look out for certain file extensions, which they will further process than barely normally would. Some also perform some additional tasks right after you're finished editing the project.
 
 	barely ships with:
 		- [Collections](#): add a page to collections or request the contents of one (or multiple). Can also generate Collection overview pages.
@@ -357,13 +357,13 @@ barely knows three kinds of plugins:
 		- [Timestamps](#): lets you automatically display the created or last edited times of pages and posts in a custom time format. Also a common feature on many blogs.
 		- [Table of Contents](#): Generate a table of contents and automatically link them to your headings, just like the one at the top of this page!
 
-	2. **Backup Plugins:** after you are done editing your project in live mode or after running `barely rebuild`, back up your changes.
+	2. Backup Plugins: after you are done editing your project in live mode or after running `barely rebuild`, back up your changes.
 
 	barely ships with:
 		- [git](#): commit & push all the changes to a remote repository
 		- [LocalBackup](#): keep a limited number of backups on your local machine. Better then nothing, but git is much preferred.
 
-	3. **Publication Plugins:** publish your changes! Currently only one of these comes bundled with barely:
+	3. Publication Plugins:1 publish your changes! Currently only one of these comes bundled with barely:
 		- [sftp](#): copy your webroot to an sftp-server. Handy for making quick changes or quickly publishing a blog post!
 
 You might ask yourself, "how do these categories differ from one another?"
@@ -416,13 +416,13 @@ barely :: found 2 blueprints:
 
 barely is currently released as version `1.0.0`. That means that while everything works and the project is feature complete (in regards to its initial vision), there are still a lot of improvements to be made. Some important ones are:
 
-	- **better exception handling**. There are numerous ways to get an exception right now (for example: try renaming a page to a non-existant template) that really don't have to cause barely to exit.
+	- better exception handling. There are numerous ways to get an exception right now (for example: try renaming a page to a non-existant template) that really don't have to cause barely to exit.
 
-	- **better logging** - or really, *logging*. Currently, instead of a proper logger, barely just sometimes calls `print()`. Different levels of logging and some color are desperately needed.
+	- better logging - or really, *logging*. Currently, instead of a proper logger, barely just sometimes calls `print()`. Different levels of logging and some color are desperately needed.
 
-	- **performance improvements**. barely is fast enough for every-day use, but not exactly optimized. The biggest performance win could probably be made by letting barely interact with a model of the current project, instead of constantly opening / closing the same files. That's a major rework though, and maybe something for version 2.0.0...
+	- performance improvements. barely is fast enough for every-day use, but not exactly optimized. The biggest performance win could probably be made by letting barely interact with a model of the current project, instead of constantly opening / closing the same files. That's a major rework though, and maybe something for version 2.0.0...
 
-	- **the docs** could use some love :)
+	- the docs could use some love :)
 
 <!-- CONTRIBUTING -->
 ## Contributing
