@@ -357,7 +357,7 @@ barely knows three kinds of plugins:
 	- [Timestamps](#): lets you automatically display the created or last edited times of pages and posts in a custom time format. Also a common feature on many blogs.
 	- [Table of Contents](#): Generate a table of contents and automatically link them to your headings, just like the one at the top of this page!
 
-2. *##*Backup Plugins:** after you are done editing your project in live mode or after running `barely rebuild`, back up your changes.
+2. **Backup Plugins:** after you are done editing your project in live mode or after running `barely rebuild`, back up your changes.
 
 	barely ships with:
 	- [git](#): commit & push all the changes to a remote repository
