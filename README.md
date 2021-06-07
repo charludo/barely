@@ -124,7 +124,7 @@ Good news: Getting started with barely is easy!
 Make sure you have python >= 3.9 installed:
 ```console
 $ python -V
-> Python 3.9.x
+Python 3.9.x
 ```
 
 If you prefer, create a virtual environment for barely:
@@ -180,7 +180,7 @@ Now let's get familiar with using barely!
 2. Try typing `barely`, `barely live`, or `barely rebuild`:
 	```console
 	$ barely
-	> barely :: could not find 'config.yaml'. Exiting
+	barely :: could not find 'config.yaml'. Exiting
 	```
 	What happened? barely is telling us that we aren't currently in a barely project directory. For a direcctory to count as a project, it has to contain a `config.yaml` file, which in turn has to specify the devroot (where we will work) and the webroot (where barely renders to).
 
@@ -267,17 +267,27 @@ When you feel comfortable with the workings of barely, move on to the next secti
 There are a couple of things that are important to know. If you've used similar frameworks before, you'll probably already be familiar with most of them. barely doesn't try to reinvent the wheel.
 
 1. Templates:
+
 	- all your templates live in the `templates/` folder inside your devroot. If, for whatever reason, you want to place them somewhere else, set the `TEMPLATES_DIR` variable in your `config.yaml`.
+
 	- you can organize your templates freely inside that folder, including subfolders.
+
 	- you set a template for a page by naming the page's markdown file according to this scheme:
-	 	- you have the following template: `templates/something.html`. To use it, name any markdown file `something.md`.
+
+		- you have the following template: `templates/something.html`. To use it, name any markdown file `something.md`.
+
 		- if your template lives in a subfolder, you specify it with a `.`: to use `templates/subdir/other.html`, name your markdown file `subdir.other.md`.
+
 	- templates can include or extend other templates:
+
 		- `{% include "subdir/other.html" %}`
+
 		- `{% extends "something.html" %}`
+
 	- for anything else regarding templates, please refer to the [official jinja2 documentation](https://jinja.palletsprojects.com/en/3.0.x/)
 
 2. YAML & Markdown
+
 	If you're not familiar with Markdown yet, GitHub has an [excellent guide](https://guides.github.com/features/mastering-markdown/) on it.
 
 	Inside of every markdown page, you can specify variables either for use by some plugin, or in your templates. To do so, the first line of the file has to be `---`.
@@ -296,6 +306,7 @@ There are a couple of things that are important to know. If you've used similar 
 	Both the initial YAML section and any Markdown are completely optional. If you want to, your file can be completely empty. In that case, the template specified by the filename will still get rendered as usual.
 
 3. Configuration Files
+
 	You can utilize two configuration files:
 	- `config.yaml`: configure barely's behaviour. You have to at least specify the paths to your webroot and devroot, like this:
 		```yaml
@@ -321,6 +332,7 @@ There are a couple of things that are important to know. If you've used similar 
 	- `metadata.yaml`: set global variables. You can leave this file empty or completely remove it.
 
 4. Other Files
+
 	Any other files will get copied over into your webroot (possibly after being processed by your enabled plugins), as long as they aren't set to be ignored in your `config.yaml`.
 
 ### Plugins
@@ -328,7 +340,9 @@ There are a couple of things that are important to know. If you've used similar 
 barely offers rather limited functionality on its own: use some templates to render some contents into static HTML files.
 
 But most of the time, you will want at least a little more functionality. That's where plugins come in!
+
 barely knows three kinds of plugins:
+
 	1. **Content Plugins:** these look out for certain file extensions, which they will further process than barely normally would. Some also perform some additional tasks right after you're finished editing the project.
 
 	barely ships with:
@@ -371,8 +385,8 @@ You can list available blueprint with:
 ```console
 $ barely blueprints
 barely :: found 2 blueprints:
-       -> default
-       -> blank
+	-> default
+	-> blank
 ```
 
 The help menu hints at a way to also create your own blueprints:
@@ -392,18 +406,22 @@ Executing `barely blueprints --new "name"` will create a new blueprint out of yo
 ```console
 $ barely blueprints
 barely :: found 2 blueprints:
-       -> default
-       -> blank
-	   -> name
+	-> default
+	-> blank
+	-> name
 ```
 
 <!-- ROADMAP -->
 ## Roadmap
 
 barely is currently released as version `1.0.0`. That means that while everything works and the project is feature complete (in regards to its initial vision), there are still a lot of improvements to be made. Some important ones are:
+
 	- **better exception handling**. There are numerous ways to get an exception right now (for example: try renaming a page to a non-existant template) that really don't have to cause barely to exit.
+
 	- **better logging** - or really, *logging*. Currently, instead of a proper logger, barely just sometimes calls `print()`. Different levels of logging and some color are desperately needed.
+
 	- **performance improvements**. barely is fast enough for every-day use, but not exactly optimized. The biggest performance win could probably be made by letting barely interact with a model of the current project, instead of constantly opening / closing the same files. That's a major rework though, and maybe something for version 2.0.0...
+
 	- **the docs** could use some love :)
 
 <!-- CONTRIBUTING -->
@@ -430,7 +448,7 @@ Distributed under the GNU General Public License. See `LICENSE` for more informa
 <!-- CONTACT -->
 ## Contact
 
-Charlotte Hartmann Paludo - [@smiletolerantly](https://tm.me/smiletolerantly) - contact@charlotteharludo.com
+Charlotte Hartmann Paludo - [@smiletolerantly](https://t.me/smiletolerantly) - contact@charlotteharludo.com
 
 Project Link: [https://github.com/charludo/barely](https://github.com/charludo/barely)
 
