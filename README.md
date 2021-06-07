@@ -77,19 +77,19 @@ barely won't be the right tool for everyone and every project, and neither does 
 
 In those circumstances, barely aims to give you as smooth an experience as possible, by following these design principles:
 
-#### Simplicity
+### Simplicity
 
 All your files live in one directory (your devroot). You have - at most - two config files, one for configuring barely's behaviour, one for global metadata. You don't have to touch either one if you don't want to.
 
 barely renders markdown content and jinja2 templates into HTML pages. That's it. (OK, that's it only if you deactivate all the awesome [plugins](#plugins) barely ships with.)
 
-#### Workflow
+### Workflow
 
 If you start barely by typing `barely live` (or just `barely`), a live server starts and opens your project i your preferred browser. Any changes you save - be it in a page file, its yaml configuration, a template or even CSS/JS/SASS/... get reflected immediately. This makes working on a project a breeze.
 
 When you've finished, simply hit `Ctrl+C`, and press enter on barely's prompt to push your changes to git, publish the site to your sftp server, or any other action you've specified.
 
-#### Extensibility
+### Extensibility
 
 barely comes with 10 [plugins](#plugins) that make working even easier, like automatically compressing images, compiling SASS, generating complete HTML forms out of yaml, and managing Collections (barely's catch-all term for things like tags or categories on posts and pages).
 
@@ -141,9 +141,25 @@ That's it! Congrats!
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Type `barely --help` to get an overview over available commands and options:
+```sh
+$ barely --help
+Usage: barely [OPTIONS] COMMAND [ARGS]...
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+  barely reduces static website development to its key parts, by
+  automatically rendering jinja2 templates and Markdown content into HTML. A
+  simple plugin interface allows for easy extensibility, and the built-in
+  live web server makes on-the-fly development as comfortable as possible.
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  blueprints  list all available blueprints, or create a new one
+  live        starts a live server, opens your project in the browser and...
+  new         create a new barely project (optionally with a blueprint)
+  rebuild     (re)build the entire project
+  test        run the testsuite to verify the install
 
 
 
