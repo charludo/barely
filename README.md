@@ -1,11 +1,3 @@
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -18,23 +10,25 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/charludo/barely">
+    <img src="docs/images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Best-README-Template</h3>
+  <h3 align="center">barely</h3>
 
   <p align="center">
-    An awesome README template to jumpstart your projects!
+    barely is a lightweight, but highly extensible static site generator.
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/charludo/barely"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+	<a href="#plugins">See available Plugins »</a>
+	.
+    <a href="https://github.com/charludo/barely">Get started »</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
+    <a href="https://github.com/charludo/barely/issues">Report Bug »</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
+    <a href="https://github.com/charludo/barely/issues">Request Feature »</a>
   </p>
 </p>
 
@@ -58,6 +52,7 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+	<li><a href="#plugins">Plugins</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -71,59 +66,77 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+barely was built out of frustration with the readily available site generators, frameworks and CMS, which mostly fall into two categories: not providing crucial features; or providing such an overload of them that gettig started with it takes longer than just building the site by hand.
 
-There are many great README templates available on GitHub, however, I didn't find one that really suit my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+barely won't be the right tool for everyone and every project, and neither does it try to be. But it might be the right tool for your project, if:
 
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should element DRY principles to the rest of your life :smile:
+* you want to build a static webpage
+* you want to do so rapidly, with the barest minimum of setup and configuration
+* you value live reloading of every one of your changes, including SCSS/SASS, images and templates
+* you are satisfied with the feature set of a typical website or blog
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have have contributed to expanding this template!
+In those circumstances, barely aims to give you as smooth an experience as possible, by following these design principles:
 
-A list of commonly used resources that I find helpful are listed in the acknowledgements.
+#### Simplicity
 
-### Built With
+All your files live in one directory (your devroot). You have - at most - two config files, one for configuring barely's behaviour, one for global metadata. You don't have to touch either one if you don't want to.
 
-This section should list any major frameworks that you built your project using. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
-* [Laravel](https://laravel.com)
+barely renders markdown content and jinja2 templates into HTML pages. That's it. (OK, that's it only if you deactivate all the awesome [plugins](#plugins) barely ships with.)
 
+#### Workflow
 
+If you start barely by typing `barely live` (or just `barely`), a live server starts and opens your project i your preferred browser. Any changes you save - be it in a page file, its yaml configuration, a template or even CSS/JS/SASS/... get reflected immediately. This makes working on a project a breeze.
+
+When you've finished, simply hit `Ctrl+C`, and press enter on barely's prompt to push your changes to git, publish the site to your sftp server, or any other action you've specified.
+
+#### Extensibility
+
+barely comes with 10 [plugins](#plugins) that make working even easier, like automatically compressing images, compiling SASS, generating complete HTML forms out of yaml, and managing Collections (barely's catch-all term for things like tags or categories on posts and pages).
+
+Should you still miss some functionality, chances are you can implement it in minutes, thanks to barely's super simple [plugin API](#).
+
+## Built With & Inspired By
+
+This project would not have been possible without a lot of amazing FOSS projects. Most notable are:
+- [jinja2](https://jinja.palletsprojects.com/en/3.0.x/)
+- [livereload](https://github.com/lepture/python-livereload)
+- [mistune](https://github.com/lepture/mistune)
+- [pyyaml](https://pyyaml.org/wiki/PyYAMLDocumentation)
+
+barely simply stitches them togehter in an exciting manner.
+
+The various inspirations for barely should also not stay concealed:
+- [flask](https://flask.palletsprojects.com/en/2.0.x/) doesn't need an introduction
+- [grav](https://getgrav.org) is probably the closest (spiritual) relative
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+Good news: Getting started with barely is easy!
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+Make sure you have python >= 3.9 installed:
+```console
+$ python -V
+> Python 3.9.x
+```
+
+If you prefer, create a virtual environment for barely:
+```console
+$ python -m venv .venv
+$ . .venv/bin/activate
+(.venv) $
+```
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/your_username_/Project-Name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```JS
-   const API_KEY = 'ENTER YOUR API';
-   ```
+Now, simply install barely like any other package:
+```console
+(.venv) $ pip install barely
+```
 
-
+That's it! Congrats!
 
 <!-- USAGE EXAMPLES -->
 ## Usage
@@ -137,7 +150,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/charludo/barely/issues) for a list of proposed features (and known issues).
 
 
 
@@ -190,16 +203,16 @@ Project Link: [https://github.com/your_username/repo_name](https://github.com/yo
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/charludo/barely.svg?style=for-the-badge
+[contributors-url]: https://github.com/charludo/barely/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/charludo/barely.svg?style=for-the-badge
+[forks-url]: https://github.com/charludo/barely/network/members
+[stars-shield]: https://img.shields.io/github/stars/charludo/barely.svg?style=for-the-badge
+[stars-url]: https://github.com/charludo/barely/stargazers
+[issues-shield]: https://img.shields.io/github/issues/charludo/barely.svg?style=for-the-badge
+[issues-url]: https://github.com/charludo/barely/issues
+[license-shield]: https://img.shields.io/github/license/charludo/barely.svg?style=for-the-badge
+[license-url]: https://github.com/charludo/barely/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/othneildrew
 [product-screenshot]: images/screenshot.png
