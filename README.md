@@ -63,7 +63,6 @@
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgements">Acknowledgements</a></li>
   </ol>
 </details>
 
@@ -278,64 +277,162 @@ There are a couple of things that are important to know. If you've used similar 
 		- `{% extends "something.html" %}`
 	- for anything else regarding templates, please refer to the [official jinja2 documentation](https://jinja.palletsprojects.com/en/3.0.x/)
 
+2. YAML & Markdown
+	If you're not familiar with Markdown yet, GitHub has an [excellent guide](https://guides.github.com/features/mastering-markdown/) on it.
+
+	Inside of every markdown page, you can specify variables either for use by some plugin, or in your templates. To do so, the first line of the file has to be `---`.
+	Afterwards, use normal YAML syntax:
+	```yaml
+	---
+	title: "Page title for use in a template!"
+	description: "..."
+	nested:
+		- value
+		- something else
+	---
+	```
+	These variables can be used like this in your templates: `{{ title }}`.
+
+	Both the initial YAML section and any Markdown are completely optional. If you want to, your file can be completely empty. In that case, the template specified by the filename will still get rendered as usual.
+
+3. Configuration Files
+	You can utilize two configuration files:
+	- `config.yaml`: configure barely's behaviour. You have to at least specify the paths to your webroot and devroot, like this:
+		```yaml
+		ROOT:
+			DEV: /[...]/devroot
+			WEB: /[...]/webroot
+		```
+
+		barely also sets some standard values which you can optionally override:
+		```yaml
+		TEMPLATES_DIR: templates
+		PAGE_EXT: md
+		IMAGE_EXT:
+		    - jpg
+		    - jpeg
+		    - png
+		IGNORE:
+		    - .git
+		```
+
+		**Note:** `config.yaml` is also the place for [plugin configurations](3plugins)
+
+	- `metadata.yaml`: set global variables. You can leave this file empty or completely remove it.
+
+4. Other Files
+	Any other files will get copied over into your webroot (possibly after being processed by your enabled plugins), as long as they aren't set to be ignored in your `config.yaml`.
+
 ### Plugins
+
+barely offers rather limited functionality on its own: use some templates to render some contents into static HTML files.
+
+But most of the time, you will want at least a little more functionality. That's where plugins come in!
+barely knows three kinds of plugins:
+	1. **Content Plugins:** these look out for certain file extensions, which they will further process than barely normally would. Some also perform some additional tasks right after you're finished editing the project.
+
+	barely ships with:
+		- [Collections](#): add a page to collections or request the contents of one (or multiple). Can also generate Collection overview pages.
+		- [Forms](#): specify forms in pure YAML, let the plugin generate its HTML representation!
+		- [Highlight](#): lex & highlight code blocks using pygments! Lets you specify the language and theme on a global, page or code block level.
+		- [Minimizer](#):
+			- minimize JS files
+			- compress & resize images
+			- **copile SASS/SCSS int regular old css!**
+		- [ReadingTime](#): estimate the reading time for a page or a blog post - a common feature on many blogs.
+		- [Timestamps](#): lets you automatically display the created or last edited times of pages and posts in a custom time format. Also a common feature on many blogs.
+		- [Table of Contents](#): Generate a table of contents and automatically link them to your headings, just like the one at the top of this page!
+
+	2. **Backup Plugins:** after you are done editing your project in live mode or after running `barely rebuild`, back up your changes.
+
+	barely ships with:
+		- [git](#): commit & push all the changes to a remote repository
+		- [LocalBackup](#): keep a limited number of backups on your local machine. Better then nothing, but git is much preferred.
+
+	3. **Publication Plugins:** publish your changes! Currently only one of these comes bundled with barely:
+		- [sftp](#): copy your webroot to an sftp-server. Handy for making quick changes or quickly publishing a blog post!
+
+You might ask yourself, "how do these categories differ from one another?"
+	- content plugins help process your files
+	- backup plugins work on your `devroot` after you're finished editing
+	- publication plugins work on your `webroot` after you're finished editing
+
+*Check the individual plugin documentations for how to configure them, and if they're enabled by default or not.*
+
+### Writing your own Plugins
+
+A detailed guide would bust the scope of this readme, so [check here for that](#). However, note that it's really quite simple, and after writing it, all you have to do is place it in a special folder in your home directory.
 
 ### Blueprints
 
+Back in the [Basics](#basics), we have already briefly covered blueprints. They are pretty much exactly what you would expect: re-usable projects that you can instantiate into new projects.
 
+You can list available blueprint with:
+```console
+$ barely blueprints
+barely :: found 2 blueprints:
+       -> default
+       -> blank
+```
+
+The help menu hints at a way to also create your own blueprints:
+```console
+$ barely blueprints --help
+Usage: barely blueprints [OPTIONS]
+
+  list all available blueprints, or create a new one
+
+Options:
+  -n, --new TEXT  create a reusable blueprint from the current project
+  --help          Show this message and exit.
+```
+
+Executing `barely blueprints --new "name"` will create a new blueprint out of your current project, and you can freely use it from now on:
+
+```console
+$ barely blueprints
+barely :: found 2 blueprints:
+       -> default
+       -> blank
+	   -> name
+```
 
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/charludo/barely/issues) for a list of proposed features (and known issues).
-
-
+barely is currently released as version `1.0.0`. That means that while everything works and the project is feature complete (in regards to its initial vision), there are still a lot of improvements to be made. Some important ones are:
+	- **better exception handling**. There are numerous ways to get an exception right now (for example: try renaming a page to a non-existant template) that really don't have to cause barely to exit.
+	- **better logging** - or really, *logging*. Currently, instead of a proper logger, barely just sometimes calls `print()`. Different levels of logging and some color are desperately needed.
+	- **performance improvements**. barely is fast enough for every-day use, but not exactly optimized. The biggest performance win could probably be made by letting barely interact with a model of the current project, instead of constantly opening / closing the same files. That's a major rework though, and maybe something for version 2.0.0...
+	- **the docs** could use some love :)
 
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what make the open source community such an amazing place. Any contributions you make are **very** much welcome!
 
 1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
+2. Create your Feature Branch (`git checkout -b feature/NewFeature`)
+3. Commit your Changes (`git commit -m 'Add some NewFeature'`)
+4. Push to the Branch (`git push origin feature/NewFeature`)
 5. Open a Pull Request
+
+**If you have written a plugin or created a blueprint and think others might benefit, please do share via the same way!!**
 
 
 
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
-
+Distributed under the GNU General Public License. See `LICENSE` for more information.
 
 
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Charlotte Hartmann Paludo - [@smiletolerantly](https://tm.me/smiletolerantly) - contact@charlotteharludo.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
-
-
-
-<!-- ACKNOWLEDGEMENTS -->
-## Acknowledgements
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Img Shields](https://shields.io)
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Pages](https://pages.github.com)
-* [Animate.css](https://daneden.github.io/animate.css)
-* [Loaders.css](https://connoratherton.com/loaders)
-* [Slick Carousel](https://kenwheeler.github.io/slick)
-* [Smooth Scroll](https://github.com/cferdinandi/smooth-scroll)
-* [Sticky Kit](http://leafo.net/sticky-kit)
-* [JVectorMap](http://jvectormap.com)
-* [Font Awesome](https://fontawesome.com)
-
-
-
+Project Link: [https://github.com/charludo/barely](https://github.com/charludo/barely)
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
