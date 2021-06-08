@@ -1,6 +1,6 @@
 # Getting Started
 
-Good news: Getting started with barely is super easy! This guide elaborates on the [Quickstart Guide](/README.md) in the README.
+Good news: Getting started with barely is super easy! This guide elaborates on the [Quickstart Guide](/README.md#quickstart) in the README.
 
 ## Prerequisites
 
@@ -57,7 +57,7 @@ Now let's get familiar with using barely!
 	$ barely
 	barely :: could not find 'config.yaml'. Exiting
 	```
-	What happened? barely is telling us that we aren't currently in a barely project directory. For a direcctory to count as a project, it has to contain a `config.yaml` file, which in turn has to specify the devroot (where we will work) and the webroot (where barely renders to).
+	What happened? barely is telling us that we aren't currently in a barely project directory. For a directory to count as a project, it has to contain a `config.yaml` file, which in turn has to specify the devroot (where we will work) and the webroot (where barely renders to).
 
 	So lets change that!
 
@@ -71,7 +71,7 @@ Now let's get familiar with using barely!
 	barely :: setting up basic config...
 	barely :: done.
 	```
-	Sweet! barely created two new subdirs, `devroot` and `webroot`. The project was also created with a blueprint, namely `default`, which is why our `devroot` is not empty. We will learn about blueprints in a second.
+	Sweet! barely created two new subdirectories, `devroot` and `webroot`. The project was also created with a blueprint, namely `default`, which is why our `devroot` is not empty. We will learn about blueprints in a second.
 
 	BTW: you can easily change the project creation parameters, see for reference:
 	```console
@@ -101,9 +101,9 @@ Now let's get familiar with using barely!
 
 	1 directory, 5 files
 	```
-	- `config.yaml` contains all the configuration for barely and its plugins. Right now, it only contains the absolute paths for the devroot and webroot.
-	- `metadata.yaml` is a place you can put any values you want to use in multiple places across your project, be it metadata or anythin else
-	- `template.md` is the markdown file for the root page of the website. Its content will get rendered into webroot/index.html with the templates/template.md template.
+	- `config.yaml` contains all the configuration for barely and its plugins. Right now, it only contains the absolute paths of the devroot and webroot
+	- `metadata.yaml` is a place you can put any values you want to use in multiple places across your project, be it metadata or any other variables
+	- `template.md` is the Markdown file for the root page of the website. Its contents will get rendered into `webroot/index.html` with the `templates/template.md` template
 	- `templates/` contains all your templates
 
 6. Let's build the project!
@@ -122,7 +122,7 @@ Now let's get familiar with using barely!
 	barely :: exited.
 	```
 
-	And then let's start the live server:
+	And then start the live server:
 	```console
 	$ barely
 	barely :: registering plugins...

@@ -1,8 +1,8 @@
 # Blueprints
 
-Back in the [Basics](/README.md/#basics), we have already briefly covered blueprints. They are pretty much exactly what you would expect: re-usable projects that you can instantiate into new projects.
+Back in the [Basics](/README.md/#basics), we have already briefly covered blueprints. They are pretty much exactly what you would expect: re-usable project templates that you can instantiate into new projects. Other frameworks might call them themes.
 
-You can list available blueprint with:
+You can list all available blueprints with:
 ```console
 $ barely blueprints
 barely :: found 2 blueprints:

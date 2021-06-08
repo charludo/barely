@@ -1,38 +1,53 @@
 # Plugins
 
-barely offers rather limited functionality on its own: use some templates to render some contents into static HTML files.
+barely offers rather limited functionality on its own: "use some templates to render some contents into static HTML files". That's it.
 
 But most of the time, you will want at least a little more functionality. That's where plugins come in!
 
 barely knows three kinds of plugins:
 
-1. **Content Plugins:** these look out for certain file extensions, which they will further process than barely normally would. Some also perform some additional tasks right after you're finished editing the project.
+### 1. Content Plugins
 
-	barely ships with:
-	- [Collections](#): add a page to collections or request the contents of one (or multiple). Can also generate Collection overview pages.
-	- [Forms](#): specify forms in pure YAML, let the plugin generate its HTML representation!
-	- [Highlight](#): lex & highlight code blocks using pygments! Lets you specify the language and theme on a global, page or code block level.
-	- [Minimizer](#):
-		- minimize JS files
-		- compress & resize images
-		- **copile SASS/SCSS int regular old css!**
-	- [ReadingTime](#): estimate the reading time for a page or a blog post - a common feature on many blogs.
-	- [Timestamps](#): lets you automatically display the created or last edited times of pages and posts in a custom time format. Also a common feature on many blogs.
-	- [Table of Contents](#): Generate a table of contents and automatically link them to your headings, just like the one at the top of this page!
+These look out for certain file extensions, which they will further process than barely normally would. Some also perform some additional tasks right after you've finished editing the project.
 
-2. **Backup Plugins:** after you are done editing your project in live mode or after running `barely rebuild`, back up your changes.
+barely ships with:
+- [Collections](plugins/collections.md): add a page to Collections or request the contents of one (or multiple). Can also generate Collection overview pages. These are barelys version of categories.
 
-	barely ships with:
-	- [git](#): commit & push all the changes to a remote repository
-	- [LocalBackup](#): keep a limited number of backups on your local machine. Better then nothing, but git is much preferred.
+- [Forms](plugins/forms.md): specify forms in pure YAML, let the plugin generate their HTML representation!
 
-3. **Publication Plugins:** publish your changes! Currently only one of these comes bundled with barely:
-	- [sftp](#): copy your webroot to an sftp-server. Handy for making quick changes or quickly publishing a blog post!
+- [Highlight](plugins/highlight.md): lex & highlight code blocks using pygments! Lets you specify the language and theme on a global, page or code block level.
+
+- [Minimizer](plugins/minimizer.md):
+	- compress & resize images
+	- minimize JS files
+	- **compile SASS/SCSS into regular old css!**
+
+- [ReadingTime](plugins/readingtime.md): estimate the reading time for a page or a blog post - a common feature on many blogs.
+
+- [Timestamps](plugins/timestamps.md): lets you automatically display the created or last edited times of pages and posts in a custom time format. Also a common feature on many blogs.
+
+- [Table of Contents](plugins/toc.md): Generate a table of contents and automatically link them to your headings, just like the one at the top of [the README](/README.md)!
+
+### 2. Backup Plugins
+
+After you are done editing your project in live mode or after running `barely rebuild`, back up your changes.
+
+barely ships with:
+- [git](#): commit & push all the changes to a remote repository
+
+- [LocalBackup](#): keep a limited number of backups on your local machine. Better than nothing, but git is much preferred.
+
+### 3. Publication Plugins
+
+Publish your changes! Currently only one of these comes bundled with barely:
+- [sftp](#): copy your webroot to an sftp-server. Handy for making quick changes or quickly publishing a blog post!
+
+---
 
 You might ask yourself, "how do these categories differ from one another?"
 - content plugins help process your files
-- backup plugins work on your `devroot` after you're finished editing
-- publication plugins work on your `webroot` after you're finished editing
+- backup plugins work on your `devroot` after you've finished editing
+- publication plugins work on your `webroot` after you've finished editing
 
 *Check the individual plugin documentations for how to configure them, and if they're enabled by default or not.*
 
@@ -58,7 +73,7 @@ Depending on the plugin, you might have to enable or configure it in your projec
 
 ## Writing your own Plugins
 
-Writing a plugin is just as easy and straightforward as its installtion. For an example, let's write a plugin that appends a copyright notice to every page of your website.
+Writing a plugin is just as easy and straightforward as its installtion. As an example, let's write a plugin that appends a copyright notice to every page of our website.
 
 Create a new directory and plugin file:
 ```console
@@ -74,69 +89,78 @@ from barely.plugins import PluginBase
 
 class Copyright(PluginBase):
 
-    def __init__(self):
-        super().__init__()
-        pass
+  def __init__(self):
+    super().__init__()
+    pass
 
-    def register(self):
-        pass
+  def register(self):
+    pass
 
-    def action(self, *args, **kwargs):
-        pass
+  def action(self, *args, **kwargs):
+    pass
 
-	def finalize(self):
-		pass
+  def finalize(self):
+    pass
 ```
 
-What do these functions do? Well, __init__ currently only makes a call to the __init__ function in our plugins parent, `PluginBase`. All Plugins **have** to inherit from `PluginBase`.
-Our register function will be called once during barelys initialization, when barely polls all plugins for information on their name, their priority, and what types of files they want to register for.
+What do these functions do? Well, `__init__` currently only makes a call to the `__init__` function of our plugins parent, `PluginBase`. All Plugins **have** to inherit from `PluginBase`.
+
+Our `register` function will be called once during barelys initialization, when barely polls all plugins for information on their name, their priority, and what types of files they want to register for.
+
 `action`, finally, will contain our actual plugin logic.
 
 Let's start by fleshing out `__init__`:
 ```python
 def __init__(self):
-	super().__init__()
-	standard_config = {
-		"copyright_notice": "Hey! This website is copyrighted!",
-		"priority": 10
-		}
-	try:
-		self.plugin_config = standard_config | self.config["copyright"]
-	except KeyError:
-		self.plugin_config = standard_config
+  super().__init__()
+  standard_config = {
+    "copyright_notice": "Hey! This website is copyrighted!",
+    "priority": 10
+  }
+
+  try:
+    self.plugin_config = standard_config | self.config["copyright"]
+  except KeyError:
+    self.plugin_config = standard_config
 ```
 We have created a standard configuration for our plugin: it contains the copyright notice, as well as our plugins priority. The priority can be any positive integer value, and barely sorts plugins in ascending order of their priority.
 
-Next we try to override our standard_config with self.config["copyright"]. `self.config` actually already exists: it gets handed to our plugin when we called `super().__init__()`. This dict contains all the configurations from our `config.yaml`! So if we wanted to show a different notice or change the order of plugins around, we could put this into our `config.yaml`:
+Next we try to union our `standard_config` with `self.config["copyright"]`. `self.config` actually already exists: it got handed to our plugin when we called `super().__init__()`. This dict contains all the configurations from our `config.yaml`. So if we wanted to show a different notice or change the order in which plugins are called, we could put this into our `config.yaml`:
 ```yaml
 copyright:
-	copyright_notice: My very Custom Copyright
-	priority: 1
+  copyright_notice: My very Custom Copyright
+  priority: 1
 ```
 
-**Note:** any plugin with a negative priority will get ignored. That's the referred method of disabling plugins: just set their priority to -1. Many plugins also have a priority of -1 by default, so they won't get executed unless you manually enable them.
+**Note:** any plugin with a negative priority will be ignored. That's the preferred method of disabling a plugin: just set its priority to `-1`. Many plugins also have a priority of `-1` by default, so they won't get called unless you manually enable them.
 
 Now let's move on to registration:
 ```python
 def register(self):
-	return "Copyright", self.plugin_config["PRIORITY"], [self.config["PAGE_EXT"]]
+  return "Copyright", self.plugin_config["PRIORITY"], [self.config["PAGE_EXT"]]
 ```
 
-- "Copyright" is just the name of our plugin.
-- self.plugin_config["PRIORITY"] will return 10 by default - see our `__init__` method!
-- [self.config["PAGE_EXT"]] now tells barely that our plugin is only interested in files with a extension of "PAGE_EXT" - by default, this means `.md` files. You can return an arbitrary amount of page extensions (**without the dot!**) as a list. As you can see though, even for just one extenion the type of the returned argument **must** be a list.
+- "Copyright" is just the name of our plugin
+- `self.plugin_config["PRIORITY"]` will be `10` by default - see our `__init__` method!
+- `[self.config["PAGE_EXT"]]` is the list of file extensions that our plugin wants to register for. `PAGE_EXT` is set to `md` by default. You can return an arbitrarily long list of extensions (**without the dot!**). As you can see though, for just one extenion that extension **must** be wrapped in a list.
 
-And with that, we are ready to actually *do* something with this plugin!
+**Note**: only Content plugins return extensions. Backup and Publication plugins only return a 2-tuple of name and priority.
+
+And with that, we are finally ready to actually *do* something with this plugin!
 ```python
 def action(self, *args, **kwargs):
-	item["content"] += self.plugin_config["copyright_notice"]
-	yield item
+  item["content"] += self.plugin_config["copyright_notice"]
+  yield item
 ```
 
-Wait... that's it?!
+Wait... that's it?!  
 Yep! Our plugin will get handed every single Markdown page in form of an [item](#item)-dict. We simply append our copyright notice to the end of the content of each page.
 
-Note that we don't return the item - we yield it. barely expects a generator object back, so return won't work. Maybe you notice the implications of this already: We could actually yield an arbitrary amount of items! If you wanted to, you could (for example) write a plugin that takes a pages content, then Google-translates it into a dozen languages and yields a separate page for each one of them!
+Note that we don't return the item - we yield it. barely expects a generator object back, so return won't work.
+
+Maybe already you noticed the implications of this: We could actually yield an arbitrary amount of items! If you wanted to, you could (for example) write a plugin that takes a pages content, then Google-translates it into a dozen languages and yields a separate page for each one of them!
+
+---
 
 Here's our finished plugin:
 ```python
@@ -145,37 +169,40 @@ from barely.plugins import PluginBase
 
 class Copyright(PluginBase):
 
-    def __init__(self):
-        super().__init__()
-		standard_config = {
-			"copyright_notice": "Hey! This website is copyrighted!",
-			"priority": 10
-			}
-		try:
-			self.plugin_config = standard_config | self.config["copyright"]
-		except KeyError:
-			self.plugin_config = standard_config
+def __init__(self):
+  super().__init__()
+  standard_config = {
+    "copyright_notice": "Hey! This website is copyrighted!",
+    "priority": 10
+  }
 
-    def register(self):
-        return "Copyright", self.plugin_config["PRIORITY"], [self.config["PAGE_EXT"]]
+  try:
+    self.plugin_config = standard_config | self.config["copyright"]
+  except KeyError:
+    self.plugin_config = standard_config
 
-	def action(self, *args, **kwargs):
-		item["content"] += self.plugin_config["copyright_notice"]
-		yield item
+def register(self):
+  return "Copyright", self.plugin_config["PRIORITY"], [self.config["PAGE_EXT"]]
 
-	def finalize(self):
-		pass
+def action(self, *args, **kwargs):
+  item["content"] += self.plugin_config["copyright_notice"]
+  yield item
+
+def finalize(self):
+  pass
 ```
 
-Simply place your Copyright dir into the content plugins folder (see above!) and watch your plugin work when you start and use barely!
+Simply place your Copyright folder into the content plugins directory (see above!) and watch your plugin work when you start and use barely!
 
-You probably noticed that `finalize` is still empty. In fact, feel free to delete it. This function gets called right before barely exists (or has finished re-building) your project, and enables you to run some cleanup tasks should they be necessary. As an example, the [Collections](plugins/collections.md) plugin utilizes this method to generate category overview pages once you are done editing the project and it can be sure that there are no further changes coming.
+You probably noticed that `finalize` is still empty. In fact, feel free to delete it. This function gets called right before barely exits (or has finished re-building) your project, and enables you to run some cleanup tasks should they be necessary.
+
+As an example, the [Collections](plugins/collections.md) plugin utilizes this method to generate category overview pages once you are done editing the project and it can be sure that there are no further changes coming.
 
 ## Testing your Plugin
 
-It's a good idea to write tests for your plugins. To do so, create a file alongside your plugin file with a leading `test_`, so for example: `test_copyright.py`.
+It's a good idea to write tests for your plugins. To do so, create a file alongside your plugin with a leading `test_`, so for example: `test_copyright.py`.
 
-It should look similar to this:
+It should look similar to this one:
 ```python
 import unittest
 from barely.plugins.content.Copyright.copyright import Copyright
@@ -183,32 +210,35 @@ from barely.plugins.content.Copyright.copyright import Copyright
 
 class TestCopyright(unittest.TestCase):
 
-    def test_action(self):
-		pass	# put your unittests here!
+  def test_action(self):
+    # put your unittests here!
+    pass
 ```
 The tests will automatically be discovered and run when you `barely test`.
 
 ## Item
 
-Above, we already mentioned that a plugins action() function gets passed a page `item`. This is simply a dict, and you can manipulate any existing entries, and create new ones freely. By default, an `item` will look like this:
+Above, we already mentioned that a plugins `action` function gets passed a page `item` as (the only) argument. This `item` is simply a dict, so you can manipulate any existing entries and create new ones freely. By default, an `item` will look like this:
 ```yaml
 item:
-  - origin: devroot/path/to/original/file.ext
-  - destination: webroot/path/to/where/it/goes.ext
+  origin: devroot/path/to/original/file.ext
+  destination: webroot/path/to/where/it/goes.ext
 
-  - type: PAGE (or IMAGE, TEXT, or GENERIC)
-  - extension: ext
+  type: PAGE (or IMAGE, TEXT, or GENERIC)
+  extension: ext
 
-  - content_raw: the raw contents of the origin file
-  - content: your markdown, converted to HTML
-  - output: what barely currently plans on writing in the rendered file
+  content_raw: the raw contents of the origin file
+  content: your markdown, converted to HTML
+  output: what barely currently plans on writing into the rendered file
 
-  - image: if your file is an image, you will find a PIL image object here
-  - template: the tamplate used to render this page
+  image: if your file is an image, you will find a PIL Image object here
+  template: the template used to render this page
 
-  - meta:
-    - modular: a list of subpages, if your page is modular
-    - ...: all page specific yaml configuation, as well as global variables from metadata.yaml
+  meta:
+    modular: a list of subpages, if your page is modular
+    ...: all page specific yaml configuration
+    ...: global variables from metadata.yaml
+    ...: these get **unpacked, so you can use them directly in a template!
 ```
 
 [< back](README.md)

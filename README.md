@@ -3,15 +3,13 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
 
-<!-- PROJECT LOGO -->
 <br />
 <p align="center">
   <a href="https://github.com/charludo/barely">
-    <img src="docs/images/logo.png" alt="Logo" width="80" height="80">
+    <img src="docs/images/logo.png" width="80" height="80">
   </a>
 
   <h3 align="center">barely</h3>
@@ -19,12 +17,12 @@
   <p align="center">
     barely is a lightweight, but highly extensible static site generator.
     <br />
-    <a href="https://github.com/charludo/barely/docs/README.md"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/charludo/barely/blob/main/docs/README.md"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-	<a href="#plugins">See available Plugins</a>
-	.
     <a href="#quickstart">Quickstart</a>
+	·
+    <a href="#plugins">See available Plugins</a>
     ·
     <a href="https://github.com/charludo/barely/issues">Report Bug</a>
     ·
@@ -35,43 +33,32 @@
 
 
 <!-- TABLE OF CONTENTS -->
-<details open="open">
-  <summary>Table of Contents</summary>
-  <ol>
-    <li><a href="#about-barely">About barely</a></li>
-    <li>
-      <a href="#quickstart">Quickstart</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a>
-		<ul>
-			<li><a href="#basics">Basics</a></li>
-			<li><a href="#core-mechanics">Core Mechanics</a></li>
-			<li><a href="#plugins">Plugins</a></li>
-			<li><a href="#blueprints">Blueprints</a></li>
-		</ul>
-	</li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-	<li><a href="#build-with--inspired-by">Build with & Inspired By</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ol>
-</details>
-
+Table of Contents
+1. [About barely](#about-barely)
+2. [Quickstart](#quickstart)
+    - [Prerequisites][#prerequisites]
+    - [Installation](#installation)
+3. [Usage](#usage)
+    - [Basics](#basics)
+    - [Core Mechanics](#core-mechanics)
+    - [Modular Pages](#modular-pages)
+    - [Plugins](#plugins)
+    - [Blueprints](#blueprints)
+4. [Roadmap](#roadmap)
+5. [Contributing](#contributing)
+6. [Built with & Inspired by](#built-with--inspired-by)
+7. [License](#license)
+8. [Contact](#contact)
 
 
 <!-- ABOUT -->
 ## About barely
 
-barely was built out of frustration with the readily available site generators, frameworks and CMS, which mostly fall into two categories: not providing crucial features; or providing such an overload of them that gettig started with it takes longer than just building the site by hand.
+barely was built out of frustration with the readily available site generators, frameworks and CMS, which mostly fall into two categories: not providing crucial features; or providing such an overload of them that gettig started with the system takes longer than just building the site by hand.
 
-barely reduces static website development to its key parts, by automatically rendering jinja2 templates and Markdown content into HTML. A simple plugin interface allows for easy extensibility, and the built-in live web server makes on-the-fly development as comfortable as possible.
+barely reduces static website development to its key parts, by automatically rendering jinja2 templates and Markdown content into HTML. A simple **plugin interface** allows for easy extensibility, and the built-in **live web server** makes on-the-fly development as comfortable as possible.
 
-For mor on barely's design philosophy, and to see whether barely might be right for your project, [see here in the docs](docs/about.md).
+For more on barelys design philosophy, and to see whether barely might be right for your project, [see here in the docs](docs/about.md).
 
 
 
@@ -107,12 +94,11 @@ That's it! Congrats!
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-<ul>
-	<li><a href="#basics">Basics</a></li>
-	<li><a href="#core-mechanics">Core Mechanics</a></li>
-	<li><a href="#plugins">Plugins</a></li>
-	<li><a href="#blueprints">Blueprints</a></li>
-</ul>
+- [Basics](#basics)
+- [Core Mechanics](#core-mechanics)
+- [Modular Pages](#modular-pages)
+- [Plugins](#plugins)
+- [Blueprints](#blueprints)
 
 ### Basics
 
@@ -128,10 +114,11 @@ Now let's get familiar with using barely!
 	barely :: setting up basic config...
 	barely :: done.
 	```
-	Sweet! barely created two new subdirs, `devroot` and `webroot`. The project was also created with a blueprint, namely `default`, which is why our `devroot` is not empty. We will learn about blueprints in a second.
+	Sweet! barely created two new subdirectories, `devroot` and `webroot`. The project was also created with a blueprint, namely `default`, which is why our `devroot` is not empty. We will learn about blueprints in a second.
 
-2. Let's build the project!
+2. Now let's build the project!
 	```console
+    $ cd devroot
 	$ barely rebuild
 	barely :: registering plugins...
 	barely :: 8 plugins registered.
@@ -146,7 +133,7 @@ Now let's get familiar with using barely!
 	barely :: exited.
 	```
 
-	And then let's start the live server:
+	And then start the live server:
 	```console
 	$ barely
 	barely :: registering plugins...
@@ -163,19 +150,34 @@ Now let's get familiar with using barely!
 
 ### Core Mechanics
 
-There are a couple of things that are important to know. If you've used similar frameworks before, you'll probably already be familiar with most of them. barely doesn't try to reinvent the wheel.
+There are a couple of things that are important to know about how barely works. If you've used similar frameworks before, you'll probably already be familiar with most of these things. barely doesn't try to reinvent the wheel.
 
-- the structure of your sites is defined in jinja2 templates. By default, these are stored in the `templates/` folder
+- the structure of your site is defined in jinja2 templates. By default, these are stored in the `templates/` folder
 - you write the contents of your pages with [Markdown](https://guides.github.com/features/mastering-markdown/)
-- pages can be `modular`, meaning they contain subpages with their own content and template. [See here for how.](docs/modular-pages.md)
-- each page can individually be configured using [YAML notation](docs/detailed-overview)
-- global level configuation of barely happpens in the `config.yaml` file, global variables to be used in your templates are stored in `metadata.yaml`
+- each page can individually be configured using [YAML notation](docs/detailed-overview.md)
+- global level configuration of barely happpens in the `config.yaml` file, global variables to be used in your templates are stored in `metadata.yaml`
 
-This just scratches the surface; please, do yourself a favor and read the [Detailed Overview](docs/detailed-overview) in the docs.
+This just scratches the surface; please, do yourself a favor and read the [Detailed Overview](docs/detailed-overview.md) in the docs.
+
+### Modular Pages
+
+Pages can be `modular`, meaning they contain subpages with their own contents and templates.
+To define a modular page, simply put the "modular" argument into that pages configuration:
+```yaml
+---
+title: My Parent Page
+modular:
+  - about
+  - services
+  - contact
+---
+```
+
+To see how, when, and why to use them, see here: [Modular Pages](docs/modular-pages.md)
 
 ### Plugins
 
-barely offers rather limited functionality on its own: use some templates to render some contents into static HTML files.
+barely offers rather limited functionality on its own: "use some templates to render some contents into static HTML files". That's it.
 
 But most of the time, you will want at least a little more functionality. That's where plugins come in!
 
@@ -192,15 +194,15 @@ barely comes with 10 plugins by default:
 - [Local Backup](docs/plugins/localbackup.md)
 - [SFTP](docs/plugins/sftp.md)
 
-For more info on how to enable and configure a plugin, click on its respective name.
+For more information on how to enable and configure a plugin, click on its respective name.
 
-To learn how to install new plugins or right your own, see [the Plugins page](docs/plugins.md) in the docs.
+To learn how to install new plugins or write your own, see [the Plugins page](docs/plugins.md) in the docs.
 
 ### Blueprints
 
-Back in the [Basics](#basics), we have already briefly covered blueprints. They are pretty much exactly what you would expect: re-usable projects that you can instantiate into new projects.
+Back in the [Basics](#basics), we have already briefly covered blueprints. They are pretty much exactly what you would expect: re-usable project templates that you can instantiate into new projects. Other frameworks might call them themes.
 
-You can list available blueprint with:
+You can list all available blueprints with:
 ```console
 $ barely blueprints
 barely :: found 2 blueprints:
@@ -215,7 +217,7 @@ To learn how to create and use your own blueprints, see [Blueprints](docs/bluepr
 
 barely is currently released as version `1.0.0`. That means that while everything works and the project is feature complete (in regards to its initial vision), there are still a lot of improvements to be made. Some important ones are:
 
-- **better exception handling**. There are numerous ways to get an exception right now (for example: try renaming a page to a non-existant template) that really don't have to cause barely to exit.
+- **better exception handling**. There are numerous ways to get an exception right now (for example: try renaming a page to a non-existent template) that really don't have to cause barely to exit.
 
 - **better logging** - or really, *logging*. Currently, instead of a proper logger, barely just sometimes calls `print()`. Different levels of logging and some color are desperately needed.
 
@@ -249,7 +251,7 @@ The various inspirations for barely should also not stay concealed:
 <!-- LICENSE -->
 ## License
 
-Distributed under the GNU General Public License. See `LICENSE` for more information.
+Distributed under the GNU General Public License. See [LICENSE](LICENSE) for more information.
 
 
 <!-- CONTACT -->
