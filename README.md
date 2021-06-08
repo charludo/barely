@@ -33,10 +33,9 @@
 
 
 <!-- TABLE OF CONTENTS -->
-Table of Contents
 1. [About barely](#about-barely)
 2. [Quickstart](#quickstart)
-    - [Prerequisites][#prerequisites]
+    - [Prerequisites](#prerequisites)
     - [Installation](#installation)
 3. [Usage](#usage)
     - [Basics](#basics)

@@ -33,14 +33,14 @@ barely ships with:
 After you are done editing your project in live mode or after running `barely rebuild`, back up your changes.
 
 barely ships with:
-- [git](#): commit & push all the changes to a remote repository
+- [git](plugins/git.md): commit & push all the changes to a remote repository
 
-- [LocalBackup](#): keep a limited number of backups on your local machine. Better than nothing, but git is much preferred.
+- [LocalBackup](plugins/localbackup.md): keep a limited number of backups on your local machine. Better than nothing, but git is much preferred.
 
 ### 3. Publication Plugins
 
 Publish your changes! Currently only one of these comes bundled with barely:
-- [sftp](#): copy your webroot to an sftp-server. Handy for making quick changes or quickly publishing a blog post!
+- [sftp](plugins/sftp.md): copy your webroot to an sftp-server. Handy for making quick changes or quickly publishing a blog post!
 
 ---
 
@@ -82,7 +82,7 @@ $ cd Copyright/
 $ touch copyright.py
 ```
 
-Open copyright.py in your favorite editor and fill it with a bit of boilerplate:
+Open `copyright.py` in your favorite editor and fill it with a bit of boilerplate:
 ```python
 from barely.plugins import PluginBase
 
@@ -137,7 +137,7 @@ copyright:
 Now let's move on to registration:
 ```python
 def register(self):
-  return "Copyright", self.plugin_config["PRIORITY"], [self.config["PAGE_EXT"]]
+  return "Copyright", self.plugin_config["priority"], [self.config["PAGE_EXT"]]
 ```
 
 - "Copyright" is just the name of our plugin
@@ -182,7 +182,7 @@ def __init__(self):
     self.plugin_config = standard_config
 
 def register(self):
-  return "Copyright", self.plugin_config["PRIORITY"], [self.config["PAGE_EXT"]]
+  return "Copyright", self.plugin_config["priority"], [self.config["PAGE_EXT"]]
 
 def action(self, *args, **kwargs):
   item["content"] += self.plugin_config["copyright_notice"]
