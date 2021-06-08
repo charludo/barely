@@ -3,9 +3,9 @@
 Type: `content`  
 Enabled by default: `false`
 
-- compress and resize images
-- compress JS files
-- compile and compress SASS/CSS
+- compress and resize images (png, jpg, jpeg, tif, tiff, bmp)
+- compress JS files (js)
+- compile and compress SASS/CSS (sass, scss)
 
 
 ---

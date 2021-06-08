@@ -3,7 +3,7 @@
 Type: `content`  
 Enabled by default: `true`
 
-Lex and highlight \`\`\`markdown code block\`\`\`. You can configure a global theme and lexer, and then override both in page configs; you can also specify the lexer on a per-code-block-level by starting that block with [lexer: lexername]
+Lex and highlight `markdown code blocks`. You can configure a global theme and lexer, and then override both in page configs; you can also specify the lexer on a per-code-block-level by having the first line of the block be `[lexer: lexername]`
 
 ---
 
@@ -14,7 +14,7 @@ For a full list of features, check [pygments.org](https://pygments.org/)!
 |argument			|default value		|explanation									|
 |-------------------|-------------------|-----------------------------------------------|
 |PRIORITY			|20					|												|
-|CLASS_PREFIX		|hl					|in case of conflicting additional_styles		|
+|CLASS_PREFIX		|hl					|in case of conflicting styles					|
 |LINE_NOS			|table 				|												|
 |TABSIZE			|4					|												|
 |ENCODING 			|utf-8				|												|

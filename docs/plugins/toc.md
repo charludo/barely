@@ -7,7 +7,7 @@ Creates a nicely structured table of contents by assigning IDs to your headings 
 
 ---
 
-Use the table of contents like this in your template:
+Display the table of contents like this in your template:
 ```html
 {{ toc }}
 ```
@@ -19,4 +19,4 @@ Use the table of contents like this in your template:
 |PRIORITY				|2					|												|
 |MIN_DEPTH				|1					|												|
 |MAX_DEPTH				|4					|												|
-|LIST_ELEMENT			|ul					|												|
+|LIST_ELEMENT			|ul					|ol for ordered list							|

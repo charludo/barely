@@ -3,11 +3,11 @@
 Type: `content`  
 Enabled by default: `true`
 
-Estimates the reading time for a page or post. Common feature for blogs
+Estimates the reading time in minutes for a page or post. Common feature for blogs.
 
 ---
 
-Use the reading time like this in your template:
+Display the reading time like this in your template:
 ```html
 {{ reading_time }}
 ```

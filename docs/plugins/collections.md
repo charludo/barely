@@ -27,19 +27,19 @@ You can then display exhibits in your templates:
 {% for collection in exhibits %}
   {% for exhibit in exhibits %}
     {{ exhibit["title"] }}
-	{{ exhibit["preview"] }}
-	{{ exhibit["href"] }}
+    {{ exhibit["preview"] }}
+    {{ exhibit["href"] }}
   {% endfor %}
 {% endfor %}
 ```
 
 Exhibits contain the following tags / information:
 ```yaml
-title: Title of the page
+title: title of the exhibit
 preview: the first few words of the page
 href: link to the page
 title_image: link to image, if title_image was specified on the original page
-date: edited or created time of the page
+date: modification or creation time of the page
 reading_time: reading time as provided by ReadingTime plugin
 ```
 
@@ -49,7 +49,7 @@ reading_time: reading time as provided by ReadingTime plugin
 |-------------------|-------------------|-----------------------------------------------|
 |PRIORITY			|999				|												|
 |PAGE				|categories			|where collection overview pages get rendered to|
-|OVERVIEW_TITLE		|					|title of the collections overview PAGE_EXT		|
+|OVERVIEW_TITLE		|					|title of the collections overview page  		|
 |OVERVIEW_TEMPLATE	|					|template for the collections overview			|
 |COLLECTION_TEMPLATE|					|template for the individual collection pages	|
 |SUMMARY_LENGTH		|100				|cut-off for summaries of pages / posts			|

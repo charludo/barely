@@ -9,7 +9,7 @@ Timestamp your pages and posts. Generates stamps for the creation and last modif
 
 ---
 
-Use the timestamps like this in your template:
+Display the timestamps like this in your template:
 ```html
 {{ created }}
 {{ edited }}
