@@ -45,7 +45,7 @@ class Highlight(PluginBase):
                 self.page_config = self.plugin_config.copy()
 
             item["content"] = re.sub(r"<pre><code>(.*)</code></pre>", self._handle_code, item["content"], flags=re.S)
-            item["action"] = "renderd, highlighted"
+            item["action"] = "rendered, highlighted"
             item["additional_styles"] = list(self.additional_styles)
             yield item
 
