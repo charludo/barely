@@ -167,6 +167,7 @@ There are a couple of things that are important to know. If you've used similar 
 
 - the structure of your sites is defined in jinja2 templates. By default, these are stored in the `templates/` folder
 - you write the contents of your pages with [Markdown](https://guides.github.com/features/mastering-markdown/)
+- pages can be `modular`, meaning they contain subpages with their own content and template. [See here for how.](docs/modular-pages.md)
 - each page can individually be configured using [YAML notation](docs/detailed-overview)
 - global level configuation of barely happpens in the `config.yaml` file, global variables to be used in your templates are stored in `metadata.yaml`
 

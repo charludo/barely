@@ -39,7 +39,7 @@ There are a couple of things that are important to know. If you've used similar 
 	```
 	These variables can be used like this in your templates: `{{ title }}`.
 
-	Here you can also specify if you want your rendered file to have a different extension, for example: `extension: php`. 
+	Here you can also specify if you want your rendered file to have a different extension, for example: `extension: php`.
 
 	Both the initial YAML section and any Markdown are optional. If you want to, your file can be completely empty. In that case, the template specified by the filename will still get rendered as usual.
 
@@ -72,6 +72,10 @@ There are a couple of things that are important to know. If you've used similar 
 4. Other Files
 
 	Any other files will get copied over into your webroot (possibly after being processed by your enabled plugins), as long as they aren't set to be ignored in your `config.yaml`.
+
+## Modular Pages
+
+See the [Modular Pages](modular-pages.md) page.
 
 ## Plugins
 
