@@ -1,9 +1,10 @@
 # Collections
 
-Type: `content`
+Type: `content`  
 Enabled by default: `false`
 
-Collections allow you to include previews of other pages on a page, or to add your page to a collection.
+Collections allow you to include previews of other pages on a page, or to add your page to a collection.  
+**Note**: might not update properly during live mode, but will catch up when quitting barely.
 
 ---
 
