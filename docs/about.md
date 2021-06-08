@@ -1,0 +1,32 @@
+# About The Project
+
+barely was built out of frustration with the readily available site generators, frameworks and CMS, which mostly fall into two categories: not providing crucial features; or providing such an overload of them that gettig started with it takes longer than just building the site by hand.
+
+barely won't be the right tool for everyone and every project, and neither does it try to be. But it might be the right tool for your project, if:
+
+* you want to build a static webpage
+* you want to do so rapidly, with the barest minimum of setup and configuration
+* you value live reloading of every one of your changes, including SCSS/SASS, images and templates
+* you are satisfied with the feature set of a typical website or blog
+
+In those circumstances, barely aims to give you as smooth an experience as possible, by following these design principles:
+
+## Simplicity
+
+All your files live in one directory (your devroot). You have - at most - two config files, one for configuring barely's behaviour, one for global metadata. You don't have to touch either one if you don't want to.
+
+barely renders markdown content and jinja2 templates into HTML pages. That's it. (OK, that's it only if you deactivate all the awesome [plugins](plugins.md) barely ships with.)
+
+## Workflow
+
+If you start barely by typing `barely live` (or just `barely`), a live server starts and opens your project i your preferred browser. Any changes you save - be it in a page file, its yaml configuration, a template or even CSS/JS/SASS/... get reflected immediately. This makes working on a project a breeze.
+
+When you've finished, simply hit `Ctrl+C`, and press enter on barely's prompt to push your changes to git, publish the site to your sftp server, or any other action you've specified.
+
+## Extensibility
+
+barely comes with 10 [plugins](plugins.md) that make working even easier, like automatically compressing images, compiling SASS, generating complete HTML forms out of yaml, and managing Collections (barely's catch-all term for things like tags or categories on posts and pages).
+
+Should you still miss some functionality, chances are you can implement it in minutes, thanks to barely's super simple [plugin API](plugins.md).
+
+[< back](README.md)
