@@ -9,10 +9,10 @@
 <br />
 <p align="center">
   <a href="https://github.com/charludo/barely">
-    <img src="docs/logo.png" width="80" height="80">
+    <img src="docs/logo.png" width="auto" height="100" alt="barely" >
   </a>
 
-  <h3 align="center">barely</h3>
+
 
   <p align="center">
     barely is a lightweight, but highly extensible static site generator.
