@@ -9,7 +9,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/charludo/barely">
-    <img src="docs/images/logo.png" width="80" height="80">
+    <img src="docs/logo.png" width="80" height="80">
   </a>
 
   <h3 align="center">barely</h3>
