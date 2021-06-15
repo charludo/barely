@@ -50,7 +50,7 @@ class Minimizer(PluginBase):
 
     def minimize_css(self, item):
         indented = True if item["extension"] == "sass" else False
-        compiled = sass.compile(string=item["output"], output_style=self.plugin_config["CSS_OUTPUT_STYLE"],
+        compiled = sass.compile(string=item["content_raw"], output_style=self.plugin_config["CSS_OUTPUT_STYLE"],
                                 indented=indented, source_comments=self.plugin_config["CSS_INCLUDE_COMMENTS"])
         item["destination"] = os.path.splitext(item["destination"])[0] + ".css"
         item["action"] = "compiled"
