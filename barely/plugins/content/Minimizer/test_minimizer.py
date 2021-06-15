@@ -53,7 +53,8 @@ class TestMinimizer(unittest.TestCase):
         item = {
             "destination": "",
             "output": "",
-            "extension": ""
+            "extension": "",
+            "content_raw": ""
         }
 
         mini = Minimizer()
