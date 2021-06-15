@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<title>{{ title }} | ib Baumgartner</title>
+	<meta name="description" content="{{ description }}">
+ 	<meta name="keywords" content="{{ keywords }}">
+    <meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="shortcut icon" type="image/x-icon" href="/res/favicon.ico">
+	<link rel="stylesheet" href="/res/style.css" />
+	<link rel="stylesheet" href="/res/hamburgers.css">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script type="text/javascript" src="/res/send_mail.js"></script>
+	<link href="/res/lightbox/src/css/lightbox.css" rel="stylesheet">
+    <script type="text/javascript" src="/res/unveil/jquery.unveil.js"></script>
+</head>
+<body>
+	<button class="hamburger hamburger--squeeze" type="button">
+		<span class="hamburger-box">
+			<span class="hamburger-inner"></span>
+		</span>
+	</button>
+	<a id="logo-mobile" href="/"><img src="/res/images/logo.png" alt="Logo ib Baumgartner"></a>
+	<div class="menu" id="navigation">
+		<ul>
+			<li id="logo-baumgartner"><a href="/"><img src="/res/images/logo.png" alt="Logo ib Baumgartner"></a></li>
+			<li><a href="/">Home</a></li>
+			<li><a href="/#was-wir-machen">Was wir machen</a></li>
+			<li><a href="/wer-wir-sind/">Wer wir sind</a></li>
+			<li><a href="/projekte/">Projekte</a></li>
+			<li><a href="/karriere/">Karriere</a></li>
+			<li><a href="/kontakt/">Kontakt</a></li>
+			<li id="logo-ihk"><a href="/karriere/"><img src="/res/images/ihk.png" alt="Logo IHK"></a></li>
+		</ul>
+	</div>
+	{% block body %}
+
+	{% endblock %}
+	<div class="footer section">
+		<div class="sitemap">
+			<h3>SITEMAP</h3>
+			<a href="/wer-wir-sind/">Wer wir sind</a>
+			<br><a href="/#was-wir-machen/">Was wir machen</a>
+			<br><a href="/projekte/">Projekte</a>
+			<br><a href="/karriere/">Karriere</a>
+			<br><a href="/kontakt/">Kontakt</a>
+
+			<h3>RECHTLICHES</h3>
+			<a href="/impressum/">Impressum</a>
+			<br><a href="/datenschutz/">Datenschutz</a>
+			<br><br>Umsetzung: <a target="_blank" href="https://h2-webdesign.de">h2-webdesign.de</a>
+		</div>
+		<div class="contact-info">
+			<h3>KONTAKT</h3>
+			<p>ib baumgartner
+				<br>
+				<br>Ingenieurbüro für technische Gebäudeausrüstung
+				<br>
+				<br>Viktor-Frankl-Straße 9
+				<br>D-86916 Kaufering
+				<br>Tel.: +49 (0)8191 94 02 9 – 0
+				<br>Fax: +49 (0)8191 94 02 9 – 29
+				<br>mail@ib-baumgartner.de
+				<br>www.ib-baumgartner.de</p>
+		</div>
+		<div class="contact-form">
+			<form action="/res/mailer.php" method="post" id="footerForm">
+				<input type="text" class="formInput name_required" name="name_required" maxlength="50" placeholder="">
+				<input type="email" name="email" placeholder="Email" required>
+				<textarea name="message" placeholder="Nachricht" required></textarea>
+				 <div id="footerErfolgsNachricht"></div>
+				<button type="submit" name="send">Senden</button>
+			</form>
+		</div>
+	</div>
+	<script type="text/javascript" src="/res/mobile-menu.js"></script>
+	<script type="text/javascript" src="/res/lightbox/src/js/lightbox.js"></script>
+	<script>lightbox.option({'wrapAround': true, 'fitImagesInViewport': true})</script>
+</body>
+</html>
