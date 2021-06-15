@@ -1,0 +1,17 @@
+{{ content }}
+<p>Sortieren:</p>
+<a class="button-light" href="/projekte/index.php?sortby=titel">Titel</a>
+<a class="button-light" href="/projekte/index.php?sortby=projektbeginn">Projektbeginn</a>
+<p>Filtern:</p>
+<select class="select-light" onchange="window.location.href=this.value">
+    <option value="/projekte/">Gebäudetyp</option>
+    <option value="/projekte/index.php?type=verwaltung">Verwaltungsgebäude</option>
+    <option value="/projekte/index.php?type=schule">Schulgebäude</option>
+    <option value="/projekte/index.php?type=labor">Laborgebäude</option>
+    <option value="/projekte/index.php?type=industrie">Industriegebäude</option>
+    <option value="/projekte/index.php?type=wohnen">Wohngebäude</option>
+	<option value="/projekte/index.php?type=einzelhandel">Einzelhandel</option>
+	<option value="/projekte/index.php?type=gastronomie">Gastronomie</option>
+	<option value="/projekte/index.php?type=arzt">Arztpraxen</option>
+	<option value="/projekte/index.php?type=autohaus">Autohäuser</option>
+</select>

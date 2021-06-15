@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block body %}
+<img id="motto" src="/res/images/motto.png" alt="von zuhören bis lösen über beraten und planen">
+<a href="#was-wir-machen"><img id="home-arrow" src="/res/images/down-arrow.png"></a>
+<div class="titleimage titleimage-large" style="background-image: url('{{titleimage}}')"></div>
+<a id="ihk-mobile" href="/karriere/"><img src="/res/images/ihk.png" alt="Logo IHK"></a>
+<div class="section home-cards" id="was-wir-machen">
+	<h1>Spezialgebiete</h1>
+	<div class="hc-card">
+		<img src="/res/images/leaf-green.png">
+		<h3>Regenerative<br>Energiegewinnung</h3>
+	</div>
+	<div class="hc-card">
+		<img src="/res/images/fire.png">
+		<h3>Wärmerück&shy;gewinnung<br>& Abwärmenutzung</h3>
+	</div>
+	<div class="hc-card">
+		<img src="/res/images/house.png">
+		<h3>Sanierung<br>haustechnischer Anlagen</h3>
+	</div>
+</div>
+<div class="section home-leistungen">
+	<div class="hl-left">
+		<h1>Leistungs&shy;spektrum</h1>
+		<div class="rod">
+
+		</div>
+		<div class="step">
+			<div class="step-icon">
+				<img src="/res/images/meeting.png">
+			</div>
+			<div class="step-info">
+				<h3>Beratung</h3>
+				<div class="speech-bubble">
+					<ul>
+						<li>Bestandsaufnahmen</li>
+						<li>Bestandsmessungen</li>
+						<li>Wirtschaftlichkeits- und<br>Betriebskosten&shy;untersuchungen</li>
+						<li>Systemanalysen</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="step">
+			<div class="step-icon">
+				<img src="/res/images/map.png">
+			</div>
+			<div class="step-info">
+				<h3>Planung</h3>
+				<div class="speech-bubble">
+					<ul>
+						<li>Leistungsphasen 1‐7 gemäß HOAI</li>
+						<li>Neubau und Sanierungen</li>
+						<li>Ingenieurtechnische Überwachung</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="step">
+			<div class="step-icon">
+				<img src="/res/images/construction.png">
+			</div>
+			<div class="step-info">
+				<h3>Bauleitung</h3>
+				<div class="speech-bubble">
+					<ul>
+						<li>Leistungsphase 8 gemäß HOAI</li>
+						<li>Gewerke: Sanitär-, Heizungs-,<br>Lüftungs-, Klima- und Kältetechnik</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="hl-right">
+		<h1>Bereiche</h1>
+		<div class="hl-bereiche">
+			<div class="bereich" style="background-image: url('/res/images/{{ kaelte }}')">
+				<a href="/kaeltetechnik">Kälte</a>
+			</div>
+			<div class="bereich" style="background-image: url('/res/images/{{ waerme }}')">
+				<a href="/waermetechnik">Wärme</a>
+			</div>
+			<div class="bereich" style="background-image: url('/res/images/{{ raumluft }}')">
+				<a href="/raumlufttechnik">Raumluft</a>
+			</div>
+			<div class="bereich" style="background-image: url('/res/images/{{ sanitaer }}')">
+				<a href="/sanitaertechnik">Sanitär</a>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="home-text">
+	<div class="ht-left">
+		<img src="/res/images/logo.png">
+		{{ content }}
+		<a href="/wer-wir-sind">[ mehr erfahren ]</a>
+	</div>
+
+	<div class="ht-right">
+		<img src="/res/images/home1.jpg">
+		<img src="/res/images/home3.jpg">
+		<img src="/res/images/home2.jpg">
+		<img src="/res/images/home4.jpg">
+	</div>
+</div>
+{% endblock %}

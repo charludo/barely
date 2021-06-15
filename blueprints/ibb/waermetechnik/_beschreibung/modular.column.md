@@ -1,0 +1,9 @@
+# WÄRMETECHNIK
+
+Höhere Anforderungen durch den Gesetzgeber, stetig gestiegene Energiekosten und das wachsende Energie-Bewusstsein der Gesellschaft tragen dazu bei, dass sich die Wärmeerzeugung in Gebäuden innerhalb der vergangenen 20 Jahre deutlich verändert hat. Wo früher noch ein Gas- oder vielleicht sogar Öl-Heizkessel zum Einsatz gekommen ist, denken heutige Bauherren über Wärmepumpe, Pellets-/Scheitholzkessel oder Blockheizkraftwerk nach. Die Solaranlage gilt schon als Standard und so sehen wir auf den Dächern neuer Häuser immer häufiger neben der Photovoltaik-auch noch die Solarthermische Anlage. Wo früher noch Umwälzpumpen mit den größten Stromverbrauch eines Haushalts ausmachten, kommen heute Hocheffizienzpumpen zum Einsatz, die tatsächlich nur noch einen Bruchteil der Antriebsenergie alter Pumpen benötigen.
+
+Auch die Anforderungen an die Wärmedämmung sind in den vergangenen Jahren gestiegen. Je weniger Wärme „unterwegs“ verloren geht, desto mehr kommt da an, wo wir sie haben wollen. Während im Ein- bis Zweifamilienhaus noch der Installateur in der Regel die Beratung, Planung und Ausführung alleine übernimmt, ist in größeren Gebäuden – seien es Mehrfamilienhäuser, Büro- und Verwaltungshäuser oder andere Gewerbe- und Industriebauten – das Hinzuziehen eines Fachingenieurs zu empfehlen, der vor Umsetzung mehrere Systeme zur Wärmeversorgung des Gebäudes wirtschaftlich gegenüberstellt.
+
+Vorschriften verändern sich, wie z.B. die Energieeinsparverordnung (EnEV) oder das Erneuerbare-Energien-Wärmegesetz (EEWärmeG). Viele Modernisierungsmaßnahmen werden finanziell vom Staat oder dem Bund gefördert. Der moderne Bauherr stößt dabei auf einen wahren Fördermitteldschungel.
+
+Wir helfen Ihnen dabei, bei all den Themen rund um die Wärmeversorgung Ihres Gebäudes den Überblick zu behalten und eine für Ihre Wünsche und Bedürfnisse individuell optimal passende Lösung zu finden. 
