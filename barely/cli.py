@@ -30,7 +30,8 @@ def get_appdir():
         home = os.path.expanduser("~")
         return os.path.join(home, ".barely")
     elif _platform == "Windows":
-        print("Windows")
+        home = os.path.expandvars(r"%APPDATA%")
+        return os.path.join(home, "barely")
     else:
         sys.exit("Running on unknown platform.")
 
