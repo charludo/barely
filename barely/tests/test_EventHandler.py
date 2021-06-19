@@ -156,7 +156,7 @@ class TestEventHandler(unittest.TestCase):
 
         os.chdir("affected")
 
-        golden_base = {l_extendsbase, l_l_extendsbase}  # , l_l_extendschild}
+        golden_base = {l_extendsbase, l_l_extendsbase, l_l_extendschild}
         self.assertSetEqual(golden_base, set(self.EH._find_children(base)))
 
         golden_parentless = {l_extendsbase, r_r_extendsparentless, l_l_extendschild}

@@ -154,7 +154,7 @@ class EventHandler():
                     for match in matches:
                         if match == parent:
                             yield from self._find_children(str(path))
-                            yield str(path)
+                            yield str(path).replace("/", os.sep)
 
     def _determine_type(self, path):
         """ determine the type of the file via its extension. return both """
