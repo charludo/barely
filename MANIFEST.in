@@ -1,3 +1,3 @@
-include barely/*
-include blueprints/*
-include docs/*
+recursive-include barely/*
+recursive-include blueprints/*
+recursive-include docs/*
