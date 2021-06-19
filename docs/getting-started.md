@@ -2,7 +2,7 @@
 
 Good news: Getting started with barely is super easy! This guide elaborates on the [Quickstart Guide](/README.md#quickstart) in the README.
 
-## Prerequisites
+### Prerequisites
 
 Make sure you have python >= 3.9 installed:
 ```console
@@ -10,19 +10,25 @@ $ python -V
 Python 3.9.x
 ```
 
-If you prefer, create a virtual environment for barely:
+(On Windows: `py -V`)
+
+It is highly recommended to create a virtual environment for barely, otherwise some parts may not work:
 ```console
 $ python -m venv .venv
 $ . .venv/bin/activate
 (.venv) $
 ```
 
-## Installation
+(On Windows: `py -m venv .venv`)
+
+### Installation
 
 Now, simply install barely like any other package:
 ```console
 (.venv) $ pip install barely
 ```
+
+(On Windows: `py -m pip install barely`)
 
 That's it! Congrats!
 
