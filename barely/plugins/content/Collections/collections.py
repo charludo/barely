@@ -153,7 +153,7 @@ class Collections(PluginBase):
                 collections.append({
                     "name": c,
                     "size": len(self.COLLECTION[c]),
-                    "href": join(sep, self.plugin_config["PAGE"], c.lower(), "index.html")
+                    "href": join(sep, self.plugin_config["PAGE"], c.lower(), "index.html").replace("\\", "/")
                 })
             collections = sorted(collections, key=lambda k: k["size"], reverse=True)
 
