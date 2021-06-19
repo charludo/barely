@@ -1,5 +1,0 @@
-AuthName "Zum bearbeiten der Referenzen einloggen:"
-AuthType Basic
-AuthUserFile /home/strato/www/ib/www.ib-baumgartner.de/htdocs//baumgartner/referenzupdater/.htpasswd
-AuthGroupFile /dev/null
-require valid-user 
