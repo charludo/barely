@@ -1,3 +1,5 @@
-recursive-include barely/*
-recursive-include blueprints/*
-recursive-include docs/*
+recursive-include barely *
+recursive-include docs *
+recursive-include blueprints *
+include LICENSE
+include README.md
