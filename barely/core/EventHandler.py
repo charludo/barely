@@ -141,6 +141,7 @@ class EventHandler():
         # find all templates. Yes, all of them.
         parent = parent.replace(os.path.join(config["ROOT"]["DEV"], ""), "")
         parent = parent.replace(os.path.join(config["TEMPLATES_DIR"], ""), "")
+        parent = parent.replace("/", os.sep)
         for path in Path(config["TEMPLATES_DIR"]).rglob("*.html"):
             # open them to check their contents
             with open(path, "r") as file:
@@ -154,7 +155,7 @@ class EventHandler():
                     for match in matches:
                         if match == parent:
                             yield from self._find_children(str(path))
-                            yield str(path).replace("/", os.sep)
+                            yield str(path)
 
     def _determine_type(self, path):
         """ determine the type of the file via its extension. return both """
