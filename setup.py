@@ -11,7 +11,6 @@ setuptools.setup(name='barely',
                  author='Charlotte Hartmann Paludo',
                  author_email='contact@charlotteharludo.com',
                  license='GPL-3.0',
-                 packages=setuptools.find_packages(),
                  zip_safe=False,
                  entry_points={"console_scripts": ["barely = barely.cli:run"]},
                  install_requires=[
