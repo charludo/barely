@@ -263,7 +263,7 @@ Project Link: [https://github.com/charludo/barely](https://github.com/charludo/b
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/charludo/barely.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/charludo/barely
 [contributors-url]: https://github.com/charludo/barely/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/charludo/barely
 [forks-url]: https://github.com/charludo/barely/network/members
