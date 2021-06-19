@@ -2,7 +2,6 @@ import setuptools
 
 
 setuptools.setup(name='barely',
-                 packages=['barely'],
                  version='0.9.0',
                  description='barely is a lightweight, but highly extensible static site generator written in pure python.',
                  keyword=['static site generator', 'jinja2', 'markdown', 'web development'],
@@ -11,6 +10,7 @@ setuptools.setup(name='barely',
                  author='Charlotte Hartmann Paludo',
                  author_email='contact@charlotteharludo.com',
                  license='GPL-3.0',
+                 packages=setuptools.find_packages(),
                  zip_safe=False,
                  entry_points={"console_scripts": ["barely = barely.cli:run"]},
                  install_requires=[
