@@ -3,7 +3,6 @@ import unittest
 from mock import patch
 from unittest.mock import MagicMock
 from PIL.PngImagePlugin import PngImageFile
-from jinja2.exceptions import TemplateNotFound
 from PIL import Image, ImageChops, UnidentifiedImageError
 import barely.core.ProcessingPipeline as PP
 from barely.plugins.PluginManager import PluginManager
