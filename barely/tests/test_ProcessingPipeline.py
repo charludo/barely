@@ -3,7 +3,6 @@ import unittest
 from mock import patch
 from unittest.mock import MagicMock
 from PIL.PngImagePlugin import PngImageFile
-from jinja2.exceptions import TemplateNotFound
 from PIL import Image, ImageChops, UnidentifiedImageError
 import barely.core.ProcessingPipeline as PP
 from barely.plugins.PluginManager import PluginManager
@@ -323,7 +322,7 @@ class TestProcessingPipeline(unittest.TestCase):
         self.assertEqual("template.html", list(PP.extract_template([item]))[0]["template"])
 
         item["origin"] = "template.subtemplate.md"
-        self.assertEqual("template/subtemplate.html", list(PP.extract_template([item]))[0]["template"])
+        self.assertEqual(os.path.join("template", "subtemplate.html"), list(PP.extract_template([item]))[0]["template"])
 
     def test_parse_meta(self):
         def get_yaml(file):

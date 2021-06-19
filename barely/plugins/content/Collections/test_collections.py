@@ -1,3 +1,4 @@
+import os
 import unittest
 from mock import patch
 from unittest.mock import MagicMock
@@ -149,7 +150,7 @@ class TestCollections(unittest.TestCase):
         golden_args = [
             {
                 "template": "placeholder",
-                "destination": "web/categories/col1/index.html",
+                "destination": os.path.join("web", "categories", "col1", "index.html"),
                 "meta": {
                     "title": "col1",
                     "collectibles": [collectible_1]
@@ -161,7 +162,7 @@ class TestCollections(unittest.TestCase):
             },
             {
                 "template": "placeholder",
-                "destination": "web/categories/col2/index.html",
+                "destination": os.path.join("web", "categories", "col2", "index.html"),
                 "meta": {
                     "title": "col2",
                     "collectibles": [collectible_1, collectible_2]
@@ -173,7 +174,7 @@ class TestCollections(unittest.TestCase):
             },
             {
                 "template": "placeholder",
-                "destination": "web/categories/col3/index.html",
+                "destination": os.path.join("web", "categories", "col3", "index.html"),
                 "meta": {
                     "title": "col3",
                     "collectibles": [collectible_2]
@@ -185,7 +186,7 @@ class TestCollections(unittest.TestCase):
             },
             {
                 "template": "placeholder-overview",
-                "destination": "web/categories/index.html",
+                "destination": os.path.join("web", "categories", "index.html"),
                 "meta": {
                     "title": "overview",
                     "collections": [

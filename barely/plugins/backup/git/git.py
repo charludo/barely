@@ -1,8 +1,9 @@
 """
 push to git remote rep automatically
 """
-
 import os
+os.environ["GIT_PYTHON_REFRESH"] = "quiet"
+
 from git import Repo
 from datetime import datetime
 from barely.plugins import PluginBase

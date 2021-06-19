@@ -113,7 +113,12 @@ class TestEventHandler(unittest.TestCase):
         notify.side_effect = collect_notifications
         self.EH.force_rebuild()
 
-        golden_notified = {'./dir/_subpage/subimage.jpg', './dir/page.md', './dir/image.png', './file.txt'}
+        golden_notified = {
+            os.path.join(".", "dir", "_subpage", "subimage.jpg"),
+            os.path.join(".", "dir", "page.md"),
+            os.path.join(".", "dir", "image.png"),
+            os.path.join(".", "file.txt")
+        }
         self.assertSetEqual(golden_notified, set(notifications))
 
         os.chdir("..")

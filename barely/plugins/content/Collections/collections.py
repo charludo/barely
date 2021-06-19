@@ -60,12 +60,12 @@ class Collections(PluginBase):
                 collectible = {}
                 collectible["title"] = item["meta"]["title"]
                 collectible["preview"] = item["content"][:self.plugin_config["SUMMARY_LENGTH"]] + "..."
-                collectible["href"] = item["destination"].replace(self.config["ROOT"]["WEB"], "", 1)
+                collectible["href"] = item["destination"].replace(self.config["ROOT"]["WEB"], "", 1).replace("\\", "/")
                 collectible["timestamp"] = getmtime(item["origin"])
 
                 # we'd also really like to get the first image of the blog
                 if "title_image" in item["meta"]:
-                    img_abspath = join(dirname(item["destination"].replace(self.config["ROOT"]["WEB"], "", 1)), item["meta"]["title_image"])
+                    img_abspath = join(dirname(item["destination"].replace(self.config["ROOT"]["WEB"], "", 1)), item["meta"]["title_image"]).replace("\\", "/")
                     collectible["image"] = img_abspath
 
                 # for integration with Timestamps
@@ -153,7 +153,7 @@ class Collections(PluginBase):
                 collections.append({
                     "name": c,
                     "size": len(self.COLLECTION[c]),
-                    "href": join(sep, self.plugin_config["PAGE"], c.lower(), "index.html")
+                    "href": join(sep, self.plugin_config["PAGE"], c.lower(), "index.html").replace("\\", "/")
                 })
             collections = sorted(collections, key=lambda k: k["size"], reverse=True)
 

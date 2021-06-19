@@ -104,7 +104,7 @@ def read_file(items):
     """ filter that reads text based files """
     for item in items:
         try:
-            with open(item["origin"], 'r') as file:
+            with open(item["origin"], 'r', encoding='utf-8') as file:
                 raw_content = file.read()
                 file.close()
 
@@ -126,7 +126,7 @@ def write_file(items):
             pass
         try:
             os.makedirs(os.path.dirname(item["destination"]), exist_ok=True)
-            with open(item["destination"], 'w+') as file:
+            with open(item["destination"], 'w+', encoding='utf-8') as file:
                 file.write(item["output"])
                 file.close()
                 log(item)

@@ -61,26 +61,33 @@ class PluginManager:
 
         found_plugins = {} if type_content else []
         for (_, module_name, _) in iter_modules(module_paths):
-            module = import_module(f"{module_name}")
+            try:
+                module = import_module(f"{module_name}")
+            except Exception:
+                continue
 
             for attribute_name in dir(module):
                 attribute = getattr(module, attribute_name)
 
                 # necessary to filter out the imported parent class
                 if isclass(attribute) and issubclass(attribute, PluginBase) and not issubclass(PluginBase, attribute):
-                    plugin_instance = attribute()
-                    if type_content:
-                        name, priority, registered_for = plugin_instance.register()
-                        priority = int(priority)
-                        if priority > -1:
-                            self.plugin_count += 1
-                            for extension in registered_for:
-                                found_plugins.setdefault(extension, []).append((plugin_instance, priority))
-                    else:
-                        name, priority = plugin_instance.register()
-                        if priority > -1:
-                            self.plugin_count += 1
-                            found_plugins.append((plugin_instance, priority))
+                    # is that a long-ass try-except? yes. but if a plugin is broken, idk about knowing why, I just do not want to initialize it.
+                    try:
+                        plugin_instance = attribute()
+                        if type_content:
+                            name, priority, registered_for = plugin_instance.register()
+                            priority = int(priority)
+                            if priority > -1:
+                                self.plugin_count += 1
+                                for extension in registered_for:
+                                    found_plugins.setdefault(extension, []).append((plugin_instance, priority))
+                        else:
+                            name, priority = plugin_instance.register()
+                            if priority > -1:
+                                self.plugin_count += 1
+                                found_plugins.append((plugin_instance, priority))
+                    except Exception:
+                        pass
 
         sys.path = list(set(sys.path) - set(module_paths))                      # remove our added entries to path
 
