@@ -1,0 +1,3 @@
+include barely/*
+include blueprints/*
+include docs/*
