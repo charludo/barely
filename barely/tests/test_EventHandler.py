@@ -141,7 +141,7 @@ class TestEventHandler(unittest.TestCase):
 
         os.chdir("..")
 
-    """def test__find_children(self):
+    def test__find_children(self):
         def join(*args):
             return os.path.join("templates", *args) + ".html"
 
@@ -171,7 +171,7 @@ class TestEventHandler(unittest.TestCase):
         golden_once = {l_l_extendschild}
         self.assertSetEqual(golden_once, set(self.EH._find_children(l_extendsbase)))
 
-        os.chdir("..")"""
+        os.chdir("..")
 
     def test__determine_type(self):
         os.chdir("type")
