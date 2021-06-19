@@ -248,6 +248,7 @@ def test(verbose, keep_files):
     #
 
     if not keep_files:
+        os.chdir(appdir)
         shutil.rmtree(testdir)
 
 
