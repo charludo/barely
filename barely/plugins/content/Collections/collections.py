@@ -60,7 +60,7 @@ class Collections(PluginBase):
                 collectible = {}
                 collectible["title"] = item["meta"]["title"]
                 collectible["preview"] = item["content"][:self.plugin_config["SUMMARY_LENGTH"]] + "..."
-                collectible["href"] = item["destination"].replace(self.config["ROOT"]["WEB"], "", 1)
+                collectible["href"] = item["destination"].replace(self.config["ROOT"]["WEB"], "", 1).replace("\\", "/")
                 collectible["timestamp"] = getmtime(item["origin"])
 
                 # we'd also really like to get the first image of the blog
