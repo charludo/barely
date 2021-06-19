@@ -323,7 +323,7 @@ class TestProcessingPipeline(unittest.TestCase):
         self.assertEqual("template.html", list(PP.extract_template([item]))[0]["template"])
 
         item["origin"] = "template.subtemplate.md"
-        self.assertEqual("template/subtemplate.html", list(PP.extract_template([item]))[0]["template"])
+        self.assertEqual(os.path.join("template", "subtemplate.html"), list(PP.extract_template([item]))[0]["template"])
 
     def test_parse_meta(self):
         def get_yaml(file):
