@@ -61,7 +61,10 @@ class PluginManager:
 
         found_plugins = {} if type_content else []
         for (_, module_name, _) in iter_modules(module_paths):
-            module = import_module(f"{module_name}")
+            try:
+                module = import_module(f"{module_name}")
+            except Exception:
+                continue
 
             for attribute_name in dir(module):
                 attribute = getattr(module, attribute_name)
