@@ -136,37 +136,7 @@ class TestEventHandler(unittest.TestCase):
 
         os.chdir("..")
 
-    def test__find_children(self):
-        def join(*args):
-            return os.path.join("templates", *args) + ".html"
-
-        base = join("base")
-        extendsdeeper = join("extendsdeeper")
-        l_extendsbase = join("left", "extendsbase")
-        l_parentless = join("left", "parentless")
-        l_l_extendsbase = join("left", "left", "extendsbase")
-        l_l_extendschild = join("left", "left", "extendschild")
-        r_l_deeper = join("right", "left", "deeper")
-        r_r_extendsparentless = join("right", "right", "extendsparentless")
-
-        os.chdir("affected")
-
-        golden_base = {l_extendsbase, l_l_extendsbase, l_l_extendschild}
-        self.assertSetEqual(golden_base, set(self.EH._find_children(base)))
-
-        golden_parentless = {l_extendsbase, r_r_extendsparentless, l_l_extendschild}
-        self.assertSetEqual(golden_parentless, set(self.EH._find_children(l_parentless)))
-
-        golden_childless = set()
-        self.assertSetEqual(golden_childless, set(self.EH._find_children(extendsdeeper)))
-
-        golden_reverse = {extendsdeeper}
-        self.assertSetEqual(golden_reverse, set(self.EH._find_children(r_l_deeper)))
-
-        golden_once = {l_l_extendschild}
-        self.assertSetEqual(golden_once, set(self.EH._find_children(l_extendsbase)))
-
-        os.chdir("..")
+    
 
     def test__determine_type(self):
         os.chdir("type")
