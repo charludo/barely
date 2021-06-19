@@ -82,7 +82,7 @@ $ . .venv/bin/activate
 (.venv) $
 ```
 
-(On Windows: `py -m venv .venv` and `.venv\\Scripts\\activate`)
+(On Windows: `py -m venv .venv` and `.venv\Scripts\activate`)
 
 ### Installation
 
