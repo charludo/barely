@@ -122,4 +122,4 @@ class TestForms(unittest.TestCase):
 
         f = Forms()
         result = list(f.action(item=item))[0]
-        self.assertEqual(re.sub(r'[\s+]', '', golden_form), re.sub(r'[\s+]', '', result["form-sample"]))
+        self.assertEqual(re.sub(r'[\s+]', '', golden_form), re.sub(r'[\s+]', '', result["meta"]["form_sample"]))

@@ -25,6 +25,7 @@ class Forms(PluginBase):
     field_defaults = {
         "required": False,
         "label": False,
+        "label-after": False,
         "type": "",
         "options": {},
         "default": "",
@@ -61,7 +62,7 @@ class Forms(PluginBase):
 
             for key, value in form_list.items():
                 # try:
-                item["form-" + key] = "\n".join(self.generate_form(key, **value))
+                item["meta"]["form_" + key] = "\n".join(self.generate_form(key, **value))
                 # except Exception:
                 #    pass
             yield item
@@ -121,7 +122,13 @@ class Forms(PluginBase):
             elif field_config["type"] == "textarea":
                 yield (f"<textarea id=\"{id}\" class=\"{field_config['classes']}\" rows=\"{field_config['rows']}\" cols=\"{field_config['cols']}\" "
                        f"name=\"{field_name}\" placeholder=\"{field_config['placeholder']}\" {required}>{field_config['value']}</textarea>")
+
+            elif field_config["type"] == "status":
+                yield (f"<div id=\"{id}\" class=\"{field_config['classes']}\"></div>")
             else:
                 yield (f"<input type=\"{field_config['type']}\" "
                        f"id=\"{id}\" class=\"{field_config['classes']}\" "
                        f"name=\"{field_name}\" value=\"{field_config['value']}\" placeholder=\"{field_config['placeholder']}\" {required}>")
+
+            if field_config["label-after"]:
+                yield f"<label for=\"{id}\">{field_config['label-after']}</label>"

@@ -2,12 +2,14 @@
 auto-generate category pages from "collection"
 meta-tags on the pages
 """
+import glob
 from os import walk, sep
 from os.path import join, getmtime, dirname, splitext
 from watchdog.events import FileModifiedEvent
 from barely.plugins import PluginBase
 from barely.core.EventHandler import EventHandler as EH
-from barely.core.ProcessingPipeline import parse_meta, render_page, read_file, write_file
+from barely.plugins.PluginManager import PluginManager as PM
+from barely.core.ProcessingPipeline import parse_meta, parse_content, render_page, read_file, write_file
 
 
 class Collections(PluginBase):
@@ -30,15 +32,14 @@ class Collections(PluginBase):
             self.plugin_config = standard_config | self.config["COLLECTIONS"]
 
             # need to get a full read on the current collections-situation.
-            for root, dirs, files in walk(self.config["ROOT"]["DEV"], topdown=False):
-                for path in files:
-                    path = join(root, path)
-                    if splitext(path)[1] == self.config["PAGE_EXT"]:
-                        item = {
-                            "origin": path
-                        }
-                        for it in parse_meta(read_file(item)):
-                            self.action(item=it)
+            for file in glob.iglob(join(self.config["ROOT"]["DEV"], "**", "*.md"), recursive=True):
+                item = {
+                    "origin": file,
+                    "destination": EH._get_web_path(file)
+                }
+                for it in parse_content(parse_meta(read_file([item]))):
+                    _ = list(self.action(item=it))
+
         except KeyError:
             self.plugin_config = {"PRIORITY": -1}
 
@@ -81,7 +82,6 @@ class Collections(PluginBase):
                     collectible["reading_time"] = item["meta"]["reading_time"]
                 except KeyError:
                     pass
-
                 # append the collectible to the appropriate ccllections
                 # make sure there are no duplicates though! (determined by href)
                 for c in collections:
@@ -114,9 +114,13 @@ class Collections(PluginBase):
             yield item
 
     def finalize(self):
+        pm = PM()
+        eh = EH()
+        eh.init_pipeline(pm)
+
         frozen_exhibits = self.EXHIBITS
         for exhibitor in frozen_exhibits:
-            EH.notify(FileModifiedEvent(src_path=exhibitor))
+            eh.notify(FileModifiedEvent(src_path=exhibitor))
 
         for col_name in self.COLLECTION:
             if self.plugin_config["COLLECTION_TEMPLATE"]:

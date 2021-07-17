@@ -74,6 +74,7 @@ Form fields can have the following attributes:
 classes: extra classes
 required: bool
 label: false or label text
+label-after: false or label text
 type: type of input
 options: needed by select, radio types
 default: default value
