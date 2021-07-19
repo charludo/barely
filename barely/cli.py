@@ -169,7 +169,9 @@ def live(verbose):
 
 
 @run.command()
-def rebuild():
+@click.option("--start", "-s", help="after rebuilding, start the web server", is_flag=True)
+@click.pass_context
+def rebuild(ctx, start):
     """(re)build the entire project"""
     init()
 
@@ -183,7 +185,10 @@ def rebuild():
     EH.force_rebuild()
     PM.finalize_content()
 
-    aftermath(PM)
+    if start:
+        ctx.invoke(live)
+    else:
+        aftermath(PM)
 
 
 def aftermath(PM):

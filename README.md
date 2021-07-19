@@ -147,6 +147,8 @@ Now let's get familiar with using barely!
 
 	Your favorite browser should open, and you will be greeted with the rendered version of `template.md`.
 
+    We could also have combined those two steps with the `-s` flag like this: `barely rebuild -s`, to start the live server immediately after rebuilding.
+
 	Now is a good time to play around a bit with your sample project - make some changes to the contents, the templates or add a stylesheet and watch the page update in real time!
 
 	For a more thorough explanation, make sure to check out [Getting Started](docs/getting-started.md) in the docs!
