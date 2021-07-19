@@ -105,6 +105,7 @@ class TestCollections(unittest.TestCase):
             "date": "21.07.2021",
             "reading_time": "1 - 3",
             "preview": "contents of this page, deliberatly < 100 chars...",
+            "raw": "contents of this page, deliberatly < 100 chars",
             "href": "/page/page.html",
             "timestamp": 2
         }
@@ -114,6 +115,7 @@ class TestCollections(unittest.TestCase):
             "date": "10.07.2021",
             "reading_time": "1 - 3",
             "preview": "contents of this page, deliberatly < 100 chars...",
+            "raw": "contents of this page, deliberatly < 100 chars",
             "href": "/page2/page2.html",
             "timestamp": 2
         }
