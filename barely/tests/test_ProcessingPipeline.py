@@ -208,6 +208,16 @@ class TestProcessingPipeline(unittest.TestCase):
         PP.write_file([test_item_ext])
         self.assertEqual(test_item["output"], readf(test_item_ext_gold))
 
+        test_item_no_render = test_item_ext | {
+            "meta": {
+                "no_render": True
+            },
+            "destination": "no_render.txt"
+        }
+
+        PP.write_file([test_item_no_render])
+        self.assertFalse(os.path.exists("no_render.txt"))
+
     def test_load_image(self):
         item = self.item | {
             "origin": "test_load.png"
@@ -387,18 +397,15 @@ class TestProcessingPipeline(unittest.TestCase):
             self.assertFalse(pipe_subpage.called)
 
     def test_render_page(self):
-        def get_output(template, content="", no_render=False):
+        def get_output(template, content=""):
             item = {
                 "template": template,
                 "content": content,
-                "meta": {
-                    "no_render": no_render
-                }
+                "meta": {}
             }
             return list(PP.render_page([item]))[0]["output"]
 
         self.assertEqual("test", get_output("template.html", "test"))
-        self.assertEqual("", get_output("template.html", "test", True))
         self.assertEqual("", get_output("template.html"))
 
         PP.render_page([{
