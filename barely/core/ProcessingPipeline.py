@@ -309,6 +309,7 @@ def render_page(items):
     """ filter that renders a dict and a jinja template into html """
     for item in items:
         if "no_render" in item["meta"] and item["meta"]["no_render"] is True:
+            item["output"] = ""
             yield item
             continue
         try:

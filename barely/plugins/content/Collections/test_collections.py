@@ -68,6 +68,7 @@ class TestCollections(unittest.TestCase):
                 "collections": ["col1", "col2"]
             },
             "content": "contents of this page, deliberatly < 100 chars",
+            "content_raw": "contents of this page, deliberatly < 100 chars",
             "destination": "web/page/page.html",
             "origin": "./page/page.md"
         }
@@ -82,6 +83,7 @@ class TestCollections(unittest.TestCase):
                 "exhibits": ["col1", "col4"]
             },
             "content": "contents of this page, deliberatly < 100 chars",
+            "content_raw": "contents of this page, deliberatly < 100 chars",
             "destination": "web/page2/page2.html",
             "origin": "./page2/page2.md"
         }
@@ -89,6 +91,8 @@ class TestCollections(unittest.TestCase):
         getmtime.return_value = 2
 
         col = Collections()
+        old_root = col.config["ROOT"]["DEV"]
+        col.config["ROOT"]["DEV"] = os.path.join(old_root, "empty")
         col.config["COLLECTIONS"] = {"PRIORITY": 2}
         col.__init__()
 
@@ -148,6 +152,7 @@ class TestCollections(unittest.TestCase):
         col.plugin_config["COLLECTION_TEMPLATE"] = "placeholder"
 
         col.finalize()
+        col.config["ROOT"]["DEV"] = old_root
 
         golden_args = [
             {
@@ -215,8 +220,7 @@ class TestCollections(unittest.TestCase):
                 "origin": "all collections"
             }
         ]
-
-        actual_args = [args[0][0] for args, kwargs in parse_meta.call_args_list]
+        actual_args = [list(args[0])[0] for args, kwargs in parse_meta.call_args_list]
         self.assertCountEqual(golden_args, actual_args)
 
         del col.config["COLLECTIONS"]
