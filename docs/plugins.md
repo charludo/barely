@@ -236,6 +236,7 @@ item:
 
   meta:
     modular: a list of subpages, if your page is modular
+    no_render: set to true if the page should not be rendered
     ...: all page specific yaml configuration
     ...: global variables from metadata.yaml
     ...: these get **unpacked, so you can use them directly in a template!

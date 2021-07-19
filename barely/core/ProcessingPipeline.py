@@ -308,6 +308,9 @@ def handle_subpages(items):
 def render_page(items):
     """ filter that renders a dict and a jinja template into html """
     for item in items:
+        if "no_render" in item["meta"] and item["meta"]["no_render"] is True:
+            yield item
+            continue
         try:
             page_template = jinja.get_template(item["template"])
             item["output"] = page_template.render(content=item["content"], **item["meta"])

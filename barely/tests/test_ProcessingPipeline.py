@@ -387,15 +387,18 @@ class TestProcessingPipeline(unittest.TestCase):
             self.assertFalse(pipe_subpage.called)
 
     def test_render_page(self):
-        def get_output(template, content=""):
+        def get_output(template, content="", no_render=False):
             item = {
                 "template": template,
                 "content": content,
-                "meta": {}
+                "meta": {
+                    "no_render": no_render
+                }
             }
             return list(PP.render_page([item]))[0]["output"]
 
         self.assertEqual("test", get_output("template.html", "test"))
+        self.assertEqual("", get_output("template.html", "test", True))
         self.assertEqual("", get_output("template.html"))
 
         PP.render_page([{
