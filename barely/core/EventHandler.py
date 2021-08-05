@@ -211,7 +211,6 @@ class EventHandler():
         except FileNotFoundError:
             self.logger.debug(f"{path} vanished. Most likely a temp file.")
 
-
     @staticmethod
     def _get_web_path(path):
         """ get where a file is supposed to go. depends on the type """

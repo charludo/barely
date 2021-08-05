@@ -18,7 +18,7 @@ import logging
 from pathlib import Path
 from PIL import Image, UnidentifiedImageError
 from jinja2 import Environment, FileSystemLoader
-from jinja2.exceptions import TemplateNotFound
+from jinja2.exceptions import TemplateNotFound, TemplateSyntaxError
 from barely.common.config import config
 
 logger = logging.getLogger("base.core")
@@ -337,7 +337,9 @@ def render_page(items):
             item["output"] = page_template.render(content=item["content"], **item["meta"])
             yield item
         except TemplateNotFound:
-            logger.warn(f"template \"{item['template']}\" not found")
+            logger.error(f"template \"{item['template']}\" not found")
+        except TemplateSyntaxError as e:
+            logger.error(f"template \"{item['template']}\" contains a Syntax Error: {e}")
 
 
 ################################

@@ -71,10 +71,13 @@ class Minimizer(PluginBase):
         return item
 
     def minimize_image(self, item):
-        long_edge = int(self.plugin_config["IMG_LONG_EDGE"])
-        size = long_edge, long_edge
+        try:
+            long_edge = int(self.plugin_config["IMG_LONG_EDGE"])
+            size = long_edge, long_edge
 
-        item["image"].thumbnail(size, Image.ANTIALIAS)
-        item["quality"] = int(self.plugin_config["IMG_QUALITY"])
-        item["action"] = "compressed"
+            item["image"].thumbnail(size, Image.ANTIALIAS)
+            item["quality"] = int(self.plugin_config["IMG_QUALITY"])
+            item["action"] = "compressed"
+        except Exception as e:
+            self.logger.error(f"An Error occured while handling the image: {e}")
         return item
