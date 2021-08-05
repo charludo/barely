@@ -73,21 +73,36 @@ class EventHandler():
             }
             PP.process([item])
 
-    def force_rebuild(self):
-        """ rebuild the entire project by first deleting the devroot, then marking every file as new """
-        print("barely :: starting full rebuild...")
-        PP.delete(config["ROOT"]["WEB"])
-        os.makedirs(config["ROOT"]["WEB"], exist_ok=True)
-        for root, dirs, files in os.walk(config["ROOT"]["DEV"], topdown=False):
+    def force_rebuild(self, start, light=False):
+        """ rebuild parts of or the entire project """
+        print(f"barely :: rebuilding {start}...")
+
+        # full rebuild, delete webroot
+        if start == "devroot":
+            start = config["ROOT"]["DEV"]
+            if not light:
+                PP.delete(config["ROOT"]["WEB"])
+                os.makedirs(config["ROOT"]["WEB"], exist_ok=True)
+        elif not start.startswith(config["ROOT"]["DEV"]):
+            start = os.path.join(config["ROOT"]["DEV"], start)
+
+        # a file was specified; only rebuild it
+        if os.path.isfile(start):
+            self.notify(FileCreatedEvent(src_path=start))
+            return
+
+        # rebuild all files in and below "start"
+        for root, dirs, files in os.walk(start, topdown=False):
             for path in files:
                 path = os.path.join(root, path)
                 if (config["TEMPLATES_DIR"] not in path
-                    and "config.yaml" not in path
-                    and "metadata.yaml" not in path
-                    and not any(ignored in path for ignored in config["IGNORE"])
-                        and not re.search(rf"[\\|\/]?_\S+[\\|\/]\S+\.{config['PAGE_EXT']}", path)):
+                        and "config.yaml" not in path
+                        and "metadata.yaml" not in path
+                        and not any(ignored in path for ignored in config["IGNORE"])
+                        and not re.search(rf"[\\|\/]?_\S+[\\|\/]\S+\.{config['PAGE_EXT']}", path)
+                        and not (light and self._determine_type(path)[0] == "IMAGE")):     # light ignores images
                     self.notify(FileCreatedEvent(src_path=path))
-        print("barely :: full rebuild complete.")
+        print("barely :: rebuild complete.")
 
     def _get_affected(self, template):
         """ yield the paths of all files that rely on a certain template """

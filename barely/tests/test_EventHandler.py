@@ -111,12 +111,39 @@ class TestEventHandler(unittest.TestCase):
         os.chdir("force")
 
         notify.side_effect = collect_notifications
-        self.EH.force_rebuild()
+        self.EH.force_rebuild("devroot")
 
         golden_notified = {
             os.path.join(".", "dir", "_subpage", "subimage.jpg"),
             os.path.join(".", "dir", "page.md"),
             os.path.join(".", "dir", "image.png"),
+            os.path.join(".", "file.txt")
+        }
+        self.assertSetEqual(golden_notified, set(notifications))
+
+        notifications = []
+        self.EH.force_rebuild("dir")
+        golden_notified = {
+            os.path.join(".", "dir", "_subpage", "subimage.jpg"),
+            os.path.join(".", "dir", "page.md"),
+            os.path.join(".", "dir", "image.png"),
+        }
+        self.assertSetEqual(golden_notified, set(notifications))
+
+        self.EH.force_rebuild(os.path.join(".", "dir"))
+        self.assertSetEqual(golden_notified, set(notifications))
+
+        notifications = []
+        self.EH.force_rebuild("file.txt")
+        golden_notified = {
+            os.path.join(".", "file.txt")
+        }
+        self.assertSetEqual(golden_notified, set(notifications))
+
+        notifications = []
+        self.EH.force_rebuild("devroot", True)
+        golden_notified = {
+            os.path.join(".", "dir", "page.md"),
             os.path.join(".", "file.txt")
         }
         self.assertSetEqual(golden_notified, set(notifications))
