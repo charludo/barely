@@ -183,17 +183,21 @@ def copy_file(items):
             shutil.copy(item["origin"], item["destination"])
             log(item)
         except FileNotFoundError:
-            raise FileNotFoundError("No file at specified origin.")
+            # most likely a temp file - disappeared during processing
+            logger.debug(f"{item['origin']} vanished. Most likely a temp file.")
 
 
 def delete(path):
     """ delete a file or dir """
-    if os.path.exists(path):
-        if os.path.isfile(path):
-            os.remove(path)
-        elif os.path.isdir(path):
-            shutil.rmtree(path)
-        logger_indented.info(f"deleted {path}")
+    try:
+        if os.path.exists(path):
+            if os.path.isfile(path):
+                os.remove(path)
+            elif os.path.isdir(path):
+                shutil.rmtree(path)
+            logger_indented.info(f"deleted {path}")
+    except FileNotFoundError:
+        logger.debug(f"{path} vanished. Most likely a temp file.")
 
 
 def move(fro, to):

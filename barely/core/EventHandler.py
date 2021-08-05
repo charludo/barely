@@ -197,16 +197,20 @@ class EventHandler():
             ext = os.path.splitext(path)[1][1:].lower()
         except IndexError:
             ext = ""
-        if ext == config["PAGE_EXT"]:
-            return "PAGE", config["PAGE_EXT"]
-        elif ext in config["IMAGE_EXT"]:
-            return "IMAGE", ext
-        elif not is_binary(path) and ext != "":
-            return "TEXT", ext
-        elif is_binary(path):
-            return "GENERIC", ext
-        else:
-            return "GENERIC", "NOTYPE"
+        try:
+            if ext == config["PAGE_EXT"]:
+                return "PAGE", config["PAGE_EXT"]
+            elif ext in config["IMAGE_EXT"]:
+                return "IMAGE", ext
+            elif not is_binary(path) and ext != "":
+                return "TEXT", ext
+            elif is_binary(path):
+                return "GENERIC", ext
+            else:
+                return "GENERIC", "NOTYPE"
+        except FileNotFoundError:
+            self.logger.debug(f"{path} vanished. Most likely a temp file.")
+
 
     @staticmethod
     def _get_web_path(path):

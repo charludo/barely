@@ -52,7 +52,7 @@ def init():
 
         make_dirs(appdir)
     else:
-        logger.warn("could not find 'config.yaml'. Exiting")
+        logger.error("could not find 'config.yaml'. Exiting")
         sys.exit()
 
 
@@ -105,7 +105,7 @@ def get_blueprints(blueprint=None):
             logger.debug(f"found {blueprint} in system blueprints")
             return os.path.join(sys_bp_path, blueprint)
         else:
-            logger.warn(f"no blueprint named {blueprint} exists.")
+            logger.error(f"no blueprint named {blueprint} exists.")
             sys.exit()
     return set(user_bps + sys_bps)
 

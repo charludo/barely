@@ -7,7 +7,7 @@ It also functions as a sass/scss parser.
 import os
 import sass
 from PIL import Image
-from calmjs.parse import es5
+from calmjs.parse import es5, exceptions as js_exceptions
 from calmjs.parse.unparsers.es5 import minify_print
 from barely.plugins import PluginBase
 
@@ -49,19 +49,25 @@ class Minimizer(PluginBase):
                     yield func(item)
 
     def minimize_css(self, item):
-        indented = True if item["extension"] == "sass" else False
-        compiled = sass.compile(string=item["content_raw"], output_style=self.plugin_config["CSS_OUTPUT_STYLE"],
-                                indented=indented, source_comments=self.plugin_config["CSS_INCLUDE_COMMENTS"])
-        item["destination"] = os.path.splitext(item["destination"])[0] + ".css"
-        item["action"] = "compiled"
-        item["output"] = compiled
+        try:
+            indented = True if item["extension"] == "sass" else False
+            compiled = sass.compile(string=item["content_raw"], output_style=self.plugin_config["CSS_OUTPUT_STYLE"],
+                                    indented=indented, source_comments=self.plugin_config["CSS_INCLUDE_COMMENTS"])
+            item["destination"] = os.path.splitext(item["destination"])[0] + ".css"
+            item["action"] = "compiled"
+            item["output"] = compiled
+        except sass.CompileError as e:
+            self.logger.error(f"SASS Compile {e}")
         return item
 
     def minimize_js(self, item):
-        minified = minify_print(es5(item["output"]), obfuscate=self.plugin_config["JS_OBFUSCATE"],
-                                obfuscate_globals=self.plugin_config["JS_OBFUSCATE_GLOBALS"])
-        item["output"] = minified
-        item["action"] = "compiled"
+        try:
+            minified = minify_print(es5(item["output"]), obfuscate=self.plugin_config["JS_OBFUSCATE"],
+                                    obfuscate_globals=self.plugin_config["JS_OBFUSCATE_GLOBALS"])
+            item["output"] = minified
+            item["action"] = "compiled"
+        except js_exceptions.ECMASyntaxError as e:
+            self.logger.error(f"JS Syntax Error: {e}")
         return item
 
     def minimize_image(self, item):
