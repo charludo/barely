@@ -19,7 +19,7 @@ from barely.common.config import config
 
 class ChangeTracker:
     """ monitors the devroot for file and dir changes and notifies the ChangeHandler """
-    logger = logging.getLogger("core")
+    logger = logging.getLogger("base.core")
     logger_indented = logging.getLogger("indented")
 
     def __init__(self, EH=None):

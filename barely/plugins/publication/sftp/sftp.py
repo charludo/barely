@@ -4,13 +4,11 @@ transfer only the changed files
 """
 import os
 import pysftp
-import logging
 from barely.plugins import PluginBase
 
 
 class SFTP(PluginBase):
     """ copy to remote server; only new/changed though """
-    logger = logging.getLogger("core")
 
     def __init__(self):
         super().__init__()

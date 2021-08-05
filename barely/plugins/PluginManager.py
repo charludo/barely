@@ -24,6 +24,8 @@ class PluginBase:
 
     def __init__(self, *args, **kwargs):
         self.config = config
+        self.logger = logging.getLogger("base.plugin")
+        self.logger_indented = logging.getLogger("indented")
 
     def register(self):
         return "Base", -1, []
@@ -40,7 +42,7 @@ class PluginBase:
 
 class PluginManager:
     """ finds, registers and pipes in plugins """
-    logger = logging.getLogger("core")
+    logger = logging.getLogger("base.core")
 
     plugin_count = 0
 

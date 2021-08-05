@@ -21,7 +21,7 @@ from jinja2 import Environment, FileSystemLoader
 from jinja2.exceptions import TemplateNotFound
 from barely.common.config import config
 
-logger = logging.getLogger("core")
+logger = logging.getLogger("base.core")
 logger_indented = logging.getLogger("indented")
 
 

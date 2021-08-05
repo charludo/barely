@@ -20,7 +20,7 @@ import logging
 
 class EventHandler():
     """ handle events, hand them off, or disregard irrelevant ones """
-    logger = logging.getLogger("core")
+    logger = logging.getLogger("base.core")
     logger_indented = logging.getLogger("indented")
 
     @staticmethod

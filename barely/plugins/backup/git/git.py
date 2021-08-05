@@ -2,7 +2,6 @@
 push to git remote rep automatically
 """
 import os
-import logging
 os.environ["GIT_PYTHON_REFRESH"] = "quiet"
 
 from git import Repo
@@ -12,7 +11,6 @@ from barely.plugins import PluginBase
 
 class Git(PluginBase):
     # add changes / commit them / push them to origin
-    logger = logging.getLogger("core")
 
     def __init__(self):
         super().__init__()

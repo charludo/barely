@@ -5,9 +5,10 @@ import os
 import yaml
 import logging
 
+
 class Config:
     """ just here to return the config """
-    logger = logging.getLogger("core")
+    logger = logging.getLogger("base.core")
     config = {}
 
     def __init__(self):

@@ -19,18 +19,20 @@ def setup_loggers(level):
             record.name = record.name.rsplit('.', 1)[-1]
             return True
 
-    global logger
-    logger = logging.getLogger("core")
-    format = "[barely][%(name)6s][%(levelname)8s] :: %(message)s"
+    base = logging.getLogger("base")
+    format = "[barely][%(name)6s][%(levelname)5s] :: %(message)s"
     style = coloredlogs.DEFAULT_FIELD_STYLES | {"levelname": {"bold": False, "color": 244}}
-    coloredlogs.install(level=level, logger=logger, fmt=format, field_styles=style)
+    coloredlogs.install(level=level, logger=base, fmt=format, field_styles=style)
 
-    for handler in logging.getLogger("core").handlers:
+    for handler in base.handlers:
         handler.addFilter(ShortNameFilter())
+
+    global logger
+    logger = logging.getLogger("base.core")
 
     global logger_indented
     logger_indented = logging.getLogger("indented")
-    format_indented = "                           -> %(message)s"
+    format_indented = "                        -> %(message)s"
     coloredlogs.install(level=level, logger=logger_indented, fmt=format_indented)
 
     logger.debug("Logging setup complete")
@@ -222,7 +224,7 @@ def rebuild(ctx, start, partial, light):
 def aftermath(PM):
     logger.info("..")
     logger_indented.info("Do you want to Publish / Backup / do both?")
-    action = input("                           -> *[n]othing | [p]ublish | [b]ackup | [Y]do both :: ").lower()
+    action = input("                        -> *[n]othing | [p]ublish | [b]ackup | [Y]do both :: ").lower()
 
     if action.startswith("p") or action.startswith("y"):
         logger_indented.info("publishing...")

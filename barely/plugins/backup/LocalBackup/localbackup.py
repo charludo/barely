@@ -9,14 +9,12 @@ and to restore them.
 import os
 import glob
 import shutil
-import logging
 from datetime import datetime
 from barely.plugins import PluginBase
 
 
 class LocalBackup(PluginBase):
     # save copies of the devroot in a local folder. very rudimentary backup strategy, but better than nothing, I guess.
-    logger = logging.getLogger("core")
 
     def __init__(self):
         super().__init__()
