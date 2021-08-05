@@ -9,7 +9,6 @@ Useful for live development
 
 import time
 import signal
-import logging
 from livereload import Server
 from multiprocessing import Process
 from watchdog.observers import Observer
