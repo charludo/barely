@@ -56,12 +56,16 @@ class PluginManager:
 
     def discover_plugins(self, paths, type_content=True):
         """ checks the path for plugin files, then imports them """
+
         module_paths = paths.copy()
         for path in paths:
+            self.logger.debug(f"checking for plugins in {path}")
             if os.path.exists(path):
                 subdirs = (next(os.walk(path))[1])                                  # get all first level subdirs
                 module_paths.extend([os.path.join(path, sub) for sub in subdirs])   # necessary, otherwise wrong relative paths
         sys.path.extend(module_paths)                                               # necessary for python to import from here
+
+        registered = []    # used to ensure no duplicate plugins will be registered
 
         found_plugins = {} if type_content else []
         for (_, module_name, _) in iter_modules(module_paths):
@@ -76,11 +80,15 @@ class PluginManager:
                 # necessary to filter out the imported parent class
                 if isclass(attribute) and issubclass(attribute, PluginBase) and not issubclass(PluginBase, attribute):
                     # is that a long-ass try-except? yes. but if a plugin is broken, idk about knowing why, I just do not want to initialize it.
+
                     try:
                         plugin_instance = attribute()
                         if type_content:
                             name, priority, registered_for = plugin_instance.register()
-                            self.logger.debug(f"found the content plugin {name}  of priority {priority}!")
+                            if name in registered:
+                                continue
+                            registered.append(name)
+                            self.logger.debug(f"found the content plugin {name} of priority {priority}")
                             priority = int(priority)
                             if priority > -1:
                                 self.plugin_count += 1
@@ -88,7 +96,10 @@ class PluginManager:
                                     found_plugins.setdefault(extension, []).append((plugin_instance, priority))
                         else:
                             name, priority = plugin_instance.register()
-                            self.logger.debug(f"found the plugin {name}  of priority {priority}!")
+                            if name in registered:
+                                continue
+                            registered.append(name)
+                            self.logger.debug(f"found the plugin {name} of priority {priority}")
                             if priority > -1:
                                 self.plugin_count += 1
                                 found_plugins.append((plugin_instance, priority))
