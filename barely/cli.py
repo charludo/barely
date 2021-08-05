@@ -169,9 +169,11 @@ def live(verbose):
 
 
 @run.command()
+@click.option("--light", "-l", help="don't clean existing files, and skip image rebuilds", is_flag=True)
+@click.option("--partial", "-p", help="specify file or directory to rebuild instead of devroot", default="devroot")
 @click.option("--start", "-s", help="after rebuilding, start the web server", is_flag=True)
 @click.pass_context
-def rebuild(ctx, start):
+def rebuild(ctx, start, partial, light):
     """(re)build the entire project"""
     init()
 
@@ -182,7 +184,7 @@ def rebuild(ctx, start):
     EH = EventHandler()
     EH.init_pipeline(PM)
 
-    EH.force_rebuild()
+    EH.force_rebuild(partial, light)
     PM.finalize_content()
 
     if start:
