@@ -277,10 +277,6 @@ class TestProcessingPipeline(unittest.TestCase):
         PP.copy_file([test_item])
         self.assertEqual(readf(test_item, "origin"), readf(test_item, "destination"))
 
-        with self.assertRaises(FileNotFoundError) as context:
-            list(PP.copy_file([self.item]))
-        self.assertTrue("No file at specified origin." in str(context.exception))
-
     def test_delete(self):
         os.chdir("delete")
         PP.delete("dir")
