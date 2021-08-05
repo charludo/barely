@@ -15,10 +15,13 @@ import os
 import re
 from barely.common.config import config
 import barely.core.ProcessingPipeline as PP
+import logging
 
 
 class EventHandler():
-    """ handle events, hand them off, or diregard irrelevant ones """
+    """ handle events, hand them off, or disregard irrelevant ones """
+    logger = logging.getLogger("core")
+    logger_indented = logging.getLogger("indented")
 
     @staticmethod
     def init_pipeline(PM):
@@ -27,6 +30,7 @@ class EventHandler():
 
     def notify(self, event):
         """ anyone (but usually, the watchdog) can issue a notice of a file event """
+
         if isinstance(event, DirModifiedEvent):
             return
 
@@ -37,16 +41,16 @@ class EventHandler():
             dest_dev = " -> " + event.dest_path
         except AttributeError:
             dest_dev = ""
-        print(f"barely :: event at {src_dev}{dest_dev}")
+        self.logger.info(f"event at {src_dev}{dest_dev}")
 
         if config["TEMPLATES_DIR"] in src_dev and not isinstance(event, FileDeletedEvent) and not isinstance(event, DirDeletedEvent):
             if isinstance(event, FileMovedEvent) or isinstance(event, DirMovedEvent):
                 src_dev = event.dest_path
 
-            print(f"       -> event at {src_dev} affected pages:")
+            self.logger_indented.info(f"event at {src_dev} affected pages:")
             for affected in self._get_affected(src_dev):
                 self.notify(FileModifiedEvent(src_path=affected))
-            print(f"       -> done handling event at {src_dev}")
+            self.logger_indented.info(f"done handling event at {src_dev}")
         elif "config.yaml" in src_dev or any(ignored in src_dev for ignored in config["IGNORE"]):
             # don't do anything. Config changes at runtime are not respected.
             pass
@@ -75,7 +79,7 @@ class EventHandler():
 
     def force_rebuild(self, start, light=False):
         """ rebuild parts of or the entire project """
-        print(f"barely :: rebuilding {start}...")
+        self.logger.info(f"rebuilding {start}...")
 
         # full rebuild, delete webroot
         if start == "devroot":
@@ -102,7 +106,7 @@ class EventHandler():
                         and not re.search(rf"[\\|\/]?_\S+[\\|\/]\S+\.{config['PAGE_EXT']}", path)
                         and not (light and self._determine_type(path)[0] == "IMAGE")):     # light ignores images
                     self.notify(FileCreatedEvent(src_path=path))
-        print("barely :: rebuild complete.")
+        self.logger.info("rebuild complete.")
 
     def _get_affected(self, template):
         """ yield the paths of all files that rely on a certain template """

@@ -9,12 +9,14 @@ and to restore them.
 import os
 import glob
 import shutil
+import logging
 from datetime import datetime
 from barely.plugins import PluginBase
 
 
 class LocalBackup(PluginBase):
     # save copies of the devroot in a local folder. very rudimentary backup strategy, but better than nothing, I guess.
+    logger = logging.getLogger("core")
 
     def __init__(self):
         super().__init__()
@@ -39,7 +41,6 @@ class LocalBackup(PluginBase):
         existing = sorted(glob.glob(os.path.join(self.plugin_config["BAKROOT"], "BACKUP--*"), reverse=True))
         while len(existing) >= self.plugin_config["MAX"]:
             shutil.rmtree(existing.pop(-1))
-            print("HALLO")
 
         # we don't want to backup any existing git stuff
         try:
@@ -47,4 +48,4 @@ class LocalBackup(PluginBase):
         except FileNotFoundError:
             pass
 
-        print(f"barely :: created backup: {backup_name}")
+        self.logger.info(f"created backup: {backup_name}")

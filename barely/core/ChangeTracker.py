@@ -9,6 +9,7 @@ Useful for live development
 
 import time
 import signal
+import logging
 from livereload import Server
 from multiprocessing import Process
 from watchdog.observers import Observer
@@ -18,6 +19,8 @@ from barely.common.config import config
 
 class ChangeTracker:
     """ monitors the devroot for file and dir changes and notifies the ChangeHandler """
+    logger = logging.getLogger("core")
+    logger_indented = logging.getLogger("indented")
 
     def __init__(self, EH=None):
         if EH is not None:
@@ -61,7 +64,7 @@ class ChangeTracker:
             self.liveserver.start()
             self.observer.start()
             self.tracking = True
-            print("barely :: started tracking...")
+            self.logger.info("started tracking...")
 
             # handle SIGINTs. Store the original to later reuse it.
             self.original_sigint = signal.getsignal(signal.SIGINT)
@@ -102,4 +105,4 @@ class ChangeTracker:
 
         print()
         print("\033[A\033[A")
-        print("barely :: stopped tracking.")
+        self.logger.info("stopped tracking.")

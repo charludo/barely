@@ -14,11 +14,15 @@ import os
 import yaml
 import shutil
 import mistune
+import logging
 from pathlib import Path
 from PIL import Image, UnidentifiedImageError
 from jinja2 import Environment, FileSystemLoader
 from jinja2.exceptions import TemplateNotFound
 from barely.common.config import config
+
+logger = logging.getLogger("core")
+logger_indented = logging.getLogger("indented")
 
 
 def init_plugin_manager(PluginManager):
@@ -32,7 +36,7 @@ def init_jinja():
 
 
 def log(item):
-    print(f"       :: {item['action']} {item['origin']} -> {item['destination']}")
+    logger_indented.info(f"{item['action']} {item['origin']} -> {item['destination']}")
 
 
 def process(items):
@@ -183,7 +187,7 @@ def delete(path):
             os.remove(path)
         elif os.path.isdir(path):
             shutil.rmtree(path)
-        print(f"       :: deleted {path}")
+        logger_indented.info(f"deleted {path}")
 
 
 def move(fro, to):
@@ -195,7 +199,7 @@ def move(fro, to):
             else:
                 shutil.rmtree(to)
         shutil.move(fro, to)
-        print(f"       :: moved {fro} -> {to}")
+        logger_indented.info(f"moved {fro} -> {to}")
     except FileNotFoundError:
         raise FileNotFoundError("No file/dir at notification origin!")
 
@@ -320,7 +324,7 @@ def render_page(items):
             item["output"] = page_template.render(content=item["content"], **item["meta"])
             yield item
         except TemplateNotFound:
-            print(f"barely :: [WARN] template \"{item['template']}\" not found")
+            logger.warn(f"template \"{item['template']}\" not found")
 
 
 ################################

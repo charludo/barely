@@ -11,6 +11,7 @@ filetype(s) they register for.
 
 import os
 import sys
+import logging
 from inspect import isclass
 from pkgutil import iter_modules
 from importlib import import_module
@@ -39,16 +40,17 @@ class PluginBase:
 
 class PluginManager:
     """ finds, registers and pipes in plugins """
+    logger = logging.getLogger("core")
 
     plugin_count = 0
 
     def __init__(self):
-        print("barely :: registering plugins...")
+        self.logger.info("registering plugins...")
         self.plugins_content = self.discover_plugins([config["PLUGIN_PATHS"]["SYS"]["CONTENT"], config["PLUGIN_PATHS"]["USER"]["CONTENT"]])
         self.plugins_backup = self.discover_plugins([config["PLUGIN_PATHS"]["SYS"]["BACKUP"], config["PLUGIN_PATHS"]["USER"]["BACKUP"]], type_content=False)
         self.plugins_publication = self.discover_plugins([config["PLUGIN_PATHS"]["SYS"]["PUBLICATION"],
                                                          config["PLUGIN_PATHS"]["USER"]["PUBLICATION"]], type_content=False)
-        print(f"barely :: {self.plugin_count} plugins registered.")
+        self.logger.info(f"{self.plugin_count} plugins registered.")
 
     def discover_plugins(self, paths, type_content=True):
         """ checks the path for plugin files, then imports them """
