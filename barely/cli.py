@@ -254,7 +254,7 @@ def aftermath(PM):
         PM.hook_publication()
         logger_indented.info("...done.")
     if action.startswith("b") or action.startswith("y"):
-        logger.info("barely :: backuping...")
+        logger.info("backuping...")
         PM.hook_backup()
         logger_indented.info("...done.")
 
