@@ -80,6 +80,7 @@ class PluginManager:
                         plugin_instance = attribute()
                         if type_content:
                             name, priority, registered_for = plugin_instance.register()
+                            self.logger.debug(f"found the content plugin {name}  of priority {priority}!")
                             priority = int(priority)
                             if priority > -1:
                                 self.plugin_count += 1
@@ -87,6 +88,7 @@ class PluginManager:
                                     found_plugins.setdefault(extension, []).append((plugin_instance, priority))
                         else:
                             name, priority = plugin_instance.register()
+                            self.logger.debug(f"found the plugin {name}  of priority {priority}!")
                             if priority > -1:
                                 self.plugin_count += 1
                                 found_plugins.append((plugin_instance, priority))
@@ -121,6 +123,7 @@ class PluginManager:
 
     def finalize_content(self):
         for ext in self.plugins_content:
+            self.logger.debug(f"finalizing {ext}-files")
             for plugin in self.plugins_content[ext]:
                 plugin.finalize()
 

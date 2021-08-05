@@ -39,8 +39,12 @@ def setup_loggers(level):
 
 
 def init():
+    logger.debug("initializing barely")
+
     # try to find the config.yaml
     if os.path.exists("config.yaml"):
+        logger.debug("found barely config file")
+
         # export the cwd as an environment variable
         appdir = get_appdir()
         os.environ["barely"] = os.getcwd()
@@ -56,9 +60,11 @@ def get_appdir():
     _platform = platform.system()
 
     if _platform == ("Linux" or "Darwin"):
+        logger.debug("platform: Unix-like")
         home = os.path.expanduser("~")
         return os.path.join(home, ".barely")
     elif _platform == "Windows":
+        logger.debug("platform: Windows")
         home = os.path.expandvars(r"%APPDATA%")
         return os.path.join(home, "barely")
     else:
@@ -75,6 +81,9 @@ def make_dirs(appdir):
 
     for path in needed:
         Path(os.path.join(appdir, path)).mkdir(parents=True, exist_ok=True)
+        logger.debug(f"checked / created {path}")
+
+    logger.debug("created all required dirs")
 
 
 def get_blueprints(blueprint=None):
@@ -85,10 +94,15 @@ def get_blueprints(blueprint=None):
     sys_bps = [os.path.basename(os.path.dirname(bp)) for bp in glob(sys_bp_path + os.sep + "*" + os.sep)]
     user_bps = [os.path.basename(os.path.dirname(bp)) for bp in glob(user_bp_path + os.sep + "*" + os.sep)]
 
+    logger.debug(f"looking for blueprints in: {sys_bp_path}")
+    logger.debug(f"looking for blueprints in: {user_bp_path}")
+
     if blueprint:
         if blueprint in user_bps:
+            logger.debug(f"found {blueprint} in user blueprints")
             return os.path.join(user_bp_path, blueprint)
         elif blueprint in sys_bps:
+            logger.debug(f"found {blueprint} in system blueprints")
             return os.path.join(sys_bp_path, blueprint)
         else:
             logger.warn(f"no blueprint named {blueprint} exists.")
@@ -150,6 +164,8 @@ def blueprints(new):
     if new:
         import shutil
         import yaml
+
+        logger.debug("started blueprint creation process")
         try:
             with open("config.yaml", "r") as file:
                 meta_raw = file.read()
@@ -159,12 +175,13 @@ def blueprints(new):
             os.remove(os.path.join(new_path, "config.yaml"))
             logger.info(f"blueprint \"{new}\" successfully created!")
         except FileNotFoundError:
-            logger.warn("no valid project found. Can't create blueprint.")
+            logger.error("no valid project found. Can't create blueprint.")
         except FileExistsError:
-            logger.warn("a blueprint with this name already exists.")
+            logger.error("a blueprint with this name already exists.")
 
         try:
             shutil.rmtree(os.path.join(new_path, ".git"))
+            logger.debug("deleted git repo found in blueprint")
         except FileNotFoundError:
             pass
     else:
@@ -183,6 +200,8 @@ def live(verbose):
     from barely.core.ChangeTracker import ChangeTracker
     from barely.plugins.PluginManager import PluginManager
 
+    logger.debug("starting barely in live mode")
+
     PM = PluginManager()
     EH = EventHandler()
     EH.init_pipeline(PM)
@@ -192,6 +211,7 @@ def live(verbose):
     CT.verbose = verbose
 
     CT.track()
+
     PM.finalize_content()
     aftermath(PM)
 
@@ -208,6 +228,8 @@ def rebuild(ctx, start, partial, light):
     from barely.core.EventHandler import EventHandler
     from barely.plugins.PluginManager import PluginManager
 
+    logger.debug("started a rebuild")
+
     PM = PluginManager()
     EH = EventHandler()
     EH.init_pipeline(PM)
@@ -222,6 +244,7 @@ def rebuild(ctx, start, partial, light):
 
 
 def aftermath(PM):
+    logger.debug("exited main program, starting aftermath")
     logger.info("..")
     logger_indented.info("Do you want to Publish / Backup / do both?")
     action = input("                        -> *[n]othing | [p]ublish | [b]ackup | [Y]do both :: ").lower()

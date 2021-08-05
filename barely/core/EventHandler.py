@@ -32,6 +32,7 @@ class EventHandler():
         """ anyone (but usually, the watchdog) can issue a notice of a file event """
 
         if isinstance(event, DirModifiedEvent):
+            self.logger.debug(f"ignored DirModifiedEvent at {event.src_path}")
             return
 
         src_dev = event.src_path
@@ -53,10 +54,13 @@ class EventHandler():
             self.logger_indented.info(f"done handling event at {src_dev}")
         elif "config.yaml" in src_dev or any(ignored in src_dev for ignored in config["IGNORE"]):
             # don't do anything. Config changes at runtime are not respected.
+            self.logger.debug(f"event at ignored location {src_dev}")
             pass
         elif "metadata.yaml" in src_dev:
+            self.logger.debug("metadata.yaml was changed!")
             self.notify(FileModifiedEvent(src_path=config["TEMPLATES_DIR"]))
         elif re.search(rf"[\\|\/]?_\S+[\\|\/]\S+\.{config['PAGE_EXT']}", src_dev):
+            self.logger.debug(f"{src_dev} is a modular page")
             parent_page = self._get_parent_page(src_dev)
             self.notify(FileModifiedEvent(src_path=parent_page))
         elif isinstance(event, FileDeletedEvent) or isinstance(event, DirDeletedEvent):
@@ -69,6 +73,7 @@ class EventHandler():
                 PP.move(src_web, dest_web)
         elif isinstance(event, FileCreatedEvent) or isinstance(event, FileModifiedEvent):
             type, extension = self._determine_type(src_dev)
+            self.logger.debug(f"determined {src_dev} is of type {type}")
             item = {
                 "origin": src_dev,
                 "destination": src_web,
@@ -83,15 +88,19 @@ class EventHandler():
 
         # full rebuild, delete webroot
         if start == "devroot":
+            self.logger.debug("rebuild is targeting the devroot")
             start = config["ROOT"]["DEV"]
             if not light:
+                self.logger.debug("non-light rebuild will delete webroot")
                 PP.delete(config["ROOT"]["WEB"])
                 os.makedirs(config["ROOT"]["WEB"], exist_ok=True)
         elif not start.startswith(config["ROOT"]["DEV"]):
+            self.logger.debug(f"converted {start} to abspath")
             start = os.path.join(config["ROOT"]["DEV"], start)
 
         # a file was specified; only rebuild it
         if os.path.isfile(start):
+            self.logger.debug("rebuild is only targeting a single file")
             self.notify(FileCreatedEvent(src_path=start))
             return
 
@@ -110,6 +119,8 @@ class EventHandler():
 
     def _get_affected(self, template):
         """ yield the paths of all files that rely on a certain template """
+        self.logger.debug(f"finding all templates affected by change to {template}")
+
         # changes can occur on either files or dirs. If it's a dir, all files and subdirs are changed
         changed = []
         if type(template) == list:
@@ -138,6 +149,7 @@ class EventHandler():
             affected[element] = affected[element].replace(".html", "")
             affected[element] = affected[element].replace(os.sep, ".")
             affected[element] = os.sep + affected[element] + "." + config["PAGE_EXT"]
+            self.logger.debug(f"identified {affected[element]} as affected by change to {template}")
 
         # find all renderable files
         file_candidates = []
@@ -157,6 +169,8 @@ class EventHandler():
                     yield filename
 
     def _find_children(self, parent):
+        self.logger.debug(f"searching for children of {parent}")
+
         # find all templates. Yes, all of them.
         parent = parent.replace(os.path.join(config["ROOT"]["DEV"], ""), "")
         parent = parent.replace(os.path.join(config["TEMPLATES_DIR"], ""), "")
@@ -173,8 +187,9 @@ class EventHandler():
                 if len(matches):
                     for match in matches:
                         if match == parent:
-                            yield from self._find_children(str(path))
+                            self.logger.debug(f"found a child: {str(path)}")
                             yield str(path)
+                            yield from self._find_children(str(path))
 
     def _determine_type(self, path):
         """ determine the type of the file via its extension. return both """
