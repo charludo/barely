@@ -39,7 +39,6 @@ class LocalBackup(PluginBase):
         existing = sorted(glob.glob(os.path.join(self.plugin_config["BAKROOT"], "BACKUP--*"), reverse=True))
         while len(existing) >= self.plugin_config["MAX"]:
             shutil.rmtree(existing.pop(-1))
-            print("HALLO")
 
         # we don't want to backup any existing git stuff
         try:
@@ -47,4 +46,4 @@ class LocalBackup(PluginBase):
         except FileNotFoundError:
             pass
 
-        print(f"barely :: created backup: {backup_name}")
+        self.logger.info(f"created backup: {backup_name}")

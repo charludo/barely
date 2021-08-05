@@ -6,12 +6,45 @@ import os
 import sys
 import click
 import platform
+import logging
+import coloredlogs
 from pathlib import Path
+from click_default_group import DefaultGroup
+
+
+def setup_loggers(level):
+    # filter t only show last part of logger name
+    class ShortNameFilter(logging.Filter):
+        def filter(self, record):
+            record.name = record.name.rsplit('.', 1)[-1]
+            return True
+
+    base = logging.getLogger("base")
+    format = "[barely][%(name)6s][%(levelname)5s] :: %(message)s"
+    style = coloredlogs.DEFAULT_FIELD_STYLES | {"levelname": {"bold": False, "color": 244}}
+    coloredlogs.install(level=level, logger=base, fmt=format, field_styles=style)
+
+    for handler in base.handlers:
+        handler.addFilter(ShortNameFilter())
+
+    global logger
+    logger = logging.getLogger("base.core")
+
+    global logger_indented
+    logger_indented = logging.getLogger("indented")
+    format_indented = "                        -> %(message)s"
+    coloredlogs.install(level=level, logger=logger_indented, fmt=format_indented)
+
+    logger.debug("Logging setup complete")
 
 
 def init():
+    logger.debug("initializing barely")
+
     # try to find the config.yaml
     if os.path.exists("config.yaml"):
+        logger.debug("found barely config file")
+
         # export the cwd as an environment variable
         appdir = get_appdir()
         os.environ["barely"] = os.getcwd()
@@ -19,7 +52,7 @@ def init():
 
         make_dirs(appdir)
     else:
-        print("barely :: could not find 'config.yaml'. Exiting")
+        logger.warn("could not find 'config.yaml'. Exiting")
         sys.exit()
 
 
@@ -27,9 +60,11 @@ def get_appdir():
     _platform = platform.system()
 
     if _platform == ("Linux" or "Darwin"):
+        logger.debug("platform: Unix-like")
         home = os.path.expanduser("~")
         return os.path.join(home, ".barely")
     elif _platform == "Windows":
+        logger.debug("platform: Windows")
         home = os.path.expandvars(r"%APPDATA%")
         return os.path.join(home, "barely")
     else:
@@ -46,6 +81,9 @@ def make_dirs(appdir):
 
     for path in needed:
         Path(os.path.join(appdir, path)).mkdir(parents=True, exist_ok=True)
+        logger.debug(f"checked / created {path}")
+
+    logger.debug("created all required dirs")
 
 
 def get_blueprints(blueprint=None):
@@ -56,20 +94,26 @@ def get_blueprints(blueprint=None):
     sys_bps = [os.path.basename(os.path.dirname(bp)) for bp in glob(sys_bp_path + os.sep + "*" + os.sep)]
     user_bps = [os.path.basename(os.path.dirname(bp)) for bp in glob(user_bp_path + os.sep + "*" + os.sep)]
 
+    logger.debug(f"looking for blueprints in: {sys_bp_path}")
+    logger.debug(f"looking for blueprints in: {user_bp_path}")
+
     if blueprint:
         if blueprint in user_bps:
+            logger.debug(f"found {blueprint} in user blueprints")
             return os.path.join(user_bp_path, blueprint)
         elif blueprint in sys_bps:
+            logger.debug(f"found {blueprint} in system blueprints")
             return os.path.join(sys_bp_path, blueprint)
         else:
-            print(f"barely :: no blueprint named {blueprint} exists.")
+            logger.warn(f"no blueprint named {blueprint} exists.")
             sys.exit()
     return set(user_bps + sys_bps)
 
 
-@click.group(invoke_without_command=True)
+@click.group(cls=DefaultGroup, default='live', default_if_no_args=True)
+@click.option("--debug", "-d", help="set logging level to debug", is_flag=True)
 @click.pass_context
-def run(context):
+def run(context, debug):
     """
     barely reduces static website development to its key parts,
     by automatically rendering jinja2 templates and Markdown content
@@ -77,8 +121,7 @@ def run(context):
     and the built-in live web server makes on-the-fly development as
     comfortable as possible.
     """
-    if context.invoked_subcommand is None:
-        live()
+    setup_loggers("DEBUG" if debug else "INFO")
 
 
 @run.command()
@@ -91,14 +134,14 @@ def new(devroot, webroot, blueprint):
     import yaml
     make_dirs(get_appdir())
     blueprint_path = get_blueprints(blueprint)
-    print("barely :: setting up new project with parameters:")
+    logger.info("setting up new project with parameters:")
 
     os.makedirs(webroot)
-    print(f"       ->   webroot: {webroot}")
+    logger_indented.info(f"  webroot: {webroot}")
 
     shutil.copytree(blueprint_path, devroot)
-    print(f"       ->   devroot: {devroot}")
-    print(f"       -> blueprint: {blueprint}")
+    logger_indented.info(f"  devroot: {devroot}")
+    logger_indented.info(f"blueprint: {blueprint}")
 
     config = {
         "ROOT": {
@@ -108,8 +151,8 @@ def new(devroot, webroot, blueprint):
     }
     with open(os.path.join(devroot, "config.yaml"), "w+") as file:
         file.write(yaml.dump(config))
-    print("barely :: setting up basic config...")
-    print("barely :: done.")
+    logger.info("setting up basic config...")
+    logger.info("done.")
     os.chdir(devroot)
 
 
@@ -121,6 +164,8 @@ def blueprints(new):
     if new:
         import shutil
         import yaml
+
+        logger.debug("started blueprint creation process")
         try:
             with open("config.yaml", "r") as file:
                 meta_raw = file.read()
@@ -128,21 +173,22 @@ def blueprints(new):
                 new_path = os.path.join(get_appdir(), "blueprints", new)
             shutil.copytree(devroot, new_path)
             os.remove(os.path.join(new_path, "config.yaml"))
-            print(f"barely :: blueprint \"{new}\" successfully created!")
+            logger.info(f"blueprint \"{new}\" successfully created!")
         except FileNotFoundError:
-            print("barely :: no valid project found. Can't create blueprint.")
+            logger.error("no valid project found. Can't create blueprint.")
         except FileExistsError:
-            print("barely :: a blueprint with this name already exists.")
+            logger.error("a blueprint with this name already exists.")
 
         try:
             shutil.rmtree(os.path.join(new_path, ".git"))
+            logger.debug("deleted git repo found in blueprint")
         except FileNotFoundError:
             pass
     else:
         blueprints = get_blueprints()
-        print(f"barely :: found {len(blueprints)} blueprints:")
+        logger.info(f"found {len(blueprints)} blueprints:")
         for blueprint in blueprints:
-            print(f"       -> {blueprint}")
+            logger_indented.info(f"{blueprint}")
 
 
 @run.command()
@@ -150,10 +196,11 @@ def blueprints(new):
 def live(verbose):
     """starts a live server, opens your project in the browser and auto-refreshes a page whenever it, its template, or the media it includes are modified."""
     init()
-
     from barely.core.EventHandler import EventHandler
     from barely.core.ChangeTracker import ChangeTracker
     from barely.plugins.PluginManager import PluginManager
+
+    logger.debug("starting barely in live mode")
 
     PM = PluginManager()
     EH = EventHandler()
@@ -164,6 +211,7 @@ def live(verbose):
     CT.verbose = verbose
 
     CT.track()
+
     PM.finalize_content()
     aftermath(PM)
 
@@ -180,6 +228,8 @@ def rebuild(ctx, start, partial, light):
     from barely.core.EventHandler import EventHandler
     from barely.plugins.PluginManager import PluginManager
 
+    logger.debug("started a rebuild")
+
     PM = PluginManager()
     EH = EventHandler()
     EH.init_pipeline(PM)
@@ -194,20 +244,21 @@ def rebuild(ctx, start, partial, light):
 
 
 def aftermath(PM):
-    print("barely ..")
-    print("barely :: Do you want to Publish / Backup / do both?")
-    action = input("       -> *[n]othing | [p]ublish | [b]ackup | [Y]do both :: ").lower()
+    logger.debug("exited main program, starting aftermath")
+    logger.info("..")
+    logger_indented.info("Do you want to Publish / Backup / do both?")
+    action = input("                        -> *[n]othing | [p]ublish | [b]ackup | [Y]do both :: ").lower()
 
     if action.startswith("p") or action.startswith("y"):
-        print("barely :: publishing...")
+        logger_indented.info("publishing...")
         PM.hook_publication()
-        print("       -> ...done.")
+        logger_indented.info("...done.")
     if action.startswith("b") or action.startswith("y"):
-        print("barely :: backuping...")
+        logger.info("barely :: backuping...")
         PM.hook_backup()
-        print("       -> ...done.")
+        logger_indented.info("...done.")
 
-    print("barely :: exited.")
+    logger.info("exited.")
 
 
 @run.command()

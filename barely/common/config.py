@@ -3,16 +3,18 @@ Load the config and return it as a dict
 """
 import os
 import yaml
+import logging
 
 
 class Config:
     """ just here to return the config """
+    logger = logging.getLogger("base.core")
     config = {}
 
     def __init__(self):
         if os.environ.get("barely") is None:
             import sys
-            print("barely :: something went wrong; was barely started the proper way?")
+            self.logger.info("something went wrong; was barely started the proper way?")
             sys.exit()
 
         with open(os.path.join(os.path.dirname(__file__), "empty_config.yaml")) as file:

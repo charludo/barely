@@ -34,6 +34,6 @@ class Git(PluginBase):
             repo.index.commit(datetime.now().strftime("%Y-%m-%d--%H-%M-%S") + " " + self.plugin_config["MESSAGE"])
             origin = repo.remote(name=self.plugin_config["REMOTE_NAME"])
             origin.push()
-            print(f"barely :: successfully pushed to {self.plugin_config['REMOTE_NAME']}")
+            self.logger.info(f"successfully pushed to {self.plugin_config['REMOTE_NAME']}")
         except Exception:
-            print(f"barely :: an error occurred while pushing to {self.plugin_config['REMOTE_NAME']}")
+            self.logger.error(f"an error occurred while pushing to {self.plugin_config['REMOTE_NAME']}")

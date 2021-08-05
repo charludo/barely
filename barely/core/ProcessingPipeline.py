@@ -14,11 +14,15 @@ import os
 import yaml
 import shutil
 import mistune
+import logging
 from pathlib import Path
 from PIL import Image, UnidentifiedImageError
 from jinja2 import Environment, FileSystemLoader
 from jinja2.exceptions import TemplateNotFound
 from barely.common.config import config
+
+logger = logging.getLogger("base.core")
+logger_indented = logging.getLogger("indented")
 
 
 def init_plugin_manager(PluginManager):
@@ -29,10 +33,11 @@ def init_plugin_manager(PluginManager):
 def init_jinja():
     global jinja
     jinja = Environment(loader=FileSystemLoader(os.path.join(config["ROOT"]["DEV"], config["TEMPLATES_DIR"], "")))
+    logger.debug("initialized jinja")
 
 
 def log(item):
-    print(f"       :: {item['action']} {item['origin']} -> {item['destination']}")
+    logger_indented.info(f"{item['action']} {item['origin']} -> {item['destination']}")
 
 
 def process(items):
@@ -103,6 +108,7 @@ def pipe_subpage(item):
 def read_file(items):
     """ filter that reads text based files """
     for item in items:
+        logger.debug(f"reading file {item['origin']}")
         try:
             with open(item["origin"], 'r', encoding='utf-8') as file:
                 raw_content = file.read()
@@ -131,6 +137,8 @@ def write_file(items):
             item["destination"] = path + "." + item["meta"]["extension"]
         except KeyError:
             pass
+
+        logger.debug(f"writing file {item['destination']}")
         try:
             os.makedirs(os.path.dirname(item["destination"]), exist_ok=True)
             with open(item["destination"], 'w+', encoding='utf-8') as file:
@@ -144,6 +152,7 @@ def write_file(items):
 def load_image(items):
     """ filter that loads image files into PIL objects """
     for item in items:
+        logger.debug(f"loading image {item['origin']}")
         try:
             item["image"] = Image.open(item["origin"])
             yield item
@@ -156,6 +165,7 @@ def load_image(items):
 def save_image(items):
     """ filter that saves a PIL object into an image file """
     for item in items:
+        logger.debug(f"saving image {item['origin']}")
         try:
             quality = item["quality"]
         except KeyError:
@@ -183,7 +193,7 @@ def delete(path):
             os.remove(path)
         elif os.path.isdir(path):
             shutil.rmtree(path)
-        print(f"       :: deleted {path}")
+        logger_indented.info(f"deleted {path}")
 
 
 def move(fro, to):
@@ -195,7 +205,7 @@ def move(fro, to):
             else:
                 shutil.rmtree(to)
         shutil.move(fro, to)
-        print(f"       :: moved {fro} -> {to}")
+        logger_indented.info(f"moved {fro} -> {to}")
     except FileNotFoundError:
         raise FileNotFoundError("No file/dir at notification origin!")
 
@@ -211,6 +221,7 @@ def extract_template(items):
         subdirs = subdirs[:-1]
         path = os.path.join(*subdirs)
         item["template"] = path + ".html"
+        logger.debug(f"{item['origin']} uses the template {item['template']}")
 
         yield item
 
@@ -285,6 +296,7 @@ def handle_subpages(items):
         try:
             sub_pages = item["meta"]["modular"]
             item["meta"]["sub_pages"] = []
+            logger.debug(f"{item['origin']} is modular! looking for subpages")
         except KeyError:
             sub_pages = []
 
@@ -303,6 +315,7 @@ def handle_subpages(items):
                 }
                 # only one level of subpages possible. this can easily be changed by including handle_subpages in this pipe.
                 for rendered_subpage in pipe_subpage([sub_page_item]):
+                    logger_indented.debug(f"rendered subpage {sub_page_item['origin']}")
                     item["meta"]["sub_pages"].append(rendered_subpage["output"])
             except FileNotFoundError:
                 raise FileNotFoundError("Specified subpage does not exist.")
@@ -320,7 +333,7 @@ def render_page(items):
             item["output"] = page_template.render(content=item["content"], **item["meta"])
             yield item
         except TemplateNotFound:
-            print(f"barely :: [WARN] template \"{item['template']}\" not found")
+            logger.warn(f"template \"{item['template']}\" not found")
 
 
 ################################
