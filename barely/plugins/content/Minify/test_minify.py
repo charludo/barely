@@ -1,13 +1,13 @@
 import unittest
 from mock import patch
 from unittest.mock import MagicMock
-from barely.plugins.content.Minimizer.minimizer import Minimizer
+from barely.plugins.content.Minify.minify import Minify
 
 
-class TestMinimizer(unittest.TestCase):
+class TestMinify(unittest.TestCase):
 
     def test___init__(self):
-        mini = Minimizer()
+        mini = Minify()
         self.assertDictEqual({"PRIORITY": -1}, mini.plugin_config)
         self.assertListEqual([], mini.register_for)
 
@@ -23,28 +23,28 @@ class TestMinimizer(unittest.TestCase):
 
         golden_register_for = ["png", "jpg", "jpeg", "tif", "tiff", "bmp", "js", "sass", "scss"]
 
-        mini.config["MINIMIZER"] = {"PRIORITY": 2}
+        mini.config["MINIFY"] = {"PRIORITY": 2}
         mini.__init__()
 
         self.assertDictEqual(golden, mini.plugin_config)
         self.assertListEqual(golden_register_for, mini.register_for)
 
         # reset
-        del mini.config["MINIMIZER"]
+        del mini.config["MINIFY"]
         mini.__init__()
 
     def test_register(self):
-        mini = Minimizer()
+        mini = Minify()
         name, prio, ext = mini.register()
 
-        self.assertEqual(name, "Minimizer")
+        self.assertEqual(name, "Minify")
         self.assertEqual(prio, -1)
         self.assertEqual(ext, [])
 
-    @patch("barely.plugins.content.Minimizer.minimizer.Image")
-    @patch("barely.plugins.content.Minimizer.minimizer.minify_print")
-    @patch("barely.plugins.content.Minimizer.minimizer.es5")
-    @patch("barely.plugins.content.Minimizer.minimizer.sass")
+    @patch("barely.plugins.content.Minify.minify.Image")
+    @patch("barely.plugins.content.Minify.minify.minify_print")
+    @patch("barely.plugins.content.Minify.minify.es5")
+    @patch("barely.plugins.content.Minify.minify.sass")
     def test_action(self, sass, es5, minifyjs, image):
         sass.compile = MagicMock(return_value="compiled")
         minifyjs.return_value = "smallerjs"
@@ -57,8 +57,8 @@ class TestMinimizer(unittest.TestCase):
             "content_raw": ""
         }
 
-        mini = Minimizer()
-        mini.config["MINIMIZER"] = {"PRIORITY": 1}
+        mini = Minify()
+        mini.config["MINIFY"] = {"PRIORITY": 1}
         mini.__init__()
 
         # SASS
@@ -83,5 +83,5 @@ class TestMinimizer(unittest.TestCase):
         self.assertEqual(result["quality"], 70)
         self.assertEqual(result["action"], "compressed")
 
-        del mini.config["MINIMIZER"]
+        del mini.config["MINIFY"]
         mini.__init__()

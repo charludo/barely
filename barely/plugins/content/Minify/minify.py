@@ -1,8 +1,7 @@
 """
-Minimizer exports the singleton Minimzer,
-which in turn provides functons to minimize
-images, javascript,...
-It also functions as a sass/scss parser.
+Minify provides functons to minimize
+javascript. It also functions
+as a sass/scss parser.
 """
 import os
 import sass
@@ -12,8 +11,8 @@ from calmjs.parse.unparsers.es5 import minify_print
 from barely.plugins import PluginBase
 
 
-class Minimizer(PluginBase):
-    # Minimizer provides functions to reduce various formats in size
+class Minify(PluginBase):
+    # Minify provides functions to compile and reduce scss and js in size
 
     def __init__(self):
         super().__init__()
@@ -27,7 +26,7 @@ class Minimizer(PluginBase):
                 "CSS_INCLUDE_COMMENTS": False,
                 "CSS_OUTPUT_STYLE": "compressed"
             }
-            self.plugin_config = standard_config | self.config["MINIMIZER"]
+            self.plugin_config = standard_config | self.config["MINIFY"]
             self.func_map = {
                 "png,jpg,jpeg,tif,tiff,bmp": self.minimize_image,
                 "js": self.minimize_js,
@@ -39,7 +38,7 @@ class Minimizer(PluginBase):
             self.register_for = []
 
     def register(self):
-        return "Minimizer", self.plugin_config["PRIORITY"], self.register_for
+        return "Minify", self.plugin_config["PRIORITY"], self.register_for
 
     def action(self, *args, **kwargs):
         if "item" in kwargs:
