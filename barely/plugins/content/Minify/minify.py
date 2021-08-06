@@ -5,7 +5,6 @@ as a sass/scss parser.
 """
 import os
 import sass
-from PIL import Image
 from calmjs.parse import es5, exceptions as js_exceptions
 from calmjs.parse.unparsers.es5 import minify_print
 from barely.plugins import PluginBase
@@ -19,8 +18,6 @@ class Minify(PluginBase):
         try:
             standard_config = {
                 "PRIORITY": 3,
-                "IMG_QUALITY": 70,
-                "IMG_LONG_EDGE": 1920,
                 "JS_OBFUSCATE": True,
                 "JS_OBFUSCATE_GLOBALS": True,
                 "CSS_INCLUDE_COMMENTS": False,
@@ -28,7 +25,6 @@ class Minify(PluginBase):
             }
             self.plugin_config = standard_config | self.config["MINIFY"]
             self.func_map = {
-                "png,jpg,jpeg,tif,tiff,bmp": self.minimize_image,
                 "js": self.minimize_js,
                 "sass,scss": self.minimize_css
             }
@@ -67,16 +63,4 @@ class Minify(PluginBase):
             item["action"] = "compiled"
         except js_exceptions.ECMASyntaxError as e:
             self.logger.error(f"JS Syntax Error: {e}")
-        return item
-
-    def minimize_image(self, item):
-        try:
-            long_edge = int(self.plugin_config["IMG_LONG_EDGE"])
-            size = long_edge, long_edge
-
-            item["image"].thumbnail(size, Image.ANTIALIAS)
-            item["quality"] = int(self.plugin_config["IMG_QUALITY"])
-            item["action"] = "compressed"
-        except Exception as e:
-            self.logger.error(f"An Error occured while handling the image: {e}")
         return item

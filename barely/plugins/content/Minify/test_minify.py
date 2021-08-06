@@ -13,15 +13,13 @@ class TestMinify(unittest.TestCase):
 
         golden = {
             "PRIORITY": 2,
-            "IMG_QUALITY": 70,
-            "IMG_LONG_EDGE": 1920,
             "JS_OBFUSCATE": True,
             "JS_OBFUSCATE_GLOBALS": True,
             "CSS_INCLUDE_COMMENTS": False,
             "CSS_OUTPUT_STYLE": "compressed"
         }
 
-        golden_register_for = ["png", "jpg", "jpeg", "tif", "tiff", "bmp", "js", "sass", "scss"]
+        golden_register_for = ["js", "sass", "scss"]
 
         mini.config["MINIFY"] = {"PRIORITY": 2}
         mini.__init__()
@@ -41,14 +39,12 @@ class TestMinify(unittest.TestCase):
         self.assertEqual(prio, -1)
         self.assertEqual(ext, [])
 
-    @patch("barely.plugins.content.Minify.minify.Image")
     @patch("barely.plugins.content.Minify.minify.minify_print")
     @patch("barely.plugins.content.Minify.minify.es5")
     @patch("barely.plugins.content.Minify.minify.sass")
-    def test_action(self, sass, es5, minifyjs, image):
+    def test_action(self, sass, es5, minifyjs):
         sass.compile = MagicMock(return_value="compiled")
         minifyjs.return_value = "smallerjs"
-        image.thumbnail = MagicMock()
 
         item = {
             "destination": "",
@@ -74,14 +70,6 @@ class TestMinify(unittest.TestCase):
         result = list(mini.action(item=item.copy()))[0]
         self.assertEqual(result["output"], "smallerjs")
         self.assertEqual(result["action"], "compiled")
-
-        # Image
-        item["image"] = image
-        item["extension"] = "png"
-        result = list(mini.action(item=item.copy()))[0]
-        self.assertTrue(result["image"].thumbnail.called)
-        self.assertEqual(result["quality"], 70)
-        self.assertEqual(result["action"], "compressed")
 
         del mini.config["MINIFY"]
         mini.__init__()
