@@ -15,23 +15,23 @@ class Minify(PluginBase):
 
     def __init__(self):
         super().__init__()
+
+        standard_config = {
+            "PRIORITY": 3,
+            "JS_OBFUSCATE": True,
+            "JS_OBFUSCATE_GLOBALS": True,
+            "CSS_INCLUDE_COMMENTS": False,
+            "CSS_OUTPUT_STYLE": "compressed"
+        }
         try:
-            standard_config = {
-                "PRIORITY": 3,
-                "JS_OBFUSCATE": True,
-                "JS_OBFUSCATE_GLOBALS": True,
-                "CSS_INCLUDE_COMMENTS": False,
-                "CSS_OUTPUT_STYLE": "compressed"
-            }
             self.plugin_config = standard_config | self.config["MINIFY"]
+        except KeyError:
+            self.plugin_config = standard_config
             self.func_map = {
                 "js": self.minimize_js,
                 "sass,scss": self.minimize_css
             }
             self.register_for = sum([group.split(",") for group in self.func_map.keys()], [])
-        except KeyError:
-            self.plugin_config = {"PRIORITY": -1}
-            self.register_for = []
 
     def register(self):
         return "Minify", self.plugin_config["PRIORITY"], self.register_for

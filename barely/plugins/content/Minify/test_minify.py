@@ -8,36 +8,25 @@ class TestMinify(unittest.TestCase):
 
     def test___init__(self):
         mini = Minify()
-        self.assertDictEqual({"PRIORITY": -1}, mini.plugin_config)
-        self.assertListEqual([], mini.register_for)
 
-        golden = {
-            "PRIORITY": 2,
+        standard_config = {
+            "PRIORITY": 3,
             "JS_OBFUSCATE": True,
             "JS_OBFUSCATE_GLOBALS": True,
             "CSS_INCLUDE_COMMENTS": False,
             "CSS_OUTPUT_STYLE": "compressed"
         }
 
-        golden_register_for = ["js", "sass", "scss"]
-
-        mini.config["MINIFY"] = {"PRIORITY": 2}
-        mini.__init__()
-
-        self.assertDictEqual(golden, mini.plugin_config)
-        self.assertListEqual(golden_register_for, mini.register_for)
-
-        # reset
-        del mini.config["MINIFY"]
-        mini.__init__()
+        self.assertDictEqual(standard_config, mini.plugin_config)
+        self.assertListEqual(["js", "sass", "scss"], mini.register_for)
 
     def test_register(self):
         mini = Minify()
         name, prio, ext = mini.register()
 
         self.assertEqual(name, "Minify")
-        self.assertEqual(prio, -1)
-        self.assertEqual(ext, [])
+        self.assertEqual(prio, 3)
+        self.assertEqual(ext, ["js", "sass", "scss"])
 
     @patch("barely.plugins.content.Minify.minify.minify_print")
     @patch("barely.plugins.content.Minify.minify.es5")
@@ -54,8 +43,6 @@ class TestMinify(unittest.TestCase):
         }
 
         mini = Minify()
-        mini.config["MINIFY"] = {"PRIORITY": 1}
-        mini.__init__()
 
         # SASS
         item["destination"] = "style.sass"
@@ -70,6 +57,3 @@ class TestMinify(unittest.TestCase):
         result = list(mini.action(item=item.copy()))[0]
         self.assertEqual(result["output"], "smallerjs")
         self.assertEqual(result["action"], "compiled")
-
-        del mini.config["MINIFY"]
-        mini.__init__()
