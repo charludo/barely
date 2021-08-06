@@ -16,6 +16,8 @@ setuptools.setup(name='barely',
                  entry_points={"console_scripts": ["barely = barely.cli:run"]},
                  install_requires=[
                     "click>=8.0.0",
+                    "click-default-group>=1.2.2",
+                    "coloredlogs>=15.0.0",
                     "mock>=4.0.0",
                     "pyyaml>=5.3.0",
                     "watchdog>=2.0.0",
