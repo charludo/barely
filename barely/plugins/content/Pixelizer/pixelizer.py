@@ -16,12 +16,19 @@ class Pixelizer(PluginBase):
         try:
             standard_config = {
                 "PRIORITY": 3,
-                "IMG_QUALITY": 70,
-                "IMG_LONG_EDGE": 1920
+                "TARGETS": [
+                    "xl 1920 100",
+                    "xs 400 40"
+                ],
+                "LAYOUTS": [
+                    "(max-width: 1000px) 100vw",
+                    "1000px"
+                ]
             }
             self.plugin_config = standard_config | self.config["PIXELIZER"]
             self.func_map = {
-                "png,jpg,jpeg,tif,tiff,bmp": self.minimize_image
+                "png,jpg,jpeg,tif,tiff,bmp": self.minimize_image,
+                self.config["PAGE_EXT"]: self.generate_tag
             }
             self.register_for = sum([group.split(",") for group in self.func_map.keys()], [])
         except KeyError:
@@ -49,3 +56,24 @@ class Pixelizer(PluginBase):
         except Exception as e:
             self.logger.error(f"An Error occured while handling the image: {e}")
         return item
+
+    def generate_tag(self, item):
+        try:
+            if "none" in item["meta"]["PIXELIZER"]:
+                return item
+        except KeyError:
+            pass
+
+        try:
+            page_config = self.plugin_config | {
+                "LAYOUTS": item["meta"]["PIXELIZER"]
+            }
+        except KeyError:
+            page_config = self.plugin_config
+
+        <picture>
+            <source media="(max-width: 700px)" sizes="(max-width: 500px) 50vw, 10vw" srcset="stick-figure-narrow.png 138w, stick-figure-hd-narrow.png 138w">
+
+            <source media="(max-width: 1400px)" sizes="(max-width: 1000px) 100vw, 50vw" srcset="stick-figure.png 416w, stick-figure-hd.png 416w">
+            <img src="stick-original.png" alt="Human">
+        </picture>
