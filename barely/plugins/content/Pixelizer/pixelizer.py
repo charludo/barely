@@ -4,6 +4,8 @@ converts images into web-friendly
 formats. It also transforms <img/>
 tags in <picture> tags with fallback.
 """
+import re
+import os
 from PIL import Image
 from barely.plugins import PluginBase
 
@@ -26,8 +28,17 @@ class Pixelizer(PluginBase):
                 ]
             }
             self.plugin_config = standard_config | self.config["PIXELIZER"]
+
+            for i, t in enumerate(self.plugin_config["TARGETS"]):
+                slug, width, quality = t.split()
+                self.plugin_config["TARGETS"][i] = {
+                    "slug": slug,
+                    "width": int(width),
+                    "quality": int(quality)
+                }
+
             self.func_map = {
-                "png,jpg,jpeg,tif,tiff,bmp": self.minimize_image,
+                "png,jpg,jpeg,tif,tiff,bmp": self.process_image,
                 self.config["PAGE_EXT"]: self.generate_tag
             }
             self.register_for = sum([group.split(",") for group in self.func_map.keys()], [])
@@ -43,21 +54,29 @@ class Pixelizer(PluginBase):
             item = kwargs["item"]
             for key, func in self.func_map.items():
                 if item["extension"] in key:
-                    yield func(item)
+                    yield from func(item)
 
-    def minimize_image(self, item):
-        try:
-            long_edge = int(self.plugin_config["IMG_LONG_EDGE"])
-            size = long_edge, long_edge
+    def process_image(self, item):
+        filename = os.path.splitext(item["destination"])[0]
 
-            item["image"].thumbnail(size, Image.ANTIALIAS)
-            item["quality"] = int(self.plugin_config["IMG_QUALITY"])
-            item["action"] = "compressed"
-        except Exception as e:
-            self.logger.error(f"An Error occured while handling the image: {e}")
-        return item
+        for type in ["webp", item["extension"]]:
+            for target in self.plugin_config["TARGETS"]:
+                variant = item.copy()
+                try:
+                    _, original_y = item["image"].size
+                    target_x = target["width"]
+                    size = target_x, original_y
 
-    def generate_tag(self, item):
+                    variant["image"].thumbnail(size, Image.ANTIALIAS)
+                    variant["quality"] = target["quality"]
+                    variant["destination"] = f"{filename}-{target['slug']}.{type}"
+                    variant["extension"] = type
+                    variant["action"] = "compressed"
+                except Exception as e:
+                    self.logger.error(f"An Error occured while handling the image: {e}")
+                yield variant
+
+    def process_page(self, item):
         try:
             if "none" in item["meta"]["PIXELIZER"]:
                 return item
@@ -65,15 +84,43 @@ class Pixelizer(PluginBase):
             pass
 
         try:
-            page_config = self.plugin_config | {
+            self.item_config = self.plugin_config.copy() | {
                 "LAYOUTS": item["meta"]["PIXELIZER"]
             }
         except KeyError:
-            page_config = self.plugin_config
+            self.item_config = self.plugin_config.copy()
 
-        <picture>
-            <source media="(max-width: 700px)" sizes="(max-width: 500px) 50vw, 10vw" srcset="stick-figure-narrow.png 138w, stick-figure-hd-narrow.png 138w">
+        item["content"] = re.sub(r"<img(?:\s+alt=[\"'](?P<alt1>.*)[\"'])?\s+src=[\"'](?P<file>\S+)\.(?P<ext>[a-zA-Z]+)[\"'](?:\s+alt=[\"'](?P<alt2>.*)[\"'])?\s*[/]?>", self._generate_tag, item["content"])
 
-            <source media="(max-width: 1400px)" sizes="(max-width: 1000px) 100vw, 50vw" srcset="stick-figure.png 416w, stick-figure-hd.png 416w">
-            <img src="stick-original.png" alt="Human">
-        </picture>
+        return item
+
+    def _generate_tag(self, match):
+        file = match.group("file")
+        ext = match.group("ext")
+        alt = ""
+
+        if match.group("alt2") is not None:
+            alt = match.group("alt2")
+        elif match.group("alt1") is not None:
+            alt = match.group("alt1")
+
+        sizes = ", ".join(self.item_config["LAYOUTS"])
+
+        components = ["<picture>"]
+
+        for type in ["webp", ext]:
+            c = f"<source sizes=\"{sizes}\" srcset=\""
+
+            srcset = []
+            for target in self.item_config["TARGETS"]:
+                srcset.append(f"{file}-{target['slug']}.{type} {target['width']}w")
+
+            c += ", ".join(srcset)
+            c += f"\" type=\"image/{type}\">"
+
+            components.append(c)
+
+        components.append(f"<img src=\"{file}.{ext}\" alt=\"{alt}\">")
+        components.append("</picture>")
+
+        return "\n".join(components)
