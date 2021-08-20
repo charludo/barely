@@ -36,7 +36,8 @@ class AutoSummary(PluginBase):
             standard_config = {
                 "PRIORITY": 20,
                 "SENTENCES": 3,
-                "LANGUAGE": "english"
+                "LANGUAGE": "english",
+                "MIN_SENT_LENGTH": 6
             }
             self.plugin_config = standard_config | self.config["AUTO_SUMMARY"]
 
@@ -62,6 +63,7 @@ class AutoSummary(PluginBase):
             # Split the content into a list of sentences, each again a list of words
             sentences = nltk.sent_tokenize(item["content_raw"])
             sentences = [nltk.word_tokenize(sentence)[:-1] for sentence in sentences]
+            sentences = [s for s in sentences if not len(s) < self.plugin_config["MIN_SENT_LENGTH"]]
 
             if len(sentences) <= self.plugin_config["SENTENCES"]:
                 item["meta"]["summary"] = item["content_raw"]
