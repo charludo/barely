@@ -40,7 +40,7 @@ class Pixelizer(PluginBase):
 
             self.func_map = {
                 "png,jpg,jpeg,tif,tiff,bmp": self.process_image,
-                self.config["PAGE_EXT"]: self.generate_tag
+                self.config["PAGE_EXT"]: self.process_page
             }
             self.register_for = sum([group.split(",") for group in self.func_map.keys()], [])
         except KeyError:
@@ -58,12 +58,15 @@ class Pixelizer(PluginBase):
                     yield from func(item)
 
     def process_image(self, item):
+        item["quality"] = 100
+        item["action"] = "processed"
         yield item
 
         filename = os.path.splitext(item["destination"])[0]
 
         for type in ["webp", item["extension"]]:
             for target in self.plugin_config["TARGETS"]:
+                self.logger.debug(f"Started processing for type: {type}, target: {target['slug']}")
                 variant = item.copy()
                 try:
                     _, original_y = item["image"].size
@@ -74,15 +77,16 @@ class Pixelizer(PluginBase):
                     variant["quality"] = target["quality"]
                     variant["destination"] = f"{filename}-{target['slug']}.{type}"
                     variant["extension"] = type
-                    variant["action"] = "processed"
                 except Exception as e:
                     self.logger.error(f"An Error occured while handling the image: {e}")
+                self.logger.debug(f"Finished processing for type: {type}, target: {target['slug']}")
                 yield variant
 
     def process_page(self, item):
         try:
             if "none" in item["meta"]["PIXELIZER"]:
-                return item
+                yield item
+                return
         except KeyError:
             pass
 
@@ -95,7 +99,7 @@ class Pixelizer(PluginBase):
 
         item["content"] = re.sub(r"<img(?:\s+alt=[\"'](?P<alt1>.*)[\"'])?\s+src=[\"'](?P<file>\S+)\.(?P<ext>[a-zA-Z]+)[\"'](?:\s+alt=[\"'](?P<alt2>.*)[\"'])?\s*[/]?>", self._generate_tag, item["content"])
 
-        return item
+        yield item
 
     def _generate_tag(self, match):
         file = match.group("file")
