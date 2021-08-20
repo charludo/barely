@@ -43,8 +43,6 @@ class Pixelizer(PluginBase):
                 self.config["PAGE_EXT"]: self.process_page
             }
             self.register_for = sum([group.split(",") for group in self.func_map.keys()], [])
-
-            self.logger.info(self.plugin_config)
         except KeyError:
             self.plugin_config = {"PRIORITY": -1}
             self.register_for = []
