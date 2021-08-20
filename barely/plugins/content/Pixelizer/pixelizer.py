@@ -19,8 +19,9 @@ class Pixelizer(PluginBase):
             standard_config = {
                 "PRIORITY": 3,
                 "TARGETS": [
-                    "xl 1920 100",
-                    "xs 400 40"
+                    "lg 1000 70",
+                    "md 650 70",
+                    "sm 300 70"
                 ],
                 "LAYOUTS": [
                     "(max-width: 1000px) 100vw",
@@ -57,6 +58,8 @@ class Pixelizer(PluginBase):
                     yield from func(item)
 
     def process_image(self, item):
+        yield item
+
         filename = os.path.splitext(item["destination"])[0]
 
         for type in ["webp", item["extension"]]:
@@ -71,7 +74,7 @@ class Pixelizer(PluginBase):
                     variant["quality"] = target["quality"]
                     variant["destination"] = f"{filename}-{target['slug']}.{type}"
                     variant["extension"] = type
-                    variant["action"] = "compressed"
+                    variant["action"] = "processed"
                 except Exception as e:
                     self.logger.error(f"An Error occured while handling the image: {e}")
                 yield variant
@@ -103,6 +106,9 @@ class Pixelizer(PluginBase):
             alt = match.group("alt2")
         elif match.group("alt1") is not None:
             alt = match.group("alt1")
+
+        if ext not in self.register_for:
+            return f"<img src=\"{file}.{ext}\" alt=\"{alt}\">"
 
         sizes = ", ".join(self.item_config["LAYOUTS"])
 
