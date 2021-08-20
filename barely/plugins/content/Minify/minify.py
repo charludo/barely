@@ -1,45 +1,40 @@
 """
-Minimizer exports the singleton Minimzer,
-which in turn provides functons to minimize
-images, javascript,...
-It also functions as a sass/scss parser.
+Minify provides functons to minimize
+javascript. It also functions
+as a sass/scss parser.
 """
 import os
 import sass
-from PIL import Image
 from calmjs.parse import es5, exceptions as js_exceptions
 from calmjs.parse.unparsers.es5 import minify_print
 from barely.plugins import PluginBase
 
 
-class Minimizer(PluginBase):
-    # Minimizer provides functions to reduce various formats in size
+class Minify(PluginBase):
+    # Minify provides functions to compile and reduce scss and js in size
 
     def __init__(self):
         super().__init__()
+
+        standard_config = {
+            "PRIORITY": 3,
+            "JS_OBFUSCATE": True,
+            "JS_OBFUSCATE_GLOBALS": True,
+            "CSS_INCLUDE_COMMENTS": False,
+            "CSS_OUTPUT_STYLE": "compressed"
+        }
         try:
-            standard_config = {
-                "PRIORITY": 3,
-                "IMG_QUALITY": 70,
-                "IMG_LONG_EDGE": 1920,
-                "JS_OBFUSCATE": True,
-                "JS_OBFUSCATE_GLOBALS": True,
-                "CSS_INCLUDE_COMMENTS": False,
-                "CSS_OUTPUT_STYLE": "compressed"
-            }
-            self.plugin_config = standard_config | self.config["MINIMIZER"]
+            self.plugin_config = standard_config | self.config["MINIFY"]
+        except KeyError:
+            self.plugin_config = standard_config
             self.func_map = {
-                "png,jpg,jpeg,tif,tiff,bmp": self.minimize_image,
                 "js": self.minimize_js,
                 "sass,scss": self.minimize_css
             }
             self.register_for = sum([group.split(",") for group in self.func_map.keys()], [])
-        except KeyError:
-            self.plugin_config = {"PRIORITY": -1}
-            self.register_for = []
 
     def register(self):
-        return "Minimizer", self.plugin_config["PRIORITY"], self.register_for
+        return "Minify", self.plugin_config["PRIORITY"], self.register_for
 
     def action(self, *args, **kwargs):
         if "item" in kwargs:
@@ -68,16 +63,4 @@ class Minimizer(PluginBase):
             item["action"] = "compiled"
         except js_exceptions.ECMASyntaxError as e:
             self.logger.error(f"JS Syntax Error: {e}")
-        return item
-
-    def minimize_image(self, item):
-        try:
-            long_edge = int(self.plugin_config["IMG_LONG_EDGE"])
-            size = long_edge, long_edge
-
-            item["image"].thumbnail(size, Image.ANTIALIAS)
-            item["quality"] = int(self.plugin_config["IMG_QUALITY"])
-            item["action"] = "compressed"
-        except Exception as e:
-            self.logger.error(f"An Error occured while handling the image: {e}")
         return item

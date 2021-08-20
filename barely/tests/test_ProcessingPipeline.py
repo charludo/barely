@@ -111,7 +111,8 @@ class TestProcessingPipeline(unittest.TestCase):
         item = {
             "origin": "pipes/image_dev.png",
             "destination": "pipes/image_web.png",
-            "action": ""
+            "action": "",
+            "extension": "png"
         }
         PP.pipe_image([item])
         self.assertFalse(ImageChops.difference(loadi("pipes/image_dev.png"), loadi("pipes/image_web.png")).getbbox())
@@ -245,7 +246,8 @@ class TestProcessingPipeline(unittest.TestCase):
             "destination": "new/new.png",
             "image": Image.open("test_load.png"),
             "action": "",
-            "origin": ""
+            "origin": "",
+            "extension": "png"
         }
 
         PP.save_image([test_item])

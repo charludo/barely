@@ -311,4 +311,5 @@ def test(verbose, keep_files):
 
 
 if __name__ == "__main__":
+    setup_loggers("INFO")
     test()
