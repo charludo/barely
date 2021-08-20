@@ -43,6 +43,8 @@ class Pixelizer(PluginBase):
                 self.config["PAGE_EXT"]: self.process_page
             }
             self.register_for = sum([group.split(",") for group in self.func_map.keys()], [])
+
+            self.logger.info(self.plugin_config)
         except KeyError:
             self.plugin_config = {"PRIORITY": -1}
             self.register_for = []
@@ -68,11 +70,12 @@ class Pixelizer(PluginBase):
             for target in self.plugin_config["TARGETS"]:
                 self.logger.debug(f"Started processing for type: {type}, target: {target['slug']}")
                 variant = item.copy()
+                variant["image"] = item["image"].copy()
                 try:
                     _, original_y = item["image"].size
                     target_x = target["width"]
                     size = target_x, original_y
-
+                    self.logger.debug(f"Original size: {item['image'].size}, New size: {size}")
                     variant["image"].thumbnail(size, Image.ANTIALIAS)
                     variant["quality"] = target["quality"]
                     variant["destination"] = f"{filename}-{target['slug']}.{type}"
