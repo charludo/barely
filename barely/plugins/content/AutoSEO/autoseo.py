@@ -13,7 +13,9 @@ class AutoSEO(PluginBase):
     def __init__(self):
         super().__init__()
         standard_config = {
-            "PRIORITY": 30
+            "PRIORITY": 30,
+            "KEYWORD_MODE": "append",
+            "AUTO_KEYWORDS": True
         }
         try:
             self.plugin_config = standard_config | self.config["AUTO_SEO"]
@@ -30,6 +32,7 @@ class AutoSEO(PluginBase):
 
         self.meta = {
             "title": "",
+            "keywords": "",
             "description": "",
             "site_name": "",
             "site_url": ""
@@ -41,6 +44,31 @@ class AutoSEO(PluginBase):
     def action(self, *args, **kwargs):
         if "item" in kwargs:
             item = kwargs["item"]
+
+            try:
+                page_seo = item["meta"]["SEO"]
+            except KeyError:
+                page_seo = {}
+
+            def get_most_specific(tag):
+                if tag in page_seo:
+                    return page_seo[tag]
+                elif tag in item["meta"]:
+                    return item["meta"][tag]
+                elif tag in self.meta:
+                    return self.meta[tag]
+                return None
+
+            def get_global(tag):
+                if tag in self.meta:
+                    return {tag: self.meta[tag]}
+                return {}
+
+            # usw!! zusammen bauen mit: seo |= get_global(title) | get_page(title) | get_seo(title)
+
+            # 1: page-specfic
+            # 2: global meta
+            # 3: generate / guess
 
             # title
             # description
