@@ -28,7 +28,6 @@ import networkx as nx
 
 
 class AutoSummary(PluginBase):
-    # very rough estimate of the reading time in minutes
 
     def __init__(self):
         super().__init__()
