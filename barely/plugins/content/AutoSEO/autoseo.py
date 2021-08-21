@@ -4,6 +4,8 @@ auto-generate lots of SEO-relevant tags
 ...because doing it manually is boring.
 """
 import os
+import re
+import glob
 from barely.plugins import PluginBase
 
 
@@ -45,8 +47,6 @@ class AutoSEO(PluginBase):
                 if tag in page_seo:
                     return {rebrand: page_seo[tag]}
                 return {}
-
-            # falls kein Bild: bild finden
 
             seo = {}
 
@@ -106,14 +106,27 @@ class AutoSEO(PluginBase):
             if "title" not in seo and "site_title" in seo:
                 seo["title"] = seo["site_title"]
 
-            # compute the og:url from site_url and destination of item
-            if "og:url" in seo:
-                path = item["destination"].replace(self.config["ROOT"]["WEB"], "")
-                seo["og:url"] = os.path.join(seo["og:url"], path)
-
             # if no image was specified, find one now
             if "og:image" not in seo:
-                pass
+                try:
+                    seo["og:image"] = re.findall(r"<img\b[^>]+?src\s*=\s*['\"]?([^\s'\"?#>]+)", item["content"])[0].group(1)
+                except IndexError:
+                    image = self._first_image(os.path.dirname(item["destination"]))
+                    if image:
+                        seo["og:image"] = image.replace(self.config["ROOT"]["WEB"], "").replace("\\", "/")
+
+            # find the absolute URL of the image, and
+            # compute the og:url from site_url and destination of item
+            if "og:url" in seo:
+                page_path = item["destination"].replace(self.config["ROOT"]["WEB"], "").replace("\\", "/")
+
+                if os.path.isabs(seo["og:image"]):
+                    seo["og:image"] = seo["og:url"] + seo["og:image"]
+                else:
+                    img_path = os.path.dirname(page_path) + seo["og:image"]
+                    seo["og:image"] = seo["og:url"] + img_path
+
+                seo["og:url"] = seo["og:url"] + page_path
 
             yield item
 
@@ -121,6 +134,16 @@ class AutoSEO(PluginBase):
         # robots.txt
         # sitemap.txt
         pass
+
+    def _first_image(self, path):
+        images = []
+        types = [os.path.join(path, f"*.{t}") for t in self.config["IMAGE_EXT"]]
+        for files in types:
+            images.extend(glob.glob(files))
+
+        if len(images):
+            return images[0]
+        return None
 
     @staticmethod
     def _extract_keywords(text):
