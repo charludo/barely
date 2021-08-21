@@ -20,6 +20,7 @@ class AutoSEO(PluginBase):
             self.plugin_config = standard_config | self.config["AUTO_SEO"]
         except KeyError:
             self.plugin_config = standard_config
+        self.url = ""
 
     def register(self):
         return "AutoSEO", self.plugin_config["PRIORITY"], [self.config["PAGE_EXT"]]
@@ -50,6 +51,9 @@ class AutoSEO(PluginBase):
             # find the absolute URL of the image, and
             # compute the og:url from site_url and destination of item
             if "og:url" in seo:
+                # keep up to date for finalize
+                self.url = seo["og:url"]
+
                 page_path = item["destination"].replace(self.config["ROOT"]["WEB"], "").replace("\\", "/")
 
                 if os.path.isabs(seo["og:image"]):
@@ -63,9 +67,33 @@ class AutoSEO(PluginBase):
             yield item
 
     def finalize(self):
-        # robots.txt
         # sitemap.txt
-        pass
+        sitemap_dev = os.path.join(self.config["ROOT"]["DEV"], "sitemap.txt")
+        sitemap_web = os.path.join(self.config["ROOT"]["WEB"], "sitemap.txt")
+        sitemap_url = self.url + "/" + "sitemap.txt"
+
+        if not os.path.exists(sitemap_dev):
+            pages = glob.glob(os.path.join(self.plugin_config["ROOT"]["WEB"], "**", "*.hmtl", recursive=True))
+            pages = [f.replace(self.config["ROOT"]["WEB"], self.url).replace("\\", "/") for f in pages]
+            pages = "\n".join(pages)
+
+            with open(sitemap_web, "w") as file:
+                file.write(pages)
+
+        # robots.txt
+        robots_dev = os.path.join(self.config["ROOT"]["DEV"], "robots.txt")
+        robots_web = os.path.join(self.config["ROOT"]["WEB"], "robots.txt")
+
+        if not os.path.exists(robots_dev):
+            robots = f"""
+            User-agent: *
+            Allow: /
+
+            Sitemap: {sitemap_url}
+            """
+
+            with open(robots_web, "w") as file:
+                file.write(robots)
 
     @staticmethod
     def _extract_tags(item):
