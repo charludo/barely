@@ -3,8 +3,6 @@ auto-generate lots of SEO-relevant tags
 
 ...because doing it manually is boring.
 """
-import os
-import yaml
 from barely.plugins import PluginBase
 
 
