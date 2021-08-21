@@ -64,6 +64,9 @@ class AutoSEO(PluginBase):
 
                 seo["og:url"] = seo["og:url"] + page_path
 
+                # 3. generate the meta html tags
+                item["meta"]["seo_tags"] = self._generate_tags(seo)
+
             yield item
 
     def finalize(self):
@@ -155,6 +158,45 @@ class AutoSEO(PluginBase):
         seo |= get_page("twitter_creator", "twitter:creator") | get_seo("twitter_creator", "twitter:creator")
 
         return seo
+
+    @staticmethod
+    def _generate_tags(seo):
+        tags = []
+        tags.append('<meta charset="utf-8" />')
+        tags.append('<meta name="viewport" content="width=device-width, initial-scale=1" />')
+
+        if "title" in seo:
+            tags.append(f'<title>{seo["title"]}</title>')
+        if "description" in seo:
+            tags.append(f'<meta name="description" content="{seo["description"]}" />')
+        if "keywords" in seo:
+            tags.append(f'<meta name="keywords" content="{seo["keywords"]}" />')
+        if "robots" in seo:
+            tags.append(f'<meta name="robots" content="{seo["robots"]}" />')
+        if "favicon" in seo:
+            tags.append(f'<link rel="shortcut icon" type="image/x-icon" href="{seo["favicon"]}">')
+
+        if "og:title" in seo:
+            tags.append(f'<meta property="og:title" content="{seo["og:title"]}">')
+        if "og:description" in seo:
+            tags.append(f'<meta property="og:description" content="{seo["og:description"]}">')
+        if "og:image" in seo:
+            tags.append(f'<meta property="og:image" content="{seo["og:image"]}">')
+        if "og:url" in seo:
+            tags.append(f'<meta property="og:url" content="{seo["og:url"]}">')
+        if "og:site_name" in seo:
+            tags.append(f'<meta property="og:site_name" content="{seo["og:site_name"]}">')
+
+        if "twitter:image:alt" in seo:
+            tags.append(f'<meta name="twitter:image:alt" content="{seo["twitter:image:alt"]}">')
+        if "twitter:site" in seo:
+            tags.append(f'<meta name="twitter:site" content="{seo["twitter:site"]}">')
+        if "twitter:creator" in seo:
+            tags.append(f'<meta name="twitter:creator" content="{seo["twitter:creator"]}">')
+        if "twitter:card" in seo:
+            tags.append(f'<meta name="twitter:card" content="{seo["twitter:card"]}">')
+
+        return "\n".join(tags)
 
     def _first_image(self, path):
         images = []
