@@ -39,7 +39,8 @@ class AutoSummary(PluginBase):
                 "LANGUAGE": "english",
                 "MIN_SENT_LENGTH": 6,
                 "MAX_KEYWORDS": 10,
-                "AUTO_KEYWORDS": False
+                "KEYWORDS": False,
+                "SUMMARY": True
             }
             self.plugin_config = standard_config | self.config["AUTO_SUMMARY"]
 
@@ -64,7 +65,7 @@ class AutoSummary(PluginBase):
             except KeyError:
                 language = self.plugin_config["LANGUAGE"]
 
-            if "summary" not in item["meta"]:
+            if "summary" not in item["meta"] and self.plugin_config["SUMMARY"]:
                 # Split the content into a list of sentences, each again a list of words
                 sentences = nltk.sent_tokenize(item["content_raw"])
                 sentences = [nltk.word_tokenize(sentence)[:-1] for sentence in sentences]
@@ -90,7 +91,7 @@ class AutoSummary(PluginBase):
                     summary = re.sub(r"\s([\.!;,\?\'\"\:)", lambda match: match.group(1), summary)
                     item["meta"]["summary"] = summary + "."
 
-            if "keywords" not in item["meta"] and self.plugin_config["AUTO_KEYWORDS"]:
+            if "keywords" not in item["meta"] and self.plugin_config["KEYWORDS"]:
                 r = Rake(language=language)
                 r.extract_keywords_from_text(item["content_raw"])
                 item["meta"]["keywords"] = r.get_ranked_phrases()[:int(self.plugin_config["MAX_KEYWORDS"])]
