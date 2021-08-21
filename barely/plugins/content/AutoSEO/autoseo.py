@@ -13,7 +13,7 @@ class AutoSEO(PluginBase):
         super().__init__()
         standard_config = {
             "PRIORITY": 30,
-            "AUTO_KEYWORDS": True
+            "AUTO_KEYWORDS": False
         }
         try:
             self.plugin_config = standard_config | self.config["AUTO_SEO"]
