@@ -46,35 +46,40 @@ class AutoSEO(PluginBase):
                     return {rebrand: page_seo[tag]}
                 return {}
 
-            # usw!! zusammen bauen mit: seo |= get_global(title) | get_page(title) | get_seo(title)
-
-            # 0: page-SEO specific
-            # 1: page-specfic
-            # 3: generate / guess
+            # keywords global | (auto | page)
+            # an title site_title anhaengen
+            # falls kein Bild: bild finden
+            # an og:url destination anhaengen
 
             seo = {}
 
             # title
             seo |= get_page("title")
             # description
-            seo |= get_page("description")
+            seo |= get_page("site_description", "description") | get_page("summary", "description") | get_page("description")
             # robots
+            seo |= {"robots": "all"} | get_page("robots")
+            # keywords
+            seo |= get_page("site_keywords")
+            seo |= get_page("keywords")
+            # favicon
+            seo |= get_page("favicon")
 
             # og:title
             seo |= get_page("title", "og:title") | get_seo("title", "og:title")
             # og:description
-            seo |= get_page("description", "og:description") | get_seo("description", "og:description")
+            seo |= get_page("site_description", "og:description") | get_page("summary", "og:description") | get_page("description", "og:description") | get_seo("description", "og:description")
             # og:image
             seo |= get_page("title_image", "og:image") | get_seo("title_image", "og:image")
             # og:url
-            seo |= get_page("page_url", "og:url") | get_seo("page_url", "og:url")
+            seo |= get_page("site_url", "og:url")
             # og:site_name
             seo |= get_page("title", "og:site_name") | get_page("site_name", "og:site_name") | get_seo("site_name", "og:site_name")
 
             # twitter:image:alt
-            seo |= get_page("description", "twitter:image:alt") | get_seo("description", "twitter:image:alt") | get_page("title_image_alt", "twitter:image:alt") | get_seo("title_image_alt", "twitter:image:alt")
+            seo |= get_page("site_description", "twitter:image:alt") | get_page("summary", "twitter:image:alt") | get_page("description", "twitter:image:alt") | get_seo("description", "twitter:image:alt") | get_page("title_image_alt", "twitter:image:alt") | get_seo("title_image_alt", "twitter:image:alt")
             # twitter:card
-            seo |= {"twitter_card": "summary_card_large"} | get_page("twitter_card", "twitter:card") | get_seo("twitter_card", "twitter:card")
+            seo |= {"twitter:card": "summary_card_large"} | get_page("twitter_card", "twitter:card") | get_seo("twitter_card", "twitter:card")
             # twitter:site
             seo |= get_page("twitter_site", "twitter:site") | get_seo("twitter_site", "twitter:site")
             # twitter:creator
@@ -84,5 +89,5 @@ class AutoSEO(PluginBase):
 
     def finalize(self):
         # robots.txt
-        # sitemap
+        # sitemap.txt
         pass
