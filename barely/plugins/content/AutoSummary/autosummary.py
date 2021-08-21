@@ -12,7 +12,7 @@ import subprocess
 import pkg_resources
 from barely.plugins import PluginBase
 
-required = {"nltk", "numpy", "networkx", "scipy"}
+required = {"nltk", "numpy", "networkx", "scipy", "rake-nltk"}
 installed = {pkg.key for pkg in pkg_resources.working_set}
 missing = required - installed
 
@@ -25,6 +25,7 @@ from nltk.corpus import stopwords
 from nltk.cluster.util import cosine_distance
 import numpy as np
 import networkx as nx
+from rake_nltk import Rake
 
 
 class AutoSummary(PluginBase):
@@ -36,7 +37,9 @@ class AutoSummary(PluginBase):
                 "PRIORITY": 20,
                 "SENTENCES": 3,
                 "LANGUAGE": "english",
-                "MIN_SENT_LENGTH": 6
+                "MIN_SENT_LENGTH": 6,
+                "MAX_KEYWORDS": 10,
+                "AUTO_KEYWORDS": False
             }
             self.plugin_config = standard_config | self.config["AUTO_SUMMARY"]
 
@@ -55,42 +58,43 @@ class AutoSummary(PluginBase):
         if "item" in kwargs:
             item = kwargs["item"]
 
-            if "summary" in item["meta"]:
-                yield item
-                return
-
-            # Split the content into a list of sentences, each again a list of words
-            sentences = nltk.sent_tokenize(item["content_raw"])
-            sentences = [nltk.word_tokenize(sentence)[:-1] for sentence in sentences]
-            sentences = [s for s in sentences if not len(s) < self.plugin_config["MIN_SENT_LENGTH"]]
-
-            if len(sentences) <= self.plugin_config["SENTENCES"]:
-                item["meta"]["summary"] = item["content_raw"]
-                yield item
-                return
-
             # Get the appropriate Stopwords
             try:
                 language = item["meta"]["language"]
             except KeyError:
                 language = self.plugin_config["LANGUAGE"]
 
-            sw = stopwords.words(language)
+            if "summary" not in item["meta"]:
+                # Split the content into a list of sentences, each again a list of words
+                sentences = nltk.sent_tokenize(item["content_raw"])
+                sentences = [nltk.word_tokenize(sentence)[:-1] for sentence in sentences]
+                sentences = [s for s in sentences if not len(s) < self.plugin_config["MIN_SENT_LENGTH"]]
 
-            # Build a similarity matrix
-            similarity_matrix = np.zeros((len(sentences), len(sentences)))
+                if len(sentences) <= self.plugin_config["SENTENCES"]:
+                    item["meta"]["summary"] = item["content_raw"]
+                else:
+                    sw = stopwords.words(language)
 
-            for i in range(len(sentences)):
-                for j in range(len(sentences)):
-                    if i == j:
-                        continue
-                similarity_matrix[i][j] = self._sentence_similarity(sentences[i], sentences[j], sw)
+                    # Build a similarity matrix
+                    similarity_matrix = np.zeros((len(sentences), len(sentences)))
 
-            sim_scores = nx.pagerank(nx.from_numpy_array(similarity_matrix))
-            sim_ranking = sorted(((sim_scores[i], s) for i, s in enumerate(sentences)), reverse=True)
-            summary = ". ".join([" ".join(sim_ranking[i][1]) for i in range(self.plugin_config["SENTENCES"])])
-            summary = re.sub(r"\s([\.!;,\?\'\"\[\]\{\}\(\)])", lambda match: match.group(1), summary)
-            item["meta"]["summary"] = summary + "."
+                    for i in range(len(sentences)):
+                        for j in range(len(sentences)):
+                            if i == j:
+                                continue
+                        similarity_matrix[i][j] = self._sentence_similarity(sentences[i], sentences[j], sw)
+
+                    sim_scores = nx.pagerank(nx.from_numpy_array(similarity_matrix))
+                    sim_ranking = sorted(((sim_scores[i], s) for i, s in enumerate(sentences)), reverse=True)
+                    summary = ". ".join([" ".join(sim_ranking[i][1]) for i in range(self.plugin_config["SENTENCES"])])
+                    summary = re.sub(r"\s([\.!;,\?\'\"\:)", lambda match: match.group(1), summary)
+                    item["meta"]["summary"] = summary + "."
+
+            if "keywords" not in item["meta"] and self.plugin_config["AUTO_KEYWORDS"]:
+                r = Rake(language=language)
+                r.extract_keywords_from_text(item["content_raw"])
+                item["meta"]["keywords"] = r.get_ranked_phrases()[:int(self.plugin_config["MAX_KEYWORDS"])]
+
             yield item
 
     @staticmethod
