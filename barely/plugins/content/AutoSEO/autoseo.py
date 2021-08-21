@@ -3,6 +3,7 @@ auto-generate lots of SEO-relevant tags
 
 ...because doing it manually is boring.
 """
+import os
 from barely.plugins import PluginBase
 
 
@@ -12,7 +13,6 @@ class AutoSEO(PluginBase):
         super().__init__()
         standard_config = {
             "PRIORITY": 30,
-            "KEYWORD_MODE": "append",
             "AUTO_KEYWORDS": True
         }
         try:
@@ -46,12 +46,12 @@ class AutoSEO(PluginBase):
                     return {rebrand: page_seo[tag]}
                 return {}
 
-            # keywords global | (auto | page)
-            # an title site_title anhaengen
             # falls kein Bild: bild finden
-            # an og:url destination anhaengen
 
             seo = {}
+
+            # extract all the necessary info, from wherever we can get it
+            # rightmost is preferred
 
             # title
             seo |= get_page("title")
@@ -85,9 +85,43 @@ class AutoSEO(PluginBase):
             # twitter:creator
             seo |= get_page("twitter_creator", "twitter:creator") | get_seo("twitter_creator", "twitter:creator")
 
+            # union the keywords and site_keywords, should they exist
+            if "keywords" in seo:
+                keywords = seo["keywords"]
+            elif self.plugin_config["AUTO_KEYWORDS"]:
+                keywords = self._extract_keywords(item["content_raw"])
+            else:
+                keywords = []
+
+            if "site_keywords" in seo:
+                keywords = list(set(keywords) | set(seo["site_keywords"]))
+
+            if len(keywords):
+                seo["keywords"] = ", ".join(keywords)
+
+            # append the site_title to the title, should they exist;
+            # set the site_title as title, should the latter not exist
+            if "title" in seo and "site_title" in seo:
+                seo["title"] = f"{seo['title']} | {seo['site_title']}"
+            if "title" not in seo and "site_title" in seo:
+                seo["title"] = seo["site_title"]
+
+            # compute the og:url from site_url and destination of item
+            if "og:url" in seo:
+                path = item["destination"].replace(self.config["ROOT"]["WEB"], "")
+                seo["og:url"] = os.path.join(seo["og:url"], path)
+
+            # if no image was specified, find one now
+            if "og:image" not in seo:
+                pass
+
             yield item
 
     def finalize(self):
         # robots.txt
         # sitemap.txt
         pass
+
+    @staticmethod
+    def _extract_keywords(text):
+        return []
