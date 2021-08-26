@@ -317,6 +317,7 @@ def test(verbose, keep_files):
     #
     #   general setup
     #
+    logger.info("Setting up test environment...")
 
     buffer = not verbose
     appdir = get_appdir()
@@ -330,6 +331,7 @@ def test(verbose, keep_files):
     #
     #   barely core tests
     #
+    logger.info("Starting barely core tests...")
 
     loader = unittest.TestLoader()
     suite = loader.discover(testsuite_dir)
@@ -339,6 +341,7 @@ def test(verbose, keep_files):
     #
     #   system plugin tests
     #
+    logger.info("Starting system plugin tests...")
 
     plugins_path = os.path.join(os.path.dirname(__file__), "plugins")
     plugin_loader = unittest.TestLoader()
@@ -353,6 +356,7 @@ def test(verbose, keep_files):
     if not keep_files:
         os.chdir(appdir)
         shutil.rmtree(testdir)
+        logger.info("Cleaning up... Finished")
 
 
 if __name__ == "__main__":
