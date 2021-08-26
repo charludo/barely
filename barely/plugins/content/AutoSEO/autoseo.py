@@ -45,7 +45,7 @@ class AutoSEO(PluginBase):
             # if no image was specified, find one now
             if "og:image" not in seo:
                 try:
-                    seo["og:image"] = re.findall(r"<img\b[^>]+?src\s*=\s*['\"]?([^\s'\"?#>]+)", item["content"])[0].group(1)
+                    seo["og:image"] = re.findall(r"<img\b[^>]+?src\s*=\s*['\"]?([^\s'\"?#>]+)", item["content"])[0]
                 except IndexError:
                     seo |= self._first_image(os.path.dirname(item["destination"]))
 
@@ -54,13 +54,12 @@ class AutoSEO(PluginBase):
             if "og:url" in seo:
                 # keep up to date for finalize
                 self.url = seo["og:url"]
-
                 page_path = item["destination"].replace(self.config["ROOT"]["WEB"], "").replace("\\", "/")
 
                 if os.path.isabs(seo["og:image"]):
                     seo["og:image"] = seo["og:url"] + seo["og:image"]
-                elif not seo["og:url"].startswith("http"):
-                    img_path = os.path.dirname(page_path) + seo["og:image"]
+                elif seo["og:image"] and not seo["og:image"].startswith("http"):
+                    img_path = os.path.dirname(page_path) + "/" + seo["og:image"]
                     seo["og:image"] = seo["og:url"] + img_path
 
                 seo["og:url"] = seo["og:url"] + page_path
@@ -71,6 +70,10 @@ class AutoSEO(PluginBase):
             yield item
 
     def finalize(self):
+        if not self.url:
+            # not enough information to continue
+            return
+
         # sitemap.txt
         sitemap_dev = os.path.join(self.config["ROOT"]["DEV"], "sitemap.txt")
         sitemap_web = os.path.join(self.config["ROOT"]["WEB"], "sitemap.txt")
@@ -134,7 +137,7 @@ class AutoSEO(PluginBase):
         # keywords
         keywords = item["meta"]["keywords"] if "keywords" in item["meta"] else []
         site_keywords = item["meta"]["site_keywords"] if "site_keywords" in item["meta"] else []
-        seo |= ", ".join(list(set(site_keywords) | set(keywords)))
+        seo |= {"keywords": ", ".join(list(set(site_keywords) | set(keywords)))}
         # favicon
         seo |= get_page("favicon")
 
