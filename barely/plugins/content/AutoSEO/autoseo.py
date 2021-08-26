@@ -155,7 +155,7 @@ class AutoSEO(PluginBase):
         # twitter:image:alt
         seo |= get_page("site_description", "twitter:image:alt") | get_page("summary", "twitter:image:alt") | get_page("description", "twitter:image:alt") | get_seo("description", "twitter:image:alt") | get_page("title_image_alt", "twitter:image:alt") | get_seo("title_image_alt", "twitter:image:alt")
         # twitter:card
-        seo |= {"twitter:card": "summary_card_large"} | get_page("twitter_card", "twitter:card") | get_seo("twitter_card", "twitter:card")
+        seo |= {"twitter:card": "summary_card_large"} | get_seo("twitter_card", "twitter:card")
         # twitter:site
         seo |= get_page("twitter_site", "twitter:site") | get_seo("twitter_site", "twitter:site")
         # twitter:creator
