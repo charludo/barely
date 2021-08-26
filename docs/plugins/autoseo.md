@@ -58,6 +58,8 @@ Use the generated tags in the `<head>` of your base template:
 </html>
 ```
 
+If you have not manually created a `robots.txt` and/or `sitemap.txt` already, the plugin will do it for you.
+
 ---
 
 |argument				|default value		|explanation									|
