@@ -14,7 +14,8 @@ class AutoSEO(PluginBase):
     def __init__(self):
         super().__init__()
         standard_config = {
-            "PRIORITY": 30
+            "PRIORITY": 30,
+            "MISC_TAGS": True
         }
         try:
             self.plugin_config = standard_config | self.config["AUTO_SEO"]
@@ -159,11 +160,12 @@ class AutoSEO(PluginBase):
 
         return seo
 
-    @staticmethod
-    def _generate_tags(seo):
+    def _generate_tags(self, seo):
         tags = []
-        tags.append('<meta charset="utf-8" />')
-        tags.append('<meta name="viewport" content="width=device-width, initial-scale=1" />')
+
+        if self.plugin_config["MISC_TAGS"]:
+            tags.append('<meta charset="utf-8" />')
+            tags.append('<meta name="viewport" content="width=device-width, initial-scale=1" />')
 
         if "title" in seo:
             tags.append(f'<title>{seo["title"]}</title>')
