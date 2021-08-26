@@ -149,8 +149,10 @@ def register(self):
 And with that, we are finally ready to actually *do* something with this plugin!
 ```python
 def action(self, *args, **kwargs):
-  item["content"] += self.plugin_config["copyright_notice"]
-  yield item
+	if "item" in kwargs:
+		item = kwargs["item"]
+		item["content"] += self.plugin_config["copyright_notice"]
+		yield item
 ```
 
 Wait... that's it?!  
@@ -169,27 +171,30 @@ from barely.plugins import PluginBase
 
 class Copyright(PluginBase):
 
-def __init__(self):
-  super().__init__()
-  standard_config = {
-    "copyright_notice": "Hey! This website is copyrighted!",
-    "priority": 10
-  }
+    def __init__(self):
+        super().__init__()
+        standard_config = {
+            "copyright_notice": "Hey! This website is copyrighted!",
+            "priority": 10
+        }
 
-  try:
-    self.plugin_config = standard_config | self.config["copyright"]
-  except KeyError:
-    self.plugin_config = standard_config
+        try:
+            self.plugin_config = standard_config | self.config["copyright"]
+        except KeyError:
+            self.plugin_config = standard_config
 
-def register(self):
-  return "Copyright", self.plugin_config["priority"], [self.config["PAGE_EXT"]]
+    def register(self):
+        return "Copyright", self.plugin_config["priority"], [self.config["PAGE_EXT"]]
 
-def action(self, *args, **kwargs):
-  item["content"] += self.plugin_config["copyright_notice"]
-  yield item
+    def action(self, *args, **kwargs):
+        if "item" in kwargs:
+            item = kwargs["item"]
+            item["content"] += self.plugin_config["copyright_notice"]
+            yield item
 
-def finalize(self):
-  pass
+    def finalize(self):
+        pass
+
 ```
 
 Simply place your Copyright folder into the content plugins directory (see above!) and watch your plugin work when you start and use barely!
