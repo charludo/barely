@@ -56,6 +56,8 @@ barely was built out of frustration with the readily available site generators, 
 
 barely reduces static website development to its key parts, by automatically rendering jinja2 templates and Markdown content into HTML. A simple **plugin interface** allows for easy extensibility, and the built-in **live web server** makes on-the-fly development as comfortable as possible.
 
+Since building performant and SEO-friendly websites is always important, barely comes bundled with a Google **Lighthouse** CLI option, letting you quickly generate reports about your sites health.
+
 For more on barelys design philosophy, and to see whether barely might be right for your project, [see here in the docs](https://github.com/charludo/barely/blob/main/docs/about.md).
 
 

@@ -23,6 +23,8 @@ If you start barely by typing `barely live` (or just `barely`), a live server st
 
 When you've finished, simply hit `Ctrl+C`, and press enter on barelys prompt to push your changes to git, publish the site to your sftp server, or any other action you've specified.
 
+Since building performant and SEO-friendly websites is always important, barely comes bundled with a Google **Lighthouse** CLI option, letting you quickly generate reports about your sites health.
+
 ## Extensibility
 
 barely comes with 10 [plugins](plugins.md) that make working even easier, like automatically compressing images, compiling SASS, generating complete HTML forms out of yaml, and managing Collections (barelys catch-all term for things like tags or categories of posts and pages).

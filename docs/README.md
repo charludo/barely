@@ -7,3 +7,4 @@
 5. [Plugins](plugins.md)
 	- [Writing your own Plugins](plugins.md#writing-your-own-plugins)
 6. [Blueprints](blueprints.md)
+7. [Lighthouse](lighthouse.md)
