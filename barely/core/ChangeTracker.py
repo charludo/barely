@@ -17,6 +17,10 @@ from watchdog.events import PatternMatchingEventHandler
 from barely.common.config import config
 
 
+def empty_func():
+    return None
+
+
 class ChangeTracker:
     """ monitors the devroot for file and dir changes and notifies the ChangeHandler """
     logger = logging.getLogger("base.core")
@@ -54,13 +58,13 @@ class ChangeTracker:
 
         self.handler_available = True
 
-    def track(self, loop_action=lambda: None):
+    def track(self, loop_action=empty_func):
         """ start the watchdog configured above """
         if self.handler_available:
             # setup the livereload server
             server = Server()
             if not self.verbose:
-                server._setup_logging = lambda: None
+                server._setup_logging = empty_func
             server.watch(config["ROOT"]["WEB"], delay=0.1)
             self.liveserver = Process(target=server.serve, kwargs={"root": config["ROOT"]["WEB"], "open_url_delay": 1})
 
