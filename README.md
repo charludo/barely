@@ -236,6 +236,8 @@ barely is currently released as version `1.0.0`. That means that while everythin
 
 - **performance improvements**. barely is fast enough for every-day use, but not exactly optimized. The biggest performance win could probably be made by letting barely interact with a model of the current project, instead of constantly opening / closing the same files. That's a major rework though, and maybe something for version 2.0.0...
 
+- a good demo blueprint, showcasing all of barelys features and plugins
+
 - **the docs** could use some love :)
 
 <!-- CONTRIBUTING -->
