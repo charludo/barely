@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	{{ seo_tags }}
+	<link rel="stylesheet" href="/res/style.css" />
+	{% block extra_css %}{% endblock %}
+</head>
+<body class="{{ body }}">
+	{% block body %}
+
+	{% endblock %}
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	{% block extra_js %}{% endblock %}
+</body>
+</html>

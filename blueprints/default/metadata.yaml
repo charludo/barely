@@ -1,1 +1,7 @@
-description: a test page for testing purposes
+site_url: https://default.com
+site_name: Default Website
+site_description: Default blueprint description
+site_keywords:
+    - default
+    - blueprints
+favicon: res/favicon.ico

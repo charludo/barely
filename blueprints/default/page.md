@@ -1,3 +1,7 @@
+---
+title: Welcome!
+---
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -297,7 +301,6 @@ Most recent entry:
 - moved from BETA to STABLE
 - switched version numbering scheme from `v_095` to more readable `v1.0.0`
 - proper logging instead of print()
-- simplified the default blueprint to make it more usable
 
 #### Fixed
 - various small performance improvements, largely due to eliminating duplicate function calls
