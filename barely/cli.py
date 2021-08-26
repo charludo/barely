@@ -262,7 +262,9 @@ def aftermath(PM):
 
 
 @run.command()
-def lighthouse():
+@click.option("--page", "-p", help="specify a page to be evaluated other than the root", default="")
+def lighthouse(page):
+    """use Google Lighthouse to evaluate a page for SEO- and accessibility scores"""
     import subprocess
     version = subprocess.run(["lighthouse", "--version"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
 
@@ -292,7 +294,9 @@ def lighthouse():
 
         # start lighthouse
         target_file = os.path.join(devroot, "lighthouse_report.html")
-        subprocess.call(f"lighthouse http://127.0.0.1:5500 --output-path {target_file} --chrome-flags=\"--headless\" --quiet", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        if len(page) and not page.startswith("/"):
+            page = "/" + page
+        subprocess.call(f"lighthouse http://127.0.0.1:5500{page} --output-path {target_file} --chrome-flags=\"--headless\" --quiet", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
         # stop the webserver
         liveserver.kill()
