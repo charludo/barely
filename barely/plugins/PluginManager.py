@@ -133,10 +133,15 @@ class PluginManager:
         return item_list
 
     def finalize_content(self):
+        plugins = set()
         for ext in self.plugins_content:
-            self.logger.debug(f"finalizing {ext}-files")
             for plugin in self.plugins_content[ext]:
-                plugin.finalize()
+                plugins.add(plugin)
+
+        for plugin in plugins:
+            name, _, _ = plugin.register()
+            self.logger.info(f"Finalizing plugin {name}...")
+            plugin.finalize()
 
     def hook_backup(self):
         for plugin in self.plugins_backup:
