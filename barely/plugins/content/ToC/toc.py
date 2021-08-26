@@ -38,7 +38,7 @@ class ToC(PluginBase):
             if "toc" not in item["meta"]:
                 item["content"] = re.sub(r"<h(\d{1})>(.+)<\/h\d{1}>", self._handle_matches, item["content"])
                 item["meta"]["toc"] = "\n".join(self._generate_toc())
-        yield item
+            yield item
 
     def _handle_matches(self, match):
         level = match.group(1)
