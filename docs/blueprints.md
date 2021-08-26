@@ -5,9 +5,9 @@ Back in the [Basics](/README.md/#basics), we have already briefly covered bluepr
 You can list all available blueprints with:
 ```console
 $ barely blueprints
-barely :: found 2 blueprints:
-	-> default
-	-> blank
+[barely][  core][ INFO] :: found 2 blueprints:
+                        -> default
+                        -> blank
 ```
 
 The help menu hints at a way to also create your own blueprints:
@@ -26,10 +26,10 @@ Executing `barely blueprints --new "name"` will create a new blueprint out of yo
 
 ```console
 $ barely blueprints
-barely :: found 2 blueprints:
-	-> default
-	-> blank
-	-> name
+[barely][  core][ INFO] :: found 3 blueprints:
+                        -> name
+                        -> default
+                        -> blank
 ```
 
 [< back](README.md)

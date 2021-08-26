@@ -1,9 +1,17 @@
+import pathlib
 import setuptools
 
+# The directory containing this file
+HERE = pathlib.Path(__file__).parent
+
+# The text of the README file
+README = (HERE / "README.md").read_text()
 
 setuptools.setup(name='barely',
-                 version='0.9.5',
+                 version='1.0.0',
                  description='barely is a lightweight, but highly extensible static site generator written in pure python.',
+                 long_description=README,
+                 long_description_content_type="text/markdown",
                  keyword=['static site generator', 'jinja2', 'markdown', 'web development'],
                  url='https://github.com/charludo/barely',
                  download_url='https://github.com/charludo/barely/archive/v_095.tar.gz',
@@ -33,7 +41,7 @@ setuptools.setup(name='barely',
                     "calmjs>=3.3.0"
                  ],
                  classifiers=[
-                    'Development Status :: 4 - Beta',
+                    'Development Status :: 5 - Production/Stable',
                     'Intended Audience :: Developers',
                     'Topic :: Text Processing :: Markup :: HTML',
                     'Topic :: Text Processing :: General',
@@ -44,5 +52,5 @@ setuptools.setup(name='barely',
                     'Programming Language :: Python :: 3.9',
                     'Environment :: Console',
                     'Operating System :: OS Independent'
-                  ],
+                  ]
                  )

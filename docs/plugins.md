@@ -11,16 +11,21 @@ barely knows three kinds of plugins:
 These look out for certain file extensions, which they will further process than barely normally would. Some also perform some additional tasks right after you've finished editing the project.
 
 barely ships with:
+- [AutoSeo](plugins/autoseo.md): generate SEO-, OpenGraph- and Twitter-relevant tags from a very minimal required information set. Can also generate `robots.txt` and `sitemap.txt` files. Works great with AutoSummary!
+
+- [AutoSummary](plugins/autosummary.md): make use of the NLTK to generate a short summary of a page. Can also extract a list of most relevant keywords
+
 - [Collections](plugins/collections.md): add a page to Collections or request the contents of one (or multiple). Can also generate Collection overview pages. These are barelys version of categories.
 
 - [Forms](plugins/forms.md): specify forms in pure YAML, let the plugin generate their HTML representation!
 
+- [Gallery](plugins/gallery.md): specify a gallery name, sorting, and an image folder in markdown; let the plugin generate a gallery! Works great with Pixelizer!
+
 - [Highlight](plugins/highlight.md): lex & highlight code blocks using pygments! Lets you specify the language and theme on a global, page or code block level.
 
-- [Minimizer](plugins/minimizer.md):
-	- compress & resize images
-	- minimize JS files
-	- **compile SASS/SCSS into regular old css!**
+- [Minify](plugins/minify.md): minify JS files; **compile SASS/SCSS into regular old css!**
+
+- [Pixelizer](plugins/pixelizer.md): turn img-tags in picture-tags, with multiple srcsets for the original image format and webp, all at different target resolutions. Google loves this
 
 - [ReadingTime](plugins/readingtime.md): estimate the reading time for a page or a blog post - a common feature on many blogs.
 

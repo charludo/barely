@@ -61,7 +61,7 @@ Now let's get familiar with using barely!
 2. Try typing `barely`, `barely live`, or `barely rebuild`:
 	```console
 	$ barely
-	barely :: could not find 'config.yaml'. Exiting
+	[barely][  core][ERROR] :: could not find 'config.yaml'. Exiting
 	```
 	What happened? barely is telling us that we aren't currently in a barely project directory. For a directory to count as a project, it has to contain a `config.yaml` file, which in turn has to specify the devroot (where we will work) and the webroot (where barely renders to).
 
@@ -70,12 +70,12 @@ Now let's get familiar with using barely!
 3. Create a new project with `barely new`:
 	```console
 	$ barely new
-	barely :: setting up new project with parameters:
-	       ->   webroot: webroot
-	       ->   devroot: devroot
-	       -> blueprint: default
-	barely :: setting up basic config...
-	barely :: done.
+	[barely][  core][ INFO] :: setting up new project with parameters:
+	                        ->   webroot: webroot
+	                        ->   devroot: devroot
+	                        -> blueprint: default
+	[barely][  core][ INFO] :: setting up basic config...
+	[barely][  core][ INFO] :: done.
 	```
 	Sweet! barely created two new subdirectories, `devroot` and `webroot`. The project was also created with a blueprint, namely `default`, which is why our `devroot` is not empty. We will learn about blueprints in a second.
 
@@ -115,25 +115,32 @@ Now let's get familiar with using barely!
 6. Let's build the project!
 	```console
 	$ barely rebuild
-	barely :: registering plugins...
-	barely :: 8 plugins registered.
-	barely :: starting full rebuild...
-	       :: deleted /[...]/test/webroot
-	barely :: event at /[...]/test/devroot/template.md
-	       :: rendered, highlighted /[...]/template.md -> /[...]/webroot/index.html
-	barely :: full rebuild complete.
-	barely ..
-	barely :: Do you want to Publish / Backup / do both?
-	       -> [n]othing | [p]ublish | [b]ackup | *[Y]do both :: n
-	barely :: exited.
+	[barely][  core][ INFO] :: registering plugins...
+    [barely][  core][ INFO] :: 7 plugins registered.
+    [barely][  core][ INFO] :: rebuilding devroot...
+                            -> deleted /[...]/webroot
+    [barely][  core][ INFO] :: event at /[...]/devroot/template.md
+                            -> rendered, highlighted /[...]/devroot/template.md -> /[...]/webroot/index.html
+    [barely][  core][ INFO] :: rebuild complete.
+    [barely][  core][ INFO] :: Finalizing plugin ReadingTime...
+    [barely][  core][ INFO] :: Finalizing plugin ToC...
+    [barely][  core][ INFO] :: Finalizing plugin AutoSEO...
+    [barely][  core][ INFO] :: Finalizing plugin Highlight...
+    [barely][  core][ INFO] :: Finalizing plugin Forms...
+    [barely][  core][ INFO] :: Finalizing plugin Minify...
+    [barely][  core][ INFO] :: Finalizing plugin Gallery...
+    [barely][  core][ INFO] :: ..
+                            -> Do you want to Publish / Backup / do both?
+                            -> *[n]othing | [p]ublish | [b]ackup | [Y]do both :: n
+    [barely][  core][ INFO] :: exited.
 	```
 
 	And then start the live server:
 	```console
 	$ barely
-	barely :: registering plugins...
-	barely :: 8 plugins registered.
-	barely :: started tracking...
+	[barely][  core][ INFO] :: registering plugins...
+	[barely][  core][ INFO] :: 7 plugins registered.
+	[barely][  core][ INFO] :: started tracking...
 	```
 
 	We could also have combined those two steps with the `-s` flag like this: `barely rebuild -s`, to start the live server immediately after rebuilding.

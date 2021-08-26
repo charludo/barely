@@ -8,7 +8,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/charludo/barely">
-    <img src="docs/logo.png" width="auto" height="100" alt="barely" >
+    <img src="https://raw.githubusercontent.com/charludo/barely/main/docs/logo.png" width="auto" height="100" alt="barely" >
   </a>
 
 
@@ -56,14 +56,14 @@ barely was built out of frustration with the readily available site generators, 
 
 barely reduces static website development to its key parts, by automatically rendering jinja2 templates and Markdown content into HTML. A simple **plugin interface** allows for easy extensibility, and the built-in **live web server** makes on-the-fly development as comfortable as possible.
 
-For more on barelys design philosophy, and to see whether barely might be right for your project, [see here in the docs](docs/about.md).
+For more on barelys design philosophy, and to see whether barely might be right for your project, [see here in the docs](https://github.com/charludo/barely/blob/main/docs/about.md).
 
 
 
 <!-- Quickstart -->
 ## Quickstart
 
-Good news: Getting started with barely is super easy! So we will keep this quick. For more info on Getting Started, [see this page in the docs](docs/getting-started.md).
+Good news: Getting started with barely is super easy! So we will keep this quick. For more info on Getting Started, [see this page in the docs](https://github.com/charludo/barely/blob/main/docs/getting-started.md).
 
 ### Prerequisites
 
@@ -111,12 +111,12 @@ Now let's get familiar with using barely!
 1. Create a new project with `barely new`:
 	```console
 	$ barely new
-	barely :: setting up new project with parameters:
-	       ->   webroot: webroot
-	       ->   devroot: devroot
-	       -> blueprint: default
-	barely :: setting up basic config...
-	barely :: done.
+    [barely][  core][ INFO] :: setting up new project with parameters:
+                            ->   webroot: webroot
+                            ->   devroot: devroot
+                            -> blueprint: default
+    [barely][  core][ INFO] :: setting up basic config...
+    [barely][  core][ INFO] :: done.
 	```
 	Sweet! barely created two new subdirectories, `devroot` and `webroot`. The project was also created with a blueprint, namely `default`, which is why our `devroot` is not empty. We will learn about blueprints in a second.
 
@@ -124,25 +124,32 @@ Now let's get familiar with using barely!
 	```console
     $ cd devroot
 	$ barely rebuild
-	barely :: registering plugins...
-	barely :: 8 plugins registered.
-	barely :: starting full rebuild...
-	       :: deleted /[...]/test/webroot
-	barely :: event at /[...]/test/devroot/template.md
-	       :: rendered, highlighted /[...]/template.md -> /[...]/webroot/index.html
-	barely :: full rebuild complete.
-	barely ..
-	barely :: Do you want to Publish / Backup / do both?
-	       -> [n]othing | [p]ublish | [b]ackup | *[Y]do both :: n
-	barely :: exited.
+    [barely][  core][ INFO] :: registering plugins...
+    [barely][  core][ INFO] :: 7 plugins registered.
+    [barely][  core][ INFO] :: rebuilding devroot...
+                            -> deleted /[...]/webroot
+    [barely][  core][ INFO] :: event at /[...]/devroot/template.md
+                            -> rendered, highlighted /[...]/devroot/template.md -> /[...]/webroot/index.html
+    [barely][  core][ INFO] :: rebuild complete.
+    [barely][  core][ INFO] :: Finalizing plugin ReadingTime...
+    [barely][  core][ INFO] :: Finalizing plugin ToC...
+    [barely][  core][ INFO] :: Finalizing plugin AutoSEO...
+    [barely][  core][ INFO] :: Finalizing plugin Highlight...
+    [barely][  core][ INFO] :: Finalizing plugin Forms...
+    [barely][  core][ INFO] :: Finalizing plugin Minify...
+    [barely][  core][ INFO] :: Finalizing plugin Gallery...
+    [barely][  core][ INFO] :: ..
+                            -> Do you want to Publish / Backup / do both?
+                            -> *[n]othing | [p]ublish | [b]ackup | [Y]do both :: n
+    [barely][  core][ INFO] :: exited.
 	```
 
 	And then start the live server:
 	```console
 	$ barely
-	barely :: registering plugins...
-	barely :: 8 plugins registered.
-	barely :: started tracking...
+    [barely][  core][ INFO] :: registering plugins...
+    [barely][  core][ INFO] :: 7 plugins registered.
+    [barely][  core][ INFO] :: started tracking...
 	```
 
 	Your favorite browser should open, and you will be greeted with the rendered version of `template.md`.
@@ -151,7 +158,7 @@ Now let's get familiar with using barely!
 
 	Now is a good time to play around a bit with your sample project - make some changes to the contents, the templates or add a stylesheet and watch the page update in real time!
 
-	For a more thorough explanation, make sure to check out [Getting Started](docs/getting-started.md) in the docs!
+	For a more thorough explanation, make sure to check out [Getting Started](https://github.com/charludo/barely/blob/main/docs/getting-started.md) in the docs!
 
 
 ### Core Mechanics
@@ -160,10 +167,10 @@ There are a couple of things that are important to know about how barely works. 
 
 - the structure of your site is defined in jinja2 templates. By default, these are stored in the `templates/` folder
 - you write the contents of your pages with [Markdown](https://guides.github.com/features/mastering-markdown/)
-- each page can individually be configured using [YAML notation](docs/detailed-overview.md)
+- each page can individually be configured using [YAML notation](https://github.com/charludo/barely/blob/main/docs/detailed-overview.md)
 - global level configuration of barely happpens in the `config.yaml` file, global variables to be used in your templates are stored in `metadata.yaml`
 
-This just scratches the surface; please, do yourself a favor and read the [Detailed Overview](docs/detailed-overview.md) in the docs.
+This just scratches the surface; please, do yourself a favor and read the [Detailed Overview](https://github.com/charludo/barely/blob/main/docs/detailed-overview.md) in the docs.
 
 ### Modular Pages
 
@@ -179,7 +186,7 @@ modular:
 ---
 ```
 
-To see how, when, and why to use them, see here: [Modular Pages](docs/modular-pages.md)
+To see how, when, and why to use them, see here: [Modular Pages](https://github.com/charludo/barely/blob/main/docs/modular-pages.md)
 
 ### Plugins
 
@@ -189,20 +196,24 @@ But most of the time, you will want at least a little more functionality. That's
 
 barely comes with 10 plugins by default:
 
-- [Collections](docs/plugins/collections.md)
-- [Forms](docs/plugins/forms.md)
-- [Highlight](docs/plugins/highlight.md)
-- [Minimizer](docs/plugins/minimizer.md)
-- [Reading Time](docs/plugins/readingtime.md)
-- [Timestamps](docs/plugins/timestamps.md)
-- [Table of Contents](docs/plugins/toc.md)
-- [git](docs/plugins/git.md)
-- [Local Backup](docs/plugins/localbackup.md)
-- [SFTP](docs/plugins/sftp.md)
+- [AutoSEO](https://github.com/charludo/barely/blob/main/docs/plugins/autoseo.md)
+- [AutoSummary](https://github.com/charludo/barely/blob/main/docs/plugins/autosummary.md)
+- [Collections](https://github.com/charludo/barely/blob/main/docs/plugins/collections.md)
+- [Forms](https://github.com/charludo/barely/blob/main/docs/plugins/forms.md)
+- [Gallery](https://github.com/charludo/barely/blob/main/docs/plugins/gallery.md)
+- [Highlight](https://github.com/charludo/barely/blob/main/docs/plugins/highlight.md)
+- [Minify](https://github.com/charludo/barely/blob/main/docs/plugins/minify.md)
+- [Pixelizer](https://github.com/charludo/barely/blob/main/docs/plugins/pixelizer.md)
+- [Reading Time](https://github.com/charludo/barely/blob/main/docs/plugins/readingtime.md)
+- [Timestamps](https://github.com/charludo/barely/blob/main/docs/plugins/timestamps.md)
+- [Table of Contents](https://github.com/charludo/barely/blob/main/docs/plugins/toc.md)
+- [git](https://github.com/charludo/barely/blob/main/docs/plugins/git.md)
+- [Local Backup](https://github.com/charludo/barely/blob/main/docs/plugins/localbackup.md)
+- [SFTP](https://github.com/charludo/barely/blob/main/docs/plugins/sftp.md)
 
 For more information on how to enable and configure a plugin, click on its respective name.
 
-To learn how to install new plugins or write your own, see [the Plugins page](docs/plugins.md) in the docs.
+To learn how to install new plugins or write your own, see [the Plugins page](https://github.com/charludo/barely/blob/main/docs/plugins.md) in the docs.
 
 ### Blueprints
 
@@ -211,21 +222,17 @@ Back in the [Basics](#basics), we have already briefly covered blueprints. They 
 You can list all available blueprints with:
 ```console
 $ barely blueprints
-barely :: found 2 blueprints:
-	-> default
-	-> blank
+[barely][  core][ INFO] :: found 2 blueprints:
+                        -> default
+                        -> blank
 ```
 
-To learn how to create and use your own blueprints, see [Blueprints](docs/blueprints.md) in the docs.
+To learn how to create and use your own blueprints, see [Blueprints](https://github.com/charludo/barely/blob/main/docs/blueprints.md) in the docs.
 
 <!-- ROADMAP -->
 ## Roadmap
 
-barely is currently released as version `1.0.0`. That means that while everything works and the project is feature complete (in regards to its initial vision), there are still a lot of improvements to be made. Some important ones are:
-
-- **better exception handling**. There are numerous ways to get an exception right now (for example: try renaming a page to a non-existent template) that really don't have to cause barely to exit.
-
-- **better logging** - or really, *logging*. Currently, instead of a proper logger, barely just sometimes calls `print()`. Different levels of logging and some color are desperately needed.
+barely is currently released as version `1.0.0`. That means that while everything works and the project is feature complete (in regards to its initial vision), there are still a lot of improvements to be made. The current wishlist is:
 
 - **performance improvements**. barely is fast enough for every-day use, but not exactly optimized. The biggest performance win could probably be made by letting barely interact with a model of the current project, instead of constantly opening / closing the same files. That's a major rework though, and maybe something for version 2.0.0...
 
@@ -234,7 +241,7 @@ barely is currently released as version `1.0.0`. That means that while everythin
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributors are highly appreciated! Check out [CONTRIBUTING.md](CONTRIBUTING.md) for more info!
+Contributors are highly appreciated! Check out [CONTRIBUTING.md](https://github.com/charludo/barely/blob/main/CONTRIBUTING.md) for more info!
 
 **If you have written a plugin or created a blueprint and think others might benefit, please do create a pull request!**
 
@@ -257,7 +264,7 @@ The various inspirations for barely should also not stay concealed:
 <!-- LICENSE -->
 ## License
 
-Distributed under the GNU General Public License. See [LICENSE](LICENSE) for more information.
+Distributed under the GNU General Public License. See [LICENSE](https://github.com/charludo/barely/blob/main/LICENSE) for more information.
 
 
 <!-- CONTACT -->
