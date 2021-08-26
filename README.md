@@ -47,6 +47,7 @@
 6. [Built with & Inspired by](#built-with--inspired-by)
 7. [License](#license)
 8. [Contact](#contact)
+9. [Changelog](#changelog)
 
 
 <!-- ABOUT -->
@@ -278,6 +279,32 @@ Charlotte Hartmann Paludo - [@smiletolerantly](https://t.me/smiletolerantly) - c
 
 Project Link: [https://github.com/charludo/barely](https://github.com/charludo/barely)
 
+## Changelog
+Most recent entry:
+
+### [1.0.0] - 2021-08-26
+#### Added
+- lighthouse CLI integration
+- AutoSEO plugin
+- AutoSummary plugin
+- Gallery plugin
+- Minify plugin
+- Pixelizer plugin
+- global `-d` debugging-flag
+- this changelog!
+
+#### Changed
+- moved from BETA to STABLE
+- switched version numbering scheme from `v_095` to more readable `v1.0.0`
+- proper logging instead of print()
+
+#### Fixed
+- various small performance improvements, largely due to eliminating duplicate function calls
+
+#### Removed
+- Minimizer plugin, obsolete thanks to Minify and Pixelizer
+
+See the full changelog [here](https://github.com/charludo/barely/blob/main/CHANGELOG.md)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
