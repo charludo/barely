@@ -175,7 +175,7 @@ class AutoSEO(PluginBase):
         elif "title" in seo:
             tags.append(f'<title>{seo["title"]}</title>')
         if "description" in seo:
-            tags.append(f'<meta name="description" content="{seo["description"]}" />')
+            tags.append(f'<meta name="description" content="{seo["description"][:159]}" />')
         if "keywords" in seo:
             tags.append(f'<meta name="keywords" content="{seo["keywords"]}" />')
         if "robots" in seo:
@@ -186,7 +186,7 @@ class AutoSEO(PluginBase):
         if "og:title" in seo:
             tags.append(f'<meta property="og:title" content="{seo["og:title"]}">')
         if "og:description" in seo:
-            tags.append(f'<meta property="og:description" content="{seo["og:description"]}">')
+            tags.append(f'<meta property="og:description" content="{seo["og:description"][:159]}">')
         if "og:image" in seo:
             tags.append(f'<meta property="og:image" content="{seo["og:image"]}">')
         if "og:url" in seo:
@@ -195,7 +195,7 @@ class AutoSEO(PluginBase):
             tags.append(f'<meta property="og:site_name" content="{seo["og:site_name"]}">')
 
         if "twitter:image:alt" in seo:
-            tags.append(f'<meta name="twitter:image:alt" content="{seo["twitter:image:alt"]}">')
+            tags.append(f'<meta name="twitter:image:alt" content="{seo["twitter:image:alt"][:159]}">')
         if "twitter:site" in seo:
             tags.append(f'<meta name="twitter:site" content="{seo["twitter:site"]}">')
         if "twitter:creator" in seo:
