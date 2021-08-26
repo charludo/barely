@@ -66,6 +66,7 @@ def get_appdir():
     elif _platform == "Windows":
         logger.debug("platform: Windows")
         home = os.path.expandvars(r"%APPDATA%")
+        os.environ["PYTHONIOENCODING"] = "utf-8"
         return os.path.join(home, "barely")
     else:
         sys.exit("Running on unknown platform.")
