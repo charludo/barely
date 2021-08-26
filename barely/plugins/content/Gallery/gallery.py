@@ -49,7 +49,11 @@ class Gallery(PluginBase):
         folder = match.group("folder")
         path = folder
 
-        if not os.path.isabs(path):
+        self.logger.info(f"Generating gallery \"{name}\"...")
+
+        if os.path.isabs(path):
+            path = os.path.join(self.config["ROOT"]["DEV"], path.replace(self.config["ROOT"]["DEV"], "")[1:])
+        else:
             path = os.path.join(self.config["ROOT"]["DEV"], path)
 
         # glob all images
@@ -72,7 +76,7 @@ class Gallery(PluginBase):
         gallery = []
         gallery.append(f"<div class=\"{self.plugin_config['GALLERY_CLASS']}\" id=\"gallery-{name}\">")
         for image in images:
-            gallery.append(f"<img src=\"{image}\" alt=\"part of {name} gallery\">")
+            gallery.append(f"<img src=\"{image[image.index(folder):]}\" alt=\"part of {name} gallery\">")
         gallery.append("</div>")
 
         return "\n".join(gallery)
