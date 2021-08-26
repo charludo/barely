@@ -42,17 +42,19 @@ Now let's get familiar with using barely!
 	$ barely --help
 	Usage: barely [OPTIONS] COMMAND [ARGS]...
 
-	  barely reduces static website development to its key parts, by
-	  automatically rendering jinja2 templates and Markdown content into HTML. A
-	  simple plugin interface allows for easy extensibility, and the built-in
-	  live web server makes on-the-fly development as comfortable as possible.
+	  barely reduces static website development to its key parts, by automatically
+	  rendering jinja2 templates and Markdown content into HTML. A simple plugin
+	  interface allows for easy extensibility, and the built-in live web server
+	  makes on-the-fly development as comfortable as possible.
 
 	Options:
-	  --help  Show this message and exit.
+	  -d, --debug  set logging level to debug
+	  --help       Show this message and exit.
 
 	Commands:
+	  live*       starts a live server, opens your project in the browser and...
 	  blueprints  list all available blueprints, or create a new one
-	  live        starts a live server, opens your project in the browser and...
+	  lighthouse  use Google Lighthouse to evaluate a page for SEO- and...
 	  new         create a new barely project (optionally with a blueprint)
 	  rebuild     (re)build the entire project
 	  test        run the testsuite to verify the install
