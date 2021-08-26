@@ -88,7 +88,7 @@ class AutoSummary(PluginBase):
                     sim_scores = nx.pagerank(nx.from_numpy_array(similarity_matrix))
                     sim_ranking = sorted(((sim_scores[i], s) for i, s in enumerate(sentences)), reverse=True)
                     summary = ". ".join([" ".join(sim_ranking[i][1]) for i in range(self.plugin_config["SENTENCES"])])
-                    summary = re.sub(r"\s([\.!;,\?\'\"\:)", lambda match: match.group(1), summary)
+                    summary = re.sub(r"\s([\.\!\;\,\?\'\"\:])", lambda match: match.group(1), summary)
                     item["meta"]["summary"] = summary + "."
 
             if "keywords" not in item["meta"] and self.plugin_config["KEYWORDS"]:
