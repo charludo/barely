@@ -170,7 +170,9 @@ class AutoSEO(PluginBase):
             tags.append('<meta charset="utf-8" />')
             tags.append('<meta name="viewport" content="width=device-width, initial-scale=1" />')
 
-        if "title" in seo:
+        if "title" in seo and "og:site_name" in seo:
+            tags.append(f'<title>{seo["title"]} | {seo["og:site_name"]}</title>')
+        elif "title" in seo:
             tags.append(f'<title>{seo["title"]}</title>')
         if "description" in seo:
             tags.append(f'<meta name="description" content="{seo["description"]}" />')

@@ -39,7 +39,7 @@ class TestAutoSEO(unittest.TestCase):
         golden_tags = """
             <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <title>Test Page</title>
+            <title>Test Page | Test Site</title>
             <meta name="description" content="just a simple page for testing" />
             <meta name="keywords" content="one" />
             <meta name="robots" content="all" />
