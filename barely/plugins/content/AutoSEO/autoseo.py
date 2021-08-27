@@ -80,7 +80,7 @@ class AutoSEO(PluginBase):
         sitemap_url = self.url + "/" + "sitemap.txt"
 
         if not os.path.exists(sitemap_dev):
-            pages = glob.glob(os.path.join(self.config["ROOT"]["WEB"], "**", "*.hmtl"), recursive=True)
+            pages = glob.glob(os.path.join(self.config["ROOT"]["WEB"], "**", "*.html"), recursive=True)
             pages = [f.replace(self.config["ROOT"]["WEB"], self.url).replace("\\", "/") for f in pages]
             pages = "\n".join(pages)
 
