@@ -282,28 +282,13 @@ Project Link: [https://github.com/charludo/barely](https://github.com/charludo/b
 ## Changelog
 Most recent entry:
 
-### [1.0.0] - 2021-08-26
-#### Added
-- lighthouse CLI integration
-- AutoSEO plugin
-- AutoSummary plugin
-- Gallery plugin
-- Minify plugin
-- Pixelizer plugin
-- global `-d` debugging-flag
-- this changelog!
-
+### [1.0.2] - 2021-08-27
 #### Changed
-- moved from BETA to STABLE
-- switched version numbering scheme from `v_095` to more readable `v1.0.0`
-- proper logging instead of print()
-- simplified the default blueprint to make it more usable
+- clean up raw_content before AutoSummary consumes it
 
 #### Fixed
-- various small performance improvements, largely due to eliminating duplicate function calls
-
-#### Removed
-- Minimizer plugin, obsolete thanks to Minify and Pixelizer
+- robots.txt no longer weirdly indented
+- sitemap generation now works after fixing a typo (hmtl -> html)
 
 See the full changelog [here](https://github.com/charludo/barely/blob/main/CHANGELOG.md)
 

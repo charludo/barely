@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - none
 
+## [1.0.2] - 2021-08-27
+### Changed
+- clean up raw_content before AutoSummary consumes it
+
+### Fixed
+- robots.txt no longer weirdly indented
+- sitemap generation now works after fixing a typo (hmtl -> html)
+
 ## [1.0.0] - 2021-08-26
 ### Added
 - lighthouse CLI integration
@@ -43,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Initial beta release
 
 [Unreleased]: https://github.com/charludo/barely/compare/v1.0.0...HEAD
+[1.0.2]: https://github.com/charludo/barely/compare/v1.0.0...v1.0.2
 [1.0.0]: https://github.com/charludo/barely/compare/v_095...v1.0.0
 [0.9.5]: https://github.com/charludo/barely/compare/v_090...v_095
 [0.9.0]: https://github.com/charludo/barely/releases/tag/v_090
