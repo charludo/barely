@@ -66,8 +66,10 @@ class AutoSummary(PluginBase):
                 language = self.plugin_config["LANGUAGE"]
 
             if "summary" not in item["meta"] and self.plugin_config["SUMMARY"]:
+                # clean up the markdown
+                content_clean = self._clean_content(item["content_raw"])
                 # Split the content into a list of sentences, each again a list of words
-                sentences = nltk.sent_tokenize(item["content_raw"])
+                sentences = nltk.sent_tokenize(content_clean)
                 sentences = [nltk.word_tokenize(sentence)[:-1] for sentence in sentences]
                 sentences = [s for s in sentences if not len(s) < self.plugin_config["MIN_SENT_LENGTH"]]
 
@@ -114,3 +116,31 @@ class AutoSummary(PluginBase):
             return v
 
         return 1 - cosine_distance(word_frequency(s1), word_frequency(s2))
+
+    @staticmethod
+    def _clean_content(content):
+        # remove all links and images
+        content = re.sub(r"!?\[.*\]\(.*\)", "", content)
+
+        # remove all tables
+        content = re.sub(r"^(\|[^\n]+\|\r?\n)((?:\|:?[-]+:?)+\|)(\n(?:\|[^\n]+\|\r?\n?)*)?$", "", content, flags=re.M)
+
+        # remove code blocks
+        content = re.sub(r"\`{3}\w*\n[^\`{3}]*\n\s*\`{3}", "", content)
+
+        # remove headings
+        content = re.sub(r"^#+.*$", "", content, flags=re.M)
+
+        # remove non-character line beginnings
+        content = re.sub(r"^[^\na-zA-Z]+", "", content, flags=re.M)
+
+        # remove non-character line endings, except .!?:-'")
+        content = re.sub(r"[^\w\.\!\?\:\-\'\"\)\n]+$", "", content, flags=re.M)
+
+        # replace newlines and tabs with spaces
+        content = re.sub(r"[\n\t]+", " ", content)
+
+        # remove duplicate whitespaces
+        content = re.sub(r"\s{2,}", " ", content)
+
+        return content
