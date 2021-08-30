@@ -80,17 +80,17 @@ class TestPixelizer(unittest.TestCase):
 
         self.assertEqual(len(result), 7)
 
-        self.assertEqual(result[0]["quality"], 100)
-        self.assertEqual(result[0]["destination"], "/path/to/somewhere.png")
-        self.assertEqual(result[0]["action"], "processed")
+        self.assertEqual(result[0]["quality"], 70)
+        self.assertEqual(result[0]["destination"], "/path/to/somewhere-lg.webp")
+        self.assertEqual(result[0]["extension"], "webp")
 
-        self.assertEqual(result[1]["quality"], 70)
-        self.assertEqual(result[1]["destination"], "/path/to/somewhere-lg.webp")
-        self.assertEqual(result[1]["extension"], "webp")
+        self.assertEqual(result[5]["quality"], 70)
+        self.assertEqual(result[5]["destination"], "/path/to/somewhere-sm.png")
+        self.assertEqual(result[5]["extension"], "png")
 
-        self.assertEqual(result[6]["quality"], 70)
-        self.assertEqual(result[6]["destination"], "/path/to/somewhere-sm.png")
-        self.assertEqual(result[6]["extension"], "png")
+        self.assertEqual(result[6]["destination"], "/path/to/somewhere.png")
+        self.assertEqual(result[6]["action"], "processed")
+        self.assertTrue(result[6]["copymode"])
 
         # Testing the page handling
 

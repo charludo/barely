@@ -58,10 +58,7 @@ class Pixelizer(PluginBase):
                     yield from func(item)
 
     def process_image(self, item):
-        item["quality"] = 100
         item["action"] = "processed"
-        yield item
-
         filename = os.path.splitext(item["destination"])[0]
 
         for type in ["webp", item["extension"]]:
@@ -82,6 +79,10 @@ class Pixelizer(PluginBase):
                     self.logger.error(f"An Error occured while handling the image: {e}")
                 self.logger.debug(f"Finished processing for type: {type}, target: {target['slug']}")
                 yield variant
+
+        # copy the original as fallback
+        item["copymode"] = True
+        yield item
 
     def process_page(self, item):
         try:

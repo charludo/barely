@@ -262,6 +262,11 @@ class TestProcessingPipeline(unittest.TestCase):
 
         self.assertNotEqual(first.size, second.size)
 
+        with patch("barely.core.ProcessingPipeline.copy_file") as copy_file:
+            test_item["copymode"] = True
+            PP.save_image([test_item])
+            self.assertTrue(copy_file.called)
+
     def test_copy_file(self):
         def readf(item, key):
             with open(item[key], "r") as f:

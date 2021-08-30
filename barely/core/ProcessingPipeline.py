@@ -166,6 +166,9 @@ def save_image(items):
     """ filter that saves a PIL object into an image file """
     for item in items:
         logger.debug(f"saving image {item['origin']}")
+        if "copymode" in item:
+            copy_file(item)
+            continue
         try:
             quality = item["quality"]
         except KeyError:
