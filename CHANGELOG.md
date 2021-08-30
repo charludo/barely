@@ -5,7 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-- none
+### Changed
+- to ensure at least somewhat "unique" alt-tags in galleries, include the number-position of the image in the gallery
+- original/fallback images will no longer be processed by PIL in the Pixelizer plugin, but rather just be copied; their filesizes got blown up before, and the step was needless anyways
 
 ## [1.0.0] - 2021-08-26
 ### Added
