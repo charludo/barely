@@ -80,7 +80,7 @@ class AutoSEO(PluginBase):
         sitemap_url = self.url + "/" + "sitemap.txt"
 
         if not os.path.exists(sitemap_dev):
-            pages = glob.glob(os.path.join(self.config["ROOT"]["WEB"], "**", "*.hmtl"), recursive=True)
+            pages = glob.glob(os.path.join(self.config["ROOT"]["WEB"], "**", "*.html"), recursive=True)
             pages = [f.replace(self.config["ROOT"]["WEB"], self.url).replace("\\", "/") for f in pages]
             pages = "\n".join(pages)
 
@@ -92,12 +92,7 @@ class AutoSEO(PluginBase):
         robots_web = os.path.join(self.config["ROOT"]["WEB"], "robots.txt")
 
         if not os.path.exists(robots_dev):
-            robots = f"""
-            User-agent: *
-            Allow: /
-
-            Sitemap: {sitemap_url}
-            """
+            robots = f"User-agent: *\nAllow: /\n\nSitemap: {sitemap_url}"
 
             with open(robots_web, "w") as file:
                 file.write(robots)
