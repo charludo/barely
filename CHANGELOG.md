@@ -52,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.9.0] - 2021-06-19
 Initial beta release
 
-[Unreleased]: https://github.com/charludo/barely/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/charludo/barely/compare/v1.0.2...HEAD
 [1.0.2]: https://github.com/charludo/barely/compare/v1.0.0...v1.0.2
 [1.0.0]: https://github.com/charludo/barely/compare/v_095...v1.0.0
 [0.9.5]: https://github.com/charludo/barely/compare/v_090...v_095
