@@ -14,9 +14,9 @@ class TestGallery(unittest.TestCase):
 
         golden = """
         <div class="gallery" id="gallery-examplegallery">
-        <img src="Plugins/Gallery/c.png" alt="part of examplegallery gallery">
-        <img src="Plugins/Gallery/b.jpg" alt="part of examplegallery gallery">
-        <img src="Plugins/Gallery/a.png" alt="part of examplegallery gallery">
+        <img src="Plugins/Gallery/c.png" alt="image 1 in examplegallery gallery">
+        <img src="Plugins/Gallery/b.jpg" alt="image 2 in examplegallery gallery">
+        <img src="Plugins/Gallery/a.png" alt="image 3 in examplegallery gallery">
         </div>
         """
 

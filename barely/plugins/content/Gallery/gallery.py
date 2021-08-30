@@ -75,9 +75,9 @@ class Gallery(PluginBase):
         # build the gallery
         gallery = []
         gallery.append(f"<div class=\"{self.plugin_config['GALLERY_CLASS']}\" id=\"gallery-{name}\">")
-        for image in images:
-            image_path = image[image.index(folder):].replace('\\', '/')
-            gallery.append(f"<img src=\"{image_path}\" alt=\"part of {name} gallery\">")
+        for i in range(len(images)):
+            image_path = images[i][images[i].index(folder):].replace('\\', '/')
+            gallery.append(f"<img src=\"{image_path}\" alt=\"image {i + 1} in {name} gallery\">")
         gallery.append("</div>")
 
         return "\n".join(gallery)
