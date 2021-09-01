@@ -15,11 +15,12 @@ import logging
 from inspect import isclass
 from pkgutil import iter_modules
 from importlib import import_module
+from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from barely.common.config import config
 
 
-class PluginBase:
+class PluginBase(ABC):
     """ base class for all plugins """
 
     def __init__(self, *args, **kwargs):
@@ -27,14 +28,13 @@ class PluginBase:
         self.logger = logging.getLogger("base.plugin")
         self.logger_indented = logging.getLogger("indented")
 
+    @abstractmethod
     def register(self):
         return "Base", -1, []
 
-    def action(self, *args, **kwargs):
-        if "item" in kwargs:
-            return kwargs.get("item")
-        else:
-            pass
+    @abstractmethod
+    def action(self, item, *args, **kwargs):
+        yield item
 
     def finalize(self):
         pass

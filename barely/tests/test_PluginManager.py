@@ -7,30 +7,36 @@ from barely.common.config import config
 from barely.plugins.PluginManager import PluginManager
 
 
+class SamplePlugin(PluginBase):
+    def action(self, item):
+        yield item
+
+    def register(self):
+        return "Base", -1, []
+
+
 class TestPluginBase(unittest.TestCase):
 
     def test___init__(self):
         mock_config = {}
         with patch.dict(config, mock_config):
-            PB = PluginBase()
-        self.assertIsNotNone(PB.config)
+            SP = SamplePlugin()
+        self.assertIsNotNone(SP.config)
 
     def test_register(self):
-        plugin = PluginBase()
+        plugin = SamplePlugin()
         registration_info = plugin.register()
         self.assertTupleEqual(("Base", -1, []), registration_info)
 
     def test_action(self):
-        plugin = PluginBase()
+        plugin = SamplePlugin()
         golden_item = {
             "test": "dict"
         }
 
         test_item = plugin.action(item=golden_item)
-        test_noitem = plugin.action(True)
 
-        self.assertDictEqual(golden_item, test_item)
-        self.assertIsNone(test_noitem)
+        self.assertDictEqual(golden_item, list(test_item)[0])
 
 
 class TestPluginManager(unittest.TestCase):
@@ -106,11 +112,11 @@ class TestPluginManager(unittest.TestCase):
         }
 
         # The first sample plugin returns 2 items for every input item, merely duplicating it
-        sample_plugin1 = PluginBase()
+        sample_plugin1 = SamplePlugin()
         sample_plugin1.action = MagicMock(return_value=[item, item])
 
         # The second plugin is the constant 1-function
-        sample_plugin2 = PluginBase()
+        sample_plugin2 = SamplePlugin()
         sample_plugin2.action = MagicMock(return_value=1)
 
         # Both plugins are "registered" for the test extension
@@ -123,7 +129,7 @@ class TestPluginManager(unittest.TestCase):
         self.assertEqual([1, 1], returned_content)
 
     def test_hook_backup(self):
-        sample_plugin = PluginBase()
+        sample_plugin = SamplePlugin()
         sample_plugin.action = MagicMock()
 
         self.PM.plugins_backup = [sample_plugin]
@@ -133,10 +139,10 @@ class TestPluginManager(unittest.TestCase):
         self.assertTrue(sample_plugin.action.called)
 
     def test_hook_publication(self):
-        sample_plugin1 = PluginBase()
+        sample_plugin1 = SamplePlugin()
         sample_plugin1.action = MagicMock()
 
-        sample_plugin2 = PluginBase()
+        sample_plugin2 = SamplePlugin()
         sample_plugin2.action = MagicMock()
 
         self.PM.plugins_publication = [sample_plugin1, sample_plugin2]
