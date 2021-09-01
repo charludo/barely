@@ -101,14 +101,14 @@ class Copyright(PluginBase):
   def register(self):
     pass
 
-  def action(self, *args, **kwargs):
+  def action(self, item):
     pass
 
   def finalize(self):
     pass
 ```
 
-What do these functions do? Well, `__init__` currently only makes a call to the `__init__` function of our plugins parent, `PluginBase`. All Plugins **have** to inherit from `PluginBase`.
+What do these functions do? Well, `__init__` currently only makes a call to the `__init__` function of our plugins parent, `PluginBase`. All Plugins **have** to inherit from `PluginBase`, and implement the `register` and `action` functions.
 
 Our `register` function will be called once during barelys initialization, when barely polls all plugins for information on their name, their priority, and what types of files they want to register for.
 
@@ -153,11 +153,9 @@ def register(self):
 
 And with that, we are finally ready to actually *do* something with this plugin!
 ```python
-def action(self, *args, **kwargs):
-	if "item" in kwargs:
-		item = kwargs["item"]
-		item["content"] += self.plugin_config["copyright_notice"]
-		yield item
+def action(self, item):
+	item["content"] += self.plugin_config["copyright_notice"]
+	yield item
 ```
 
 Wait... that's it?!  
@@ -192,10 +190,8 @@ class Copyright(PluginBase):
         return "Copyright", self.plugin_config["priority"], [self.config["PAGE_EXT"]]
 
     def action(self, *args, **kwargs):
-        if "item" in kwargs:
-            item = kwargs["item"]
-            item["content"] += self.plugin_config["copyright_notice"]
-            yield item
+        item["content"] += self.plugin_config["copyright_notice"]
+    	yield item
 
     def finalize(self):
         pass
