@@ -204,24 +204,6 @@ You probably noticed that `finalize` is still empty. In fact, feel free to delet
 
 As an example, the [Collections](plugins/collections.md) plugin utilizes this method to generate category overview pages once you are done editing the project and it can be sure that there are no further changes coming.
 
-## Testing your Plugin
-
-It's a good idea to write tests for your plugins. To do so, create a file alongside your plugin with a leading `test_`, so for example: `test_copyright.py`.
-
-It should look similar to this one:
-```python
-import unittest
-from barely.plugins.content.Copyright.copyright import Copyright
-
-
-class TestCopyright(unittest.TestCase):
-
-  def test_action(self):
-    # put your unittests here!
-    pass
-```
-The tests will automatically be discovered and run when you `barely test`.
-
 ## Item
 
 Above, we already mentioned that a plugins `action` function gets passed a page `item` as (the only) argument. This `item` is simply a dict, so you can manipulate any existing entries and create new ones freely. By default, an `item` will look like this:
