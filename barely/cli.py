@@ -89,14 +89,14 @@ def make_dirs(appdir):
 
 def get_blueprints(blueprint=None):
     from glob import glob
-    sys_bp_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "blueprints")
+    sys_bp_path = os.path.join(os.path.dirname(__file__), "blueprints")
     user_bp_path = os.path.join(get_appdir(), "blueprints")
 
-    sys_bps = [os.path.basename(os.path.dirname(bp)) for bp in glob(sys_bp_path + os.sep + "*" + os.sep)]
-    user_bps = [os.path.basename(os.path.dirname(bp)) for bp in glob(user_bp_path + os.sep + "*" + os.sep)]
-
     logger.debug(f"looking for blueprints in: {sys_bp_path}")
+    sys_bps = [os.path.basename(os.path.dirname(bp)) for bp in glob(sys_bp_path + os.sep + "*" + os.sep)]
+
     logger.debug(f"looking for blueprints in: {user_bp_path}")
+    user_bps = [os.path.basename(os.path.dirname(bp)) for bp in glob(user_bp_path + os.sep + "*" + os.sep)]
 
     if blueprint:
         if blueprint in user_bps:
