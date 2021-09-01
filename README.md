@@ -282,13 +282,13 @@ Project Link: [https://github.com/charludo/barely](https://github.com/charludo/b
 ## Changelog
 Most recent entry:
 
-### [1.0.2] - 2021-08-27
-#### Changed
-- clean up raw_content before AutoSummary consumes it
-
+### [1.0.3] - 2021-09-01
 #### Fixed
-- robots.txt no longer weirdly indented
-- sitemap generation now works after fixing a typo (hmtl -> html)
+- faulty system blueprints path made barely unable to find any bleuprints
+
+#### Changed
+- to ensure at least somewhat "unique" alt-tags in galleries, include the number-position of the image in the gallery
+- original/fallback images will no longer be processed by PIL in the Pixelizer plugin, but rather just be copied; their filesizes got blown up before, and the step was needless anyways
 
 See the full changelog [here](https://github.com/charludo/barely/blob/main/CHANGELOG.md)
 

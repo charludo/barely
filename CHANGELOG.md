@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- nothing
+
+## [1.0.3] - 2021-09-01
+### Fixed
+- faulty system blueprints path made barely unable to find any bleuprints
+
 ### Changed
 - to ensure at least somewhat "unique" alt-tags in galleries, include the number-position of the image in the gallery
 - original/fallback images will no longer be processed by PIL in the Pixelizer plugin, but rather just be copied; their filesizes got blown up before, and the step was needless anyways
@@ -52,7 +58,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.9.0] - 2021-06-19
 Initial beta release
 
-[Unreleased]: https://github.com/charludo/barely/compare/v1.0.2...HEAD
+[Unreleased]: https://github.com/charludo/barely/compare/v1.0.3...HEAD
+[1.0.3]: https://github.com/charludo/barely/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/charludo/barely/compare/v1.0.0...v1.0.2
 [1.0.0]: https://github.com/charludo/barely/compare/v_095...v1.0.0
 [0.9.5]: https://github.com/charludo/barely/compare/v_090...v_095

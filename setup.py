@@ -8,7 +8,7 @@ HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 
 setuptools.setup(name='barely',
-                 version='1.0.2',
+                 version='1.0.3',
                  description='barely is a lightweight, but highly extensible static site generator written in pure python.',
                  long_description=README,
                  long_description_content_type="text/markdown",
