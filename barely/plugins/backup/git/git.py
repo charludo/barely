@@ -14,15 +14,15 @@ class Git(PluginBase):
 
     def __init__(self):
         super().__init__()
+        standard_config = {
+            "PRIORITY": 40,
+            "MESSAGE": "barely auto commit",
+            "REMOTE_NAME": "origin"
+        }
         try:
-            standard_config = {
-                "PRIORITY": 40,
-                "MESSAGE": "barely auto commit",
-                "REMOTE_NAME": "origin"
-            }
             self.plugin_config = standard_config | self.config["GIT"]
         except KeyError:
-            self.plugin_config = {"PRIORITY": -1}
+            self.plugin_config = standard_config
 
     def register(self):
         return "git", self.plugin_config["PRIORITY"]

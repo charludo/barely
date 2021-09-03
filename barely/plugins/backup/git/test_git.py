@@ -8,29 +8,21 @@ class TestGit(unittest.TestCase):
 
     def test___init__(self):
         git = Git()
-        self.assertDictEqual({"PRIORITY": -1}, git.plugin_config)
-
-        git.config["GIT"] = {"PRIORITY": 2}
-        git.__init__()
 
         golden = {
-            "PRIORITY": 2,
+            "PRIORITY": 40,
             "MESSAGE": "barely auto commit",
             "REMOTE_NAME": "origin"
         }
 
         self.assertDictEqual(golden, git.plugin_config)
 
-        # reset
-        del git.config["GIT"]
-        git.__init__()
-
     def test_register(self):
         git = Git()
         name, prio = git.register()
 
         self.assertEqual(name, "git")
-        self.assertEqual(prio, -1)
+        self.assertEqual(prio, 40)
 
     @patch("barely.plugins.backup.git.git.Repo")
     def test_action(self, r):
