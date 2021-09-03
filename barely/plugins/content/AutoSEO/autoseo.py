@@ -56,9 +56,9 @@ class AutoSEO(PluginBase):
                 self.url = seo["og:url"]
                 page_path = item["destination"].replace(self.config["ROOT"]["WEB"], "").replace("\\", "/")
 
-                if os.path.isabs(seo["og:image"]):
+                if "og:image" in seo and os.path.isabs(seo["og:image"]):
                     seo["og:image"] = seo["og:url"] + seo["og:image"]
-                elif seo["og:image"] and not seo["og:image"].startswith("http"):
+                elif "og:image" in seo and not seo["og:image"].startswith("http"):
                     img_path = os.path.dirname(page_path) + "/" + seo["og:image"]
                     seo["og:image"] = seo["og:url"] + img_path
 
