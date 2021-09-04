@@ -167,7 +167,7 @@ def save_image(items):
     for item in items:
         logger.debug(f"saving image {item['origin']}")
         if "copymode" in item:
-            copy_file(item)
+            copy_file([item])
             continue
         try:
             quality = item["quality"]
