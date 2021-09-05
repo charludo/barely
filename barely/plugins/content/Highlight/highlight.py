@@ -45,7 +45,7 @@ class Highlight(PluginBase):
             except KeyError:
                 self.page_config = self.plugin_config.copy()
 
-            item["content"] = re.sub(r"<pre><code( class=\"language-(?P<lang>.*)\")?>(?P<code>.*)</code></pre>", self._handle_code, item["content"], flags=re.S)
+            item["content"] = re.sub(r"<pre><code( class=\"language-(?P<lang>.*?)\")?>(?P<code>.*?)</code></pre>", self._handle_code, item["content"], flags=re.S)
             item["action"] = "rendered, highlighted"
             item["additional_styles"] = list(self.additional_styles)
             yield item
