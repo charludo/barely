@@ -39,7 +39,7 @@ title: title of the exhibit
 preview: the first few words of the page
 raw: the entire markdown content of the page
 href: link to the page
-title_image: link to image, if title_image was specified on the original page
+image: link to image, if title_image was specified on the original page
 date: modification or creation time of the page
 reading_time: reading time as provided by ReadingTime plugin
 ```
