@@ -325,10 +325,9 @@ def handle_subpages(items):
                     logger_indented.debug(f"rendered subpage {sub_page_item['origin']}")
                     item["meta"]["sub_pages"].append(rendered_subpage["output"])
             except FileNotFoundError:
-                raise FileNotFoundError("Specified subpage does not exist.")
+                logger.error("Specified subpage not found.")
             except IndexError:    # Path found nothing
-                raise IndexError("No subpages at specified location.")
-
+                logger.error("No subpage at specified location.")
         yield item
 
 
