@@ -300,10 +300,6 @@ class TestProcessingPipeline(unittest.TestCase):
 
         os.chdir("move")
 
-        with self.assertRaises(FileNotFoundError) as context:
-            PP.move("nothere", "to")
-        self.assertTrue("No file/dir at notification origin!" in str(context.exception))
-
         PP.move("fro.txt", "moved.txt")
         self.assertTrue(os.path.isfile("moved.txt"))
         first = readf("moved.txt")
@@ -388,11 +384,6 @@ class TestProcessingPipeline(unittest.TestCase):
         with patch("barely.core.ProcessingPipeline.pipe_subpage") as pipe_subpage:
             list(PP.handle_subpages([parent]))
             self.assertTrue(pipe_subpage.called)
-
-        parent["meta"]["modular"] = ["_nonexistant"]
-        with self.assertRaises(IndexError) as context:
-            list(PP.handle_subpages([parent]))
-        self.assertTrue("No subpages at specified location." in str(context.exception))
 
         parent["meta"] = {}
         with patch("barely.core.ProcessingPipeline.pipe_subpage") as pipe_subpage:
