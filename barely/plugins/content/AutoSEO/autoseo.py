@@ -26,10 +26,8 @@ class AutoSEO(PluginBase):
     def register(self):
         return "AutoSEO", self.plugin_config["PRIORITY"], [self.config["PAGE_EXT"]]
 
-    def action(self, *args, **kwargs):
-        if "item" in kwargs and "parent_meta" not in kwargs["item"]:
-            item = kwargs["item"]
-
+    def action(self, item):
+        if "parent_meta" not in item:
             # 1. extract as much information as possible from the page item
             seo = self._extract_tags(item)
 
@@ -67,7 +65,7 @@ class AutoSEO(PluginBase):
                 # 3. generate the meta html tags
                 item["meta"]["seo_tags"] = self._generate_tags(seo)
 
-            yield item
+        yield item
 
     def finalize(self):
         if not self.url:
