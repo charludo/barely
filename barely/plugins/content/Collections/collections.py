@@ -61,10 +61,15 @@ class Collections(PluginBase):
 
                 collectible = {}
                 collectible["title"] = item["meta"]["title"]
-                collectible["preview"] = item["content"][:self.plugin_config["SUMMARY_LENGTH"]] + "..."
                 collectible["raw"] = item["content_raw"]
                 collectible["href"] = item["destination"].replace(self.config["ROOT"]["WEB"], "", 1).replace("\\", "/")
                 collectible["timestamp"] = getmtime(item["origin"])
+
+                # is there an existing summary? probably a better preview
+                try:
+                    collectible["preview"] = item["meta"]["summary"]
+                except KeyError:
+                    collectible["preview"] = item["content"][:self.plugin_config["SUMMARY_LENGTH"]] + "..."
 
                 # we'd also really like to get the first image of the blog
                 if "title_image" in item["meta"]:
