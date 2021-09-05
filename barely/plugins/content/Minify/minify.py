@@ -27,11 +27,11 @@ class Minify(PluginBase):
             self.plugin_config = standard_config | self.config["MINIFY"]
         except KeyError:
             self.plugin_config = standard_config
-            self.func_map = {
-                "js": self.minimize_js,
-                "sass,scss": self.minimize_css
-            }
-            self.register_for = sum([group.split(",") for group in self.func_map.keys()], [])
+        self.func_map = {
+            "js": self.minimize_js,
+            "sass,scss": self.minimize_css
+        }
+        self.register_for = sum([group.split(",") for group in self.func_map.keys()], [])
 
     def register(self):
         return "Minify", self.plugin_config["PRIORITY"], self.register_for
