@@ -166,7 +166,8 @@ class TestCollections(unittest.TestCase):
                 "content": "",
                 "content_raw": "",
                 "action": "collected",
-                "origin": "col1"
+                "origin": "col1",
+                "extension": "md"
             },
             {
                 "template": "placeholder",
@@ -178,7 +179,8 @@ class TestCollections(unittest.TestCase):
                 "content": "",
                 "content_raw": "",
                 "action": "collected",
-                "origin": "col2"
+                "origin": "col2",
+                "extension": "md"
             },
             {
                 "template": "placeholder",
@@ -190,7 +192,8 @@ class TestCollections(unittest.TestCase):
                 "content": "",
                 "content_raw": "",
                 "action": "collected",
-                "origin": "col3"
+                "origin": "col3",
+                "extension": "md"
             },
             {
                 "template": "placeholder-overview",
@@ -218,7 +221,8 @@ class TestCollections(unittest.TestCase):
                 "content": "",
                 "content_raw": "",
                 "action": "created overview",
-                "origin": "all collections"
+                "origin": "all collections",
+                "extension": "md"
             }
         ]
         actual_args = [list(args[0])[0] for args, kwargs in parse_meta.call_args_list]
