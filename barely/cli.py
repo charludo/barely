@@ -263,8 +263,9 @@ def aftermath(PM):
 
 
 @run.command()
+@click.option("--desktop", "-d", help="evaluate full-width page. default is mobile.", is_flag=True)
 @click.option("--page", "-p", help="specify a page to be evaluated other than the root", default="")
-def lighthouse(page):
+def lighthouse(page, desktop):
     """use Google Lighthouse to evaluate a page for SEO- and accessibility scores"""
     import subprocess
     version = subprocess.run(["lighthouse", "--version"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
@@ -297,7 +298,10 @@ def lighthouse(page):
         target_file = os.path.join(devroot, "lighthouse_report.html")
         if len(page) and not page.startswith("/"):
             page = "/" + page
-        subprocess.call(f"lighthouse http://127.0.0.1:5500{page} --output-path {target_file} --chrome-flags=\"--headless\" --quiet", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+
+        size = "--preset desktop" if desktop else ""
+
+        subprocess.call(f"lighthouse http://127.0.0.1:5500{page} --output-path {target_file} --chrome-flags=\"--headless\" --quiet {size}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
         # stop the webserver
         liveserver.kill()
