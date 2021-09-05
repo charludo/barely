@@ -214,7 +214,7 @@ def move(fro, to):
         shutil.move(fro, to)
         logger_indented.info(f"moved {fro} -> {to}")
     except FileNotFoundError:
-        raise FileNotFoundError("No file/dir at notification origin!")
+        logger.error("No file/dir at notification origin!")
 
 
 ################################
