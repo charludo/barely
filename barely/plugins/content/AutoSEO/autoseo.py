@@ -27,7 +27,7 @@ class AutoSEO(PluginBase):
         return "AutoSEO", self.plugin_config["PRIORITY"], [self.config["PAGE_EXT"]]
 
     def action(self, *args, **kwargs):
-        if "item" in kwargs:
+        if "item" in kwargs and "parent_meta" not in kwargs["item"]:
             item = kwargs["item"]
 
             # 1. extract as much information as possible from the page item
