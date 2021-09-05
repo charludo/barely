@@ -4,13 +4,13 @@ meta-tags on the pages
 """
 import glob
 import yaml
-from os import walk, sep
+from os import sep, walk
 from os.path import join, getmtime, dirname, splitext
 from watchdog.events import FileModifiedEvent
 from barely.plugins import PluginBase
 from barely.core.EventHandler import EventHandler as EH
 from barely.plugins.PluginManager import PluginManager as PM
-from barely.core.ProcessingPipeline import parse_meta, parse_content, render_page, read_file, write_file
+from barely.core.ProcessingPipeline import parse_meta, parse_content, render_page, read_file, write_file, hook_plugins
 
 
 class Collections(PluginBase):
@@ -120,14 +120,6 @@ class Collections(PluginBase):
         eh = EH()
         eh.init_pipeline(pm)
 
-        try:
-            with open(join(self.config["ROOT"]["DEV"], "metadata.yaml"), "r") as file:
-                meta_raw = file.read()
-            meta = yaml.safe_load(meta_raw)
-            meta = {} if meta is None else meta
-        except FileNotFoundError:
-            meta = {}
-
         frozen_exhibits = self.EXHIBITS
         for exhibitor in frozen_exhibits:
             eh.notify(FileModifiedEvent(src_path=exhibitor))
@@ -147,18 +139,19 @@ class Collections(PluginBase):
                 page = {
                     "template": self.plugin_config["COLLECTION_TEMPLATE"],
                     "destination": join(self.config["ROOT"]["WEB"], self.plugin_config["PAGE"], col_name.lower(), "index.html"),
-                    "meta": meta | {
+                    "meta": {
                         "title": col_name,
                         "collectibles": collectibles
                     },
                     "content": "",
                     "content_raw": "",
                     "action": "collected",
-                    "origin": col_name
+                    "origin": col_name,
+                    "extension": self.config["PAGE_EXT"]
                 }
 
                 # mini pipeline, only the necessary steps
-                write_file(render_page(parse_meta([page])))
+                write_file(render_page(hook_plugins(parse_meta([page]))))
 
         if self.plugin_config["OVERVIEW_TEMPLATE"]:
             # order collections by their size
@@ -174,14 +167,15 @@ class Collections(PluginBase):
             page = {
                 "template": self.plugin_config["OVERVIEW_TEMPLATE"],
                 "destination": join(self.config["ROOT"]["WEB"], self.plugin_config["PAGE"], "index.html"),
-                "meta": meta | {
+                "meta": {
                     "title": self.plugin_config["OVERVIEW_TITLE"],
                     "collections": collections
                 },
                 "content": "",
                 "content_raw": "",
                 "action": "created overview",
-                "origin": "all collections"
+                "origin": "all collections",
+                "extension": self.config["PAGE_EXT"]
             }
 
-            write_file(render_page(parse_meta([page])))
+            write_file(render_page(hook_plugins(parse_meta([page]))))

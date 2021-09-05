@@ -56,9 +56,10 @@ class TestCollections(unittest.TestCase):
     @patch("barely.plugins.content.Collections.collections.write_file")
     @patch("barely.plugins.content.Collections.collections.render_page")
     @patch("barely.plugins.content.Collections.collections.parse_meta")
+    @patch("barely.plugins.content.Collections.collections.hook_plugins")
     @patch("barely.plugins.content.Collections.collections.EH")
     @patch("barely.plugins.content.Collections.collections.getmtime")
-    def test_action_and_finalize(self, getmtime, EH, parse_meta, render_page, write_file):
+    def test_action_and_finalize(self, getmtime, EH, hook_plugins, parse_meta, render_page, write_file):
         item_1 = {
             "meta": {
                 "title": "Test",
