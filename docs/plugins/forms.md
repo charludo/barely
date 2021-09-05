@@ -54,7 +54,7 @@ forms:
 
 You can then display the form in your templates:
 ```html
-{{ form-example }}
+{{ form_example }}
 ```
 
 Forms can contain the following attributes:
