@@ -35,7 +35,7 @@ class ToC(PluginBase):
             self.TOC = []
             item = kwargs["item"]
             # should the generation be attempted a second time, the result will be an empty ToC!
-            if "toc" not in item["meta"]:
+            if "toc" not in item["meta"] and "parent_meta" not in item["meta"]:
                 item["content"] = re.sub(r"<h(\d{1})>(.+)<\/h\d{1}>", self._handle_matches, item["content"])
                 item["meta"]["toc"] = "\n".join(self._generate_toc())
             yield item
