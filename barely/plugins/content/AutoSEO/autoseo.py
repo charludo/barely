@@ -169,6 +169,8 @@ class AutoSEO(PluginBase):
             tags.append(f'<title>{seo["title"]} | {seo["og:site_name"]}</title>')
         elif "title" in seo:
             tags.append(f'<title>{seo["title"]}</title>')
+        elif "og:site_name" in seo:
+            tags.append(f'<title>{seo["og:site_name"]}</title>')
         if "description" in seo:
             tags.append(f'<meta name="description" content="{seo["description"][:159]}" />')
         if "keywords" in seo:
