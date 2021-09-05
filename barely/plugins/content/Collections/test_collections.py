@@ -106,7 +106,7 @@ class TestCollections(unittest.TestCase):
 
         collectible_1 = {
             "title": "Test",
-            "image": "/page/dir/img.png",
+            "image": "dir/img.png",
             "date": "21.07.2021",
             "reading_time": "1 - 3",
             "preview": "contents of this page, deliberatly < 100 chars...",
@@ -116,7 +116,7 @@ class TestCollections(unittest.TestCase):
         }
         collectible_2 = {
             "title": "Test 2",
-            "image": "/page2/dir/img.png",
+            "image": "dir/img.png",
             "date": "10.07.2021",
             "reading_time": "1 - 3",
             "preview": "contents of this page, deliberatly < 100 chars...",

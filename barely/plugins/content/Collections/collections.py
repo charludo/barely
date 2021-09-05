@@ -73,8 +73,7 @@ class Collections(PluginBase):
 
                 # we'd also really like to get the first image of the blog
                 if "title_image" in item["meta"]:
-                    img_abspath = join(dirname(item["destination"].replace(self.config["ROOT"]["WEB"], "", 1)), item["meta"]["title_image"]).replace("\\", "/")
-                    collectible["image"] = img_abspath
+                    collectible["image"] = item["meta"]["title_image"]
 
                 # for integration with Timestamps
                 if "edited" in item["meta"]:
