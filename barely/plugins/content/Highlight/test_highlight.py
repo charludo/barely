@@ -46,18 +46,18 @@ class TestHighlight(unittest.TestCase):
         item = {
             "action": "rendered",
             "content": """
-            <pre><code>def test_register(self):
+            <hl><pre><code>def test_register(self):
                 hl = Highlight()
                 name, prio, ext = hl.register()
 
                 self.assertEqual(name, "Highlight")
                 self.assertEqual(prio, 20)
-                self.assertEqual(ext, ["md"])</code></pre>
+                self.assertEqual(ext, ["md"])</code></pre></hl>
             """
         }
 
         golden_hl = """
-        <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>\n<span class="normal">2</span>\n<span
+        <hl><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>\n<span class="normal">2</span>\n<span
         class="normal">3</span>\n<span class="normal">4</span>\n<span class="normal">5</span>\n<span class="normal">6</span>\n<span class="normal">7</span>
         </pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hlk">def</span> <span class="hlnf">test_register</span><span
         class="hlp">(</span><span class="hlbp">self</span><span class="hlp">):</span>\n        <span class="hln">hl</span> <span class="hlo">=</span>
@@ -68,7 +68,7 @@ class TestHighlight(unittest.TestCase):
         class="hlp">)</span>\n        <span class="hlbp">self</span><span class="hlo">.</span><span class="hln">assertEqual</span><span class="hlp">(</span>
         <span class="hln">prio</span><span class="hlp">,</span> <span class="hlmi">20</span><span class="hlp">)</span>\n        <span class="hlbp">self</span>
         <span class="hlo">.</span><span class="hln">assertEqual</span><span class="hlp">(</span><span class="hln">ext</span><span class="hlp">,</span>
-        <span class="hlp">[</span><span class="hls2">&quot;md&quot;</span><span class="hlp">])</span>\n</pre></div>\n</td></tr></table>
+        <span class="hlp">[</span><span class="hls2">&quot;md&quot;</span><span class="hlp">])</span>\n</pre></div>\n</td></tr></table></hl>
         """
 
         hl = Highlight()

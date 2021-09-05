@@ -3,7 +3,13 @@
 Type: `content`  
 Enabled by default: `true`
 
-Lex and highlight `markdown code blocks`. You can configure a global theme and lexer, and then override both in page configs; you can also specify the lexer on a per-code-block-level by having the first line of the block be `[lexer: lexername]`
+Lex and highlight `markdown code blocks`. You can configure a global theme and lexer, and then override both in page configs; you can also specify the lexer on a per-code-block-level like this:
+
+	```python
+
+	<your code goes here>
+	
+	```
 
 ---
 

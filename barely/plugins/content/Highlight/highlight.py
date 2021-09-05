@@ -44,13 +44,13 @@ class Highlight(PluginBase):
             except KeyError:
                 self.page_config = self.plugin_config.copy()
 
-            item["content"] = re.sub(r"<pre><code>(.*)</code></pre>", self._handle_code, item["content"], flags=re.S)
+            item["content"] = re.sub(r"<pre><code( class=\"language-(?P<lang>.*)\")?>(?P<code>.*)</code></pre>", self._handle_code, item["content"], flags=re.S)
             item["action"] = "rendered, highlighted"
             item["additional_styles"] = list(self.additional_styles)
             yield item
 
     def _handle_code(self, match):
-        code = match.group(1)
+        code = match.group("code")
 
         # if no lexer is set anywhere: guess it
         lexer_args = {
@@ -67,9 +67,7 @@ class Highlight(PluginBase):
 
         # "best case": lexer is set right in the code snippet; obviously use it
         try:
-            matches = re.search(r"\[lexer:\s*(.+)\]$[\s]*([\s\S]*)", code, re.MULTILINE)
-            lexer_name = matches.group(1)
-            code = matches.group(2)
+            lexer_name = match.group("lang")
             lexer = get_lexer_by_name(lexer_name, **lexer_args)
         except Exception:
             pass
@@ -93,4 +91,4 @@ class Highlight(PluginBase):
             }
         ])
 
-        return highlight(code, lexer, formatter)
+        return f"<{self.page_config['CLASS_PREFIX']}>{highlight(code, lexer, formatter)}</{self.page_config['CLASS_PREFIX']}>"
