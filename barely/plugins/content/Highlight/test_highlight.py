@@ -46,13 +46,14 @@ class TestHighlight(unittest.TestCase):
         item = {
             "action": "rendered",
             "content": """
-            <hl><pre><code>def test_register(self):
+            <pre><code>
+                def test_register(self):
                 hl = Highlight()
                 name, prio, ext = hl.register()
 
                 self.assertEqual(name, "Highlight")
                 self.assertEqual(prio, 20)
-                self.assertEqual(ext, ["md"])</code></pre></hl>
+                self.assertEqual(ext, ["md"])</code></pre>
             """
         }
 
@@ -86,8 +87,7 @@ class TestHighlight(unittest.TestCase):
         item = {
             "action": "rendered",
             "content": """
-            <pre><code>
-            [lexer: rust]
+            <pre><code class="language-rust">
             fn main() {
                 println!("Hello World!");
             }</code></pre>
@@ -100,11 +100,11 @@ class TestHighlight(unittest.TestCase):
         }
 
         golden_hl = """
-        <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>\n<span class="normal">2</span>\n
-        <span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hlk">fn</span> <span class="hlnf">
+        <hl><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>\n<span class="normal">2</span>\n
+        <span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><spanclass="hlw"></span><span class="hlk">fn</span> <span class="hlnf">
         main</span><span class="hlp">()</span><span class="hlw"> </span><span class="hlp">{</span><span class="hlw"></span>\n<span class="hlw">
         </span><span class="hlfm">println!</span><span class="hlp">(</span><span class="hls">&quot;Hello World!&quot;</span><span class="hlp">);</span>
-        <span class="hlw"></span>\n<span class="hlw">            </span><span class="hlp">}</span><span class="hlw"></span>\n</pre></div>\n</td></tr></table>
+        <span class="hlw"></span>\n<span class="hlw">            </span><span class="hlp">}</span><span class="hlw"></span>\n</pre></div>\n</td></tr></table></hl>
         """
 
         result = list(hl.action(item=item.copy()))[0]
