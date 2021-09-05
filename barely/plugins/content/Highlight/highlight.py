@@ -3,6 +3,7 @@ highlight <code> blocks with pygments
 """
 import re
 import os
+import html
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import guess_lexer, get_lexer_by_name
@@ -50,7 +51,7 @@ class Highlight(PluginBase):
             yield item
 
     def _handle_code(self, match):
-        code = match.group("code")
+        code = html.unescape(match.group("code"))
 
         # if no lexer is set anywhere: guess it
         lexer_args = {
@@ -90,5 +91,4 @@ class Highlight(PluginBase):
                 "output": css
             }
         ])
-
         return f"<{self.page_config['CLASS_PREFIX']}>{highlight(code, lexer, formatter)}</{self.page_config['CLASS_PREFIX']}>"
