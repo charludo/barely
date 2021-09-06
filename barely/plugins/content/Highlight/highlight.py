@@ -80,15 +80,16 @@ class Highlight(PluginBase):
         }
         formatter = HtmlFormatter(**formatter_args)
 
-        css = formatter.get_style_defs(self.page_config["CLASS_PREFIX"])
         css_path = os.path.join(self.config["ROOT"]["DEV"], self.page_config["ASSETS_DIR"], "highlight", self.page_config["THEME"]) + ".css"
-        self.additional_styles.add(f"/{self.page_config['ASSETS_DIR']}/highlight/{self.page_config['THEME']}.css")
-        write_file([
-            {
-                "destination": css_path,
-                "origin": f"Code Hightlight Style: {self.page_config['THEME']}",
-                "action": "generated styles",
-                "output": css
-            }
-        ])
+        if not os.path.exists(css_path):
+            css = formatter.get_style_defs(self.page_config["CLASS_PREFIX"])
+            self.additional_styles.add(f"/{self.page_config['ASSETS_DIR']}/highlight/{self.page_config['THEME']}.css")
+            write_file([
+                {
+                    "destination": css_path,
+                    "origin": f"Code Hightlight Style: {self.page_config['THEME']}",
+                    "action": "generated styles",
+                    "output": css
+                }
+            ])
         return f"<{self.page_config['CLASS_PREFIX']}>{highlight(code, lexer, formatter)}</{self.page_config['CLASS_PREFIX']}>"
