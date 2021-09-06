@@ -50,6 +50,15 @@
 9. [Changelog](#changelog)
 
 
+#### barely has a website now!
+[see it here: buildwithbarely.org](https://buildwithbarely.org) - of course also built with barely!
+
+## Demo
+
+Short demo of barely's live reloading capabilities:
+
+![barely live demo gif](https://raw.githubusercontent.com/charludo/barely/main/docs/barely-demo.gif)
+
 <!-- ABOUT -->
 ## About barely
 
@@ -275,20 +284,31 @@ Distributed under the GNU General Public License. See [LICENSE](https://github.c
 <!-- CONTACT -->
 ## Contact
 
-Charlotte Hartmann Paludo - [@smiletolerantly](https://t.me/smiletolerantly) - contact@charlotteharludo.com
+Telegram: [@smiletolerantly](https://t.me/smiletolerantly) - barely@buildwithbarely.org
 
-Project Link: [https://github.com/charludo/barely](https://github.com/charludo/barely)
+Official Website Link: [https://buildwithbarely.org](https://buildwithbarely.org)
+Github Project Link: [https://github.com/charludo/barely](https://github.com/charludo/barely)
 
 ## Changelog
 Most recent entry:
 
-### [1.0.3] - 2021-09-01
+### [1.0.4] - 2021-09-06
+#### Added
+- "--desktop" flag for lighthouse (default is mobile)
+
 #### Fixed
-- faulty system blueprints path made barely unable to find any bleuprints
+- autoSEO: no longer crashes when no image can be found; ignores modular subpages
+- pixelizer: save original image without blowing up its size
+- minify: configuring minify no longer disables it
+- toc: don't generate tocs for modular subpages
+- highlight: regex non-greedy, previously wrong behaviour when multiple code blocks on a page; eliminated duplicate stylesheet generation
 
 #### Changed
-- to ensure at least somewhat "unique" alt-tags in galleries, include the number-position of the image in the gallery
-- original/fallback images will no longer be processed by PIL in the Pixelizer plugin, but rather just be copied; their filesizes got blown up before, and the step was needless anyways
+- enabled git plugin by default
+- higher resilience against errors (non-critical errors get logged instead of excepted)
+- autoSEO: use site_name as fallback for title
+- highlight: accepts more conventional / markdown-style lexer notation; un-escape code before highlighting
+- collections: category & overview pages now passed through enabled plugins; use summary as preview, if it exists; preview-image does no longer have to be in the same directory
 
 See the full changelog [here](https://github.com/charludo/barely/blob/main/CHANGELOG.md)
 

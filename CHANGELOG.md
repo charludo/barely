@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - nothing
 
+## [1.0.4] - 2021-09-06
+### Added
+- "--desktop" flag for lighthouse (default is mobile)
+
+### Fixed
+- autoSEO: no longer crashes when no image can be found; ignores modular subpages
+- pixelizer: save original image without blowing up its size
+- minify: configuring minify no longer disables it
+- toc: don't generate tocs for modular subpages
+- highlight: regex non-greedy, previously wrong behaviour when multiple code blocks on a page; eliminated duplicate stylesheet generation
+
+### Changed
+- enabled git plugin by default
+- higher resilience against errors (non-critical errors get logged instead of excepted)
+- autoSEO: use site_name as fallback for title
+- highlight: accepts more conventional / markdown-style lexer notation; un-escape code before highlighting
+- collections: category & overview pages now passed through enabled plugins; use summary as preview, if it exists; preview-image does no longer have to be in the same directory
+
 ## [1.0.3] - 2021-09-01
 ### Fixed
 - faulty system blueprints path made barely unable to find any bleuprints
@@ -58,7 +76,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.9.0] - 2021-06-19
 Initial beta release
 
-[Unreleased]: https://github.com/charludo/barely/compare/v1.0.3...HEAD
+[Unreleased]: https://github.com/charludo/barely/compare/v1.0.4...HEAD
+[1.0.4]: https://github.com/charludo/barely/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/charludo/barely/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/charludo/barely/compare/v1.0.0...v1.0.2
 [1.0.0]: https://github.com/charludo/barely/compare/v_095...v1.0.0
