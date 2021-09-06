@@ -24,11 +24,11 @@ exhibits:
 
 You can then display exhibits in your templates:
 ```html
-{% for collection in exhibits %}
-  {% for exhibit in exhibits %}
-    {{ exhibit["title"] }}
-    {{ exhibit["preview"] }}
-    {{ exhibit["href"] }}
+{% for exhibit in exhibits %}
+  {% for collectible in exhibit %}
+    {{ collectible["title"] }}
+    {{ collectible["preview"] }}
+    {{ collectible["href"] }}
   {% endfor %}
 {% endfor %}
 ```
