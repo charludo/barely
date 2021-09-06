@@ -12,7 +12,7 @@ You can let the plugin generate a summary and/or a list of keywords for every pa
 |argument				|default value		|explanation									|
 |-----------------------|-------------------|-----------------------------------------------|
 |PRIORITY				|20					|												|
-|SENTENCES				|true				|length of the summary in sentences				|
+|SENTENCES				|3					|length of the summary in sentences				|
 |LANGUAGE				|english			|configurable globally and per page				|
 |MIN_SENT_LENGTH		|6					|minimum sentence length in words				|
 |MAX_KEYWORDS			|10					|maximum number of extracted keyword phrases	|
