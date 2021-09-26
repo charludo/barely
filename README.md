@@ -1,8 +1,13 @@
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
+[![PyPI - Downloads][pypi-shield]][pypi-url]
+![PyPI](https://img.shields.io/pypi/v/barely)
 [![Issues][issues-shield]][issues-url]
+[![barely test](https://github.com/charludo/barely/actions/workflows/barely-test.yml/badge.svg?branch=main)](https://github.com/charludo/barely/actions/workflows/barely-test.yml)
+![Lines of code](https://img.shields.io/tokei/lines/github/charludo/barely)
 [![MIT License][license-shield]][license-url]
+![Website](https://img.shields.io/website?down_color=red&down_message=down&up_color=success&up_message=online&url=https%3A%2F%2Fbuildwithbarely.org)
 
 
 <br />
@@ -324,3 +329,5 @@ See the full changelog [here](https://github.com/charludo/barely/blob/main/CHANG
 [issues-url]: https://github.com/charludo/barely/issues
 [license-shield]: https://img.shields.io/github/license/charludo/barely
 [license-url]: https://github.com/charludo/barely/blob/master/LICENSE.txt
+[pypi-shield]: https://img.shields.io/pypi/dm/barely
+[pypi-url]: https://pypi.org/project/barely/
