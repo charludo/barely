@@ -22,6 +22,7 @@ setuptools.setup(name='barely',
                  include_package_data=True,
                  zip_safe=False,
                  entry_points={"console_scripts": ["barely = barely.cli:run"]},
+                 python_requires=">=3.9.0",
                  install_requires=[
                     "click>=8.0.0",
                     "click-default-group>=1.2.2",
