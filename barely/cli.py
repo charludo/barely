@@ -59,11 +59,11 @@ def init():
 def get_appdir():
     _platform = platform.system()
 
-    if _platform == ("Linux" or "Darwin"):
+    if _platform in ("Linux", "Darwin",):
         logger.debug("platform: Unix-like")
         home = os.path.expanduser("~")
         return os.path.join(home, ".barely")
-    elif _platform == "Windows":
+    elif _platform in ("Windows",):
         logger.debug("platform: Windows")
         home = os.path.expandvars(r"%APPDATA%")
         os.environ["PYTHONIOENCODING"] = "utf-8"
