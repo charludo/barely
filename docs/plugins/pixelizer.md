@@ -13,7 +13,7 @@ Enabled by default: `false`
 
 |argument	   |default value	   |explanation									|
 |--------------|-------------------|--------------------------------------------|
-|PRIORIT	   |3                  |											|
+|PRIORITY	   |3                  |											|
 |TARGETS	   |- lg 1000 70<br>- md 650 70<br>- sm 300 70|syntax: \<img-name-suffix\> \<width in px\> \<quality in %\>|
 |LAYOUTS	   |- (max-width: 1000px) 100vw<br>- 1000px |these are essentially media queries. Wrap in `"..."` in yaml! |
 
