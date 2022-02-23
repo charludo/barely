@@ -118,7 +118,9 @@ def read_file(items):
             item["output"] = raw_content        # default if no filter makes changes afterwards
             yield item
         except FileNotFoundError:
-            raise FileNotFoundError("No file at specified origin.")
+            # raise FileNotFoundError("No file at specified origin.")
+            logger.debug(f"file {item['origin']} vanished. Probably a tempfile? Skipping.")
+            pass
 
 
 def write_file(items):

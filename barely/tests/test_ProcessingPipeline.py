@@ -165,14 +165,14 @@ class TestProcessingPipeline(unittest.TestCase):
         self.assertEqual(golden_text, list(PP.read_file([item]))[0]["content_raw"])
         self.assertEqual(golden_text, list(PP.read_file([item]))[0]["output"])
 
-        with self.assertRaises(FileNotFoundError) as context:
-            item["origin"] = "abc"
-            list(PP.read_file([item]))
-        self.assertTrue("No file at specified origin." in str(context.exception))
+        # with self.assertRaises(FileNotFoundError) as context:
+        #     item["origin"] = "abc"
+        #     list(PP.read_file([item]))
+        # self.assertTrue("No file at specified origin." in str(context.exception))
 
-        with self.assertRaises(FileNotFoundError) as context:
-            list(PP.read_file([self.item]))
-        self.assertTrue("No file at specified origin." in str(context.exception))
+        # with self.assertRaises(FileNotFoundError) as context:
+        #     list(PP.read_file([self.item]))
+        # self.assertTrue("No file at specified origin." in str(context.exception))
 
     def test_write_file(self):
         def readf(item):
