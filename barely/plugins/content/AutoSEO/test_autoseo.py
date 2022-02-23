@@ -10,7 +10,7 @@ class TestAutoSEO(unittest.TestCase):
 
     def test_action(self):
         global_meta = {
-            "site_url": "https://test.com",
+            "site_url": "https://test.com/",
             "site_name": "Test Site",
             "site_description": "Description of test site",
             "site_keywords": ["one"],

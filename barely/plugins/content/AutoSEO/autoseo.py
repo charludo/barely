@@ -51,16 +51,16 @@ class AutoSEO(PluginBase):
             # compute the og:url from site_url and destination of item
             if "og:url" in seo:
                 # keep up to date for finalize
-                self.url = seo["og:url"]
+                self.url = seo["og:url"].rstrip("/")
                 page_path = item["destination"].replace(self.config["ROOT"]["WEB"], "").replace("\\", "/")
 
                 if "og:image" in seo and os.path.isabs(seo["og:image"]):
-                    seo["og:image"] = seo["og:url"] + seo["og:image"]
+                    seo["og:image"] = self.url + seo["og:image"]
                 elif "og:image" in seo and not seo["og:image"].startswith("http"):
                     img_path = os.path.dirname(page_path) + "/" + seo["og:image"]
-                    seo["og:image"] = seo["og:url"] + img_path
+                    seo["og:image"] = self.url + img_path
 
-                seo["og:url"] = seo["og:url"] + page_path
+                seo["og:url"] = self.url + page_path
 
                 # 3. generate the meta html tags
                 item["meta"]["seo_tags"] = self._generate_tags(seo)
