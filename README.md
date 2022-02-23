@@ -297,23 +297,12 @@ Github Project Link: [https://github.com/charludo/barely](https://github.com/cha
 ## Changelog
 Most recent entry:
 
-### [1.0.4] - 2021-09-06
-#### Added
-- "--desktop" flag for lighthouse (default is mobile)
+## [1.0.5] - 2022-02-23
+### Fixed
+- autoSEO: fixed double "/" issue in image URLs
 
-#### Fixed
-- autoSEO: no longer crashes when no image can be found; ignores modular subpages
-- pixelizer: save original image without blowing up its size
-- minify: configuring minify no longer disables it
-- toc: don't generate tocs for modular subpages
-- highlight: regex non-greedy, previously wrong behaviour when multiple code blocks on a page; eliminated duplicate stylesheet generation
-
-#### Changed
-- enabled git plugin by default
-- higher resilience against errors (non-critical errors get logged instead of excepted)
-- autoSEO: use site_name as fallback for title
-- highlight: accepts more conventional / markdown-style lexer notation; un-escape code before highlighting
-- collections: category & overview pages now passed through enabled plugins; use summary as preview, if it exists; preview-image does no longer have to be in the same directory
+### Changed
+- silently ignores FileNotFound errors instead of throwing an exception, since usually, a temp file is at fault
 
 See the full changelog [here](https://github.com/charludo/barely/blob/main/CHANGELOG.md)
 

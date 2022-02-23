@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - nothing
 
+## [1.0.5] - 2022-02-23
+### Fixed
+- autoSEO: fixed double "/" issue in image URLs
+
+### Changed
+- silently ignores FileNotFound errors instead of throwing an exception, since usually, a temp file is at fault
+
 ## [1.0.4] - 2021-09-06
 ### Added
 - "--desktop" flag for lighthouse (default is mobile)
@@ -76,7 +83,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.9.0] - 2021-06-19
 Initial beta release
 
-[Unreleased]: https://github.com/charludo/barely/compare/v1.0.4...HEAD
+[Unreleased]: https://github.com/charludo/barely/compare/v1.0.5...HEAD
+[1.0.5]: https://github.com/charludo/barely/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/charludo/barely/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/charludo/barely/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/charludo/barely/compare/v1.0.0...v1.0.2
