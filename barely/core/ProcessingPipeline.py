@@ -292,9 +292,11 @@ def parse_content(items):
         # yaml section found; only convert to html everything afterwards
         if found:
             item["content"] = mistune.html("".join(lines[ln::]))
+            item["content_raw"] = mistune.html("".join(lines[ln::]))
         # no yaml section found; convert the entire document
         else:
             item["content"] = mistune.html(item["content_raw"])
+            item["content_raw"] = mistune.html(item["content_raw"])
 
         yield item
 
