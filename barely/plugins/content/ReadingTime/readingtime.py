@@ -14,7 +14,7 @@ class ReadingTime(PluginBase):
             "WPM_FAST": 265,
             "WPM_SLOW": 90,
             "SEPARATOR": " - "
-            }
+        }
         try:
             self.plugin_config = standard_config | self.config["READING_TIME"]
         except KeyError:
@@ -29,5 +29,8 @@ class ReadingTime(PluginBase):
             word_count = len(item["content_raw"].split())
             slow = word_count // int(self.plugin_config["WPM_SLOW"])
             fast = word_count // int(self.plugin_config["WPM_FAST"])
-            item["meta"]["reading_time"] = f"{fast}{self.plugin_config['SEPARATOR']}{slow}"
+            if slow != fast:
+                item["meta"]["reading_time"] = f"{fast}{self.plugin_config['SEPARATOR']}{slow}"
+            else:
+                item["meta"]["reading_time"] = str(slow)
             yield item
