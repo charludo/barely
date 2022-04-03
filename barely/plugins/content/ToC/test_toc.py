@@ -5,6 +5,8 @@ from barely.plugins.content.ToC.toc import ToC
 
 class TestToC(unittest.TestCase):
 
+    maxDiff = None
+
     def test___init__(self):
         golden = {
             "PRIORITY": 2,
@@ -92,22 +94,27 @@ class TestToC(unittest.TestCase):
                 "toc": """
                 <div class="toc">
                 <ul>
-                <ul>
-                <li><a href="#a-2">A 2</a></li>
-                <li><a href="#b-2">B 2</a></li>
-                <ul>
-                <li><a href="#c-3">C 3</a></li>
-                </ul>
-                <li><a href="#d-2">D 2</a></li>
-                <ul>
-                <li><a href="#e-3">E 3</a></li>
-                <ul>
-                <li><a href="#f-4">F 4</a></li>
-                <li><a href="#g-4">G 4</a></li>
-                </ul>
-                <li><a href="#h-3">H 3</a></li>
-                </ul>
-                </ul>
+                    <li>
+                        <ul>
+                            <li><a href="#a-2">A 2</a></li>
+                            <li><a href="#b-2">B 2</a>
+                                <ul>
+                                    <li><a href="#c-3">C 3</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#d-2">D 2</a>
+                                <ul>
+                                    <li><a href="#e-3">E 3</a>
+                                        <ul>
+                                            <li><a href="#f-4">F 4</a></li>
+                                            <li><a href="#g-4">G 4</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="#h-3">H 3</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
                 </div>
                 """

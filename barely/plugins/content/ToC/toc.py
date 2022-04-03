@@ -54,16 +54,28 @@ class ToC(PluginBase):
         cur_lvl = self.plugin_config["MIN_DEPTH"] - 1
 
         yield '<div class="toc">'
-        for level, heading, slug in self.TOC:
+        for index, (level, heading, slug) in enumerate(self.TOC):
+
+            opened_layer = False
             while level > cur_lvl:
-                cur_lvl += 1
+                if opened_layer:
+                    yield "<li>"
                 yield f"<{self.plugin_config['LIST_ELEMENT']}>"
+                opened_layer = True
+                cur_lvl += 1
+
             while level < cur_lvl:
+                yield f"</{self.plugin_config['LIST_ELEMENT']}></li>"
                 cur_lvl -= 1
-                yield f"</{self.plugin_config['LIST_ELEMENT']}>"
-            yield f'<li><a href="#{slug}">{heading}</a></li>'
+
+            yield "<li>"
+            yield f'<a href="#{slug}">{heading}</a>'
+            if len(self.TOC) - 1 == index or self.TOC[index + 1][0] <= cur_lvl:
+                yield "</li>"
 
         while self.plugin_config["MIN_DEPTH"] <= cur_lvl:
-            cur_lvl -= 1
             yield f"</{self.plugin_config['LIST_ELEMENT']}>"
+            if cur_lvl != self.plugin_config["MIN_DEPTH"]:
+                yield "</li>"
+            cur_lvl -= 1
         yield "</div>"
