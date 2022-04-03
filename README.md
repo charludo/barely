@@ -297,12 +297,19 @@ Github Project Link: [https://github.com/charludo/barely](https://github.com/cha
 ## Changelog
 Most recent entry:
 
-## [1.0.5] - 2022-02-23
-### Fixed
-- autoSEO: fixed double "/" issue in image URLs
+### [1.1.0] - 2022-04-03
+#### Added
+- Collections: the OVERVIEW_CONTENT field allows to specify a markdown file to be used for the Collection overview page's content
 
-### Changed
-- silently ignores FileNotFound errors instead of throwing an exception, since usually, a temp file is at fault
+#### Fixed
+- no longer ignores "meta" fields already set on a page. Previously they were overridden in the meta parsing process
+- Collections: if a page belonging to a collection was not modified after a rebuild, it would not be passed through the plugin pipeline. Among other side effects, this did not allow for Timestamp- and ReadingTime-integration for post previews
+- Timestamp: no longer panics if a file vanishes
+
+#### Changed
+- ReadingTime: if the plugin was configured with WPM_FAST and WPM_SLOW values being identical, or if the text was very short, the fast and slow estimate could be identical. In this case, the plugin now simply shows "0" instead of "0 - 0" (for example)
+- the "content_raw" field utilized by some plugins now only contains the unparsed markdown content, where previously it also included the yaml headers
+
 
 See the full changelog [here](https://github.com/charludo/barely/blob/main/CHANGELOG.md)
 
