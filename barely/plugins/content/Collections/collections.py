@@ -26,6 +26,7 @@ class Collections(PluginBase):
                 "PRIORITY": 999,
                 "PAGE": "categories",
                 "OVERVIEW_TITLE": "",
+                "OVERVIEW_CONTENT": "",
                 "OVERVIEW_TEMPLATE": "",
                 "COLLECTION_TEMPLATE": "",
                 "SUMMARY_LENGTH": 100
@@ -61,9 +62,15 @@ class Collections(PluginBase):
 
                 collectible = {}
                 collectible["title"] = item["meta"]["title"]
+                collectible["origin"] = item["origin"]
+                collectible["destination"] = item["destination"]
+                collectible["extension"] = self.config["PAGE_EXT"]
                 collectible["raw"] = item["content_raw"]
                 collectible["href"] = item["destination"].replace(self.config["ROOT"]["WEB"], "", 1).replace("\\", "/")
-                collectible["timestamp"] = getmtime(item["origin"])
+                try:
+                    collectible["timestamp"] = getmtime(item["origin"])
+                except FileNotFoundError:
+                    collectible["timestamp"] = "?"
 
                 # is there an existing summary? probably a better preview
                 try:
@@ -124,12 +131,17 @@ class Collections(PluginBase):
         eh = EH()
         eh.init_pipeline(pm)
 
+        for collection in self.COLLECTION:
+            for item in self.COLLECTION[collection]:
+                for it in hook_plugins(parse_content(parse_meta(read_file([item])))):
+                    _ = list(self.action(item=it))
+
         frozen_exhibits = self.EXHIBITS
         for exhibitor in frozen_exhibits:
             eh.notify(FileModifiedEvent(src_path=exhibitor))
 
-        for col_name in self.COLLECTION:
-            if self.plugin_config["COLLECTION_TEMPLATE"]:
+        if self.plugin_config["COLLECTION_TEMPLATE"]:
+            for col_name in self.COLLECTION:
                 # every collection needs to be ordered (by mtime-stamp)
                 collectibles = sorted(self.COLLECTION[col_name], key=lambda k: k["timestamp"], reverse=True)
 
@@ -168,17 +180,27 @@ class Collections(PluginBase):
                 })
             collections = sorted(collections, key=lambda k: k["size"], reverse=True)
 
+            if self.plugin_config["OVERVIEW_CONTENT"]:
+                origin = join(self.config["ROOT"]["DEV"], self.plugin_config["OVERVIEW_CONTENT"].lstrip("/\\"))
+                processed = list(parse_content(read_file([{"origin": origin}])))[0]
+                content = processed["content"]
+                content_raw = processed["content_raw"]
+            else:
+                origin = "all collection"
+                content = ""
+                content_raw = ""
+
             page = {
                 "template": self.plugin_config["OVERVIEW_TEMPLATE"],
                 "destination": join(self.config["ROOT"]["WEB"], self.plugin_config["PAGE"], "index.html"),
                 "meta": {
                     "title": self.plugin_config["OVERVIEW_TITLE"],
-                    "collections": collections
+                    "collections_list": collections
                 },
-                "content": "",
-                "content_raw": "",
+                "content": content,
+                "content_raw": content_raw,
                 "action": "created overview",
-                "origin": "all collections",
+                "origin": origin,
                 "extension": self.config["PAGE_EXT"]
             }
 
