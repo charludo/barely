@@ -29,12 +29,15 @@ class Timestamps(PluginBase):
         if "item" in kwargs:
             item = kwargs["item"]
 
-            ctime = datetime.fromtimestamp(getctime(item["origin"])).strftime(self.plugin_config["FORMAT"])
-            mtime = datetime.fromtimestamp(getmtime(item["origin"])).strftime(self.plugin_config["FORMAT"])
+            try:
+                ctime = datetime.fromtimestamp(getctime(item["origin"])).strftime(self.plugin_config["FORMAT"])
+                mtime = datetime.fromtimestamp(getmtime(item["origin"])).strftime(self.plugin_config["FORMAT"])
 
-            if "created" not in item["meta"]:              # if not set by user, set Created Time
-                item["meta"]["created"] = ctime
-            if "edited" not in item["meta"]:               # if not set by user, set Modified Time
-                item["meta"]["edited"] = mtime
+                if "created" not in item["meta"]:              # if not set by user, set Created Time
+                    item["meta"]["created"] = ctime
+                if "edited" not in item["meta"]:               # if not set by user, set Modified Time
+                    item["meta"]["edited"] = mtime
+            except FileNotFoundError:
+                self.logger.debug(f"{item['origin']} not found.")
 
             yield item
