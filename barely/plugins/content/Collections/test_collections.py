@@ -161,79 +161,86 @@ class TestCollections(unittest.TestCase):
 
         col.finalize()
         col.config["ROOT"]["DEV"] = old_root
-        #
-        # golden_args = [
-        #     {
-        #         "template": "placeholder",
-        #         "destination": os.path.join("web", "categories", "col1", "index.html"),
-        #         "meta": {
-        #             "title": "col1",
-        #             "collectibles": [collectible_1]
-        #         },
-        #         "content": "",
-        #         "content_raw": "",
-        #         "action": "collected",
-        #         "origin": "col1",
-        #         "extension": "md"
-        #     },
-        #     {
-        #         "template": "placeholder",
-        #         "destination": os.path.join("web", "categories", "col2", "index.html"),
-        #         "meta": {
-        #             "title": "col2",
-        #             "collectibles": [collectible_1, collectible_2]
-        #         },
-        #         "content": "",
-        #         "content_raw": "",
-        #         "action": "collected",
-        #         "origin": "col2",
-        #         "extension": "md"
-        #     },
-        #     {
-        #         "template": "placeholder",
-        #         "destination": os.path.join("web", "categories", "col3", "index.html"),
-        #         "meta": {
-        #             "title": "col3",
-        #             "collectibles": [collectible_2]
-        #         },
-        #         "content": "",
-        #         "content_raw": "",
-        #         "action": "collected",
-        #         "origin": "col3",
-        #         "extension": "md"
-        #     },
-        #     {
-        #         "template": "placeholder-overview",
-        #         "destination": os.path.join("web", "categories", "index.html"),
-        #         "meta": {
-        #             "title": "overview",
-        #             "collections": [
-        #                 {
-        #                     "name": "col2",
-        #                     "size": 2,
-        #                     "href": "/categories/col2/index.html"
-        #                 },
-        #                 {
-        #                     "name": "col1",
-        #                     "size": 1,
-        #                     "href": "/categories/col1/index.html"
-        #                 },
-        #                 {
-        #                     "name": "col3",
-        #                     "size": 1,
-        #                     "href": "/categories/col3/index.html"
-        #                 }
-        #             ]
-        #         },
-        #         "content": "",
-        #         "content_raw": "",
-        #         "action": "created overview",
-        #         "origin": "all collections",
-        #         "extension": "md"
-        #     }
-        # ]
+
+        golden_args = [
+            {
+                "template": "placeholder",
+                "destination": os.path.join("web", "categories", "col1", "index.html"),
+                "meta": {
+                    "title": "col1",
+                    "collectibles": [collectible_1]
+                },
+                "content": "",
+                "content_raw": "",
+                "action": "collected",
+                "origin": "col1",
+                "extension": "md"
+            },
+            {
+                "template": "placeholder",
+                "destination": os.path.join("web", "categories", "col2", "index.html"),
+                "meta": {
+                    "title": "col2",
+                    "collectibles": [collectible_1, collectible_2]
+                },
+                "content": "",
+                "content_raw": "",
+                "action": "collected",
+                "origin": "col2",
+                "extension": "md"
+            },
+            {
+                "template": "placeholder",
+                "destination": os.path.join("web", "categories", "col3", "index.html"),
+                "meta": {
+                    "title": "col3",
+                    "collectibles": [collectible_2]
+                },
+                "content": "",
+                "content_raw": "",
+                "action": "collected",
+                "origin": "col3",
+                "extension": "md"
+            },
+            {
+                "template": "placeholder-overview",
+                "destination": os.path.join("web", "categories", "index.html"),
+                "meta": {
+                    "title": "overview",
+                    "collections_list": [
+                        {
+                            "name": "col2",
+                            "size": 2,
+                            "href": "/categories/col2/index.html"
+                        },
+                        {
+                            "name": "col1",
+                            "size": 1,
+                            "href": "/categories/col1/index.html"
+                        },
+                        {
+                            "name": "col3",
+                            "size": 1,
+                            "href": "/categories/col3/index.html"
+                        }
+                    ]
+                },
+                "content": "",
+                "content_raw": "",
+                "action": "created overview",
+                "origin": "all collections",
+                "extension": "md"
+            }
+        ]
+        actual_args = []
         # actual_args = [list(args[0])[0] for args, kwargs in parse_meta.call_args_list]
-        # self.assertCountEqual(golden_args, actual_args)
+
+        for args, _ in parse_meta.call_args_list:
+            try:
+                actual_args.append(list(args[0])[0])
+            except IndexError:
+                pass
+        self.assertCountEqual(golden_args, actual_args)
 
         del col.config["COLLECTIONS"]
         col.COLLECTION = {}

@@ -186,7 +186,7 @@ class Collections(PluginBase):
                 content = processed["content"]
                 content_raw = processed["content_raw"]
             else:
-                origin = "all collection"
+                origin = "all collections"
                 content = ""
                 content_raw = ""
 
