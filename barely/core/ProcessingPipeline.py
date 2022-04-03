@@ -257,6 +257,11 @@ def parse_meta(items):
         lines = item["content_raw"].splitlines(keepends=True)
         extracted_yaml = ""
 
+        try:
+            predefined_meta = item["meta"]
+        except KeyError:
+            predefined_meta = {}
+
         if not len(lines):
             page_meta = {}
         elif re.match(r"^---[\s|\t]*[\n|\r]?$", lines[0]):
@@ -266,10 +271,23 @@ def parse_meta(items):
                 ln += 1
 
             page_meta = yaml.safe_load(extracted_yaml)
+
+            # find this page's URL
+            try:
+                relurl = os.path.dirname(item["destination"].replace(config["ROOT"]["WEB"], ""))
+                absurl = meta["site_url"].rstrip("/\\") + relurl
+
+                meta["page_path"] = relurl
+                meta["page_url"] = absurl
+                logger.debug(f"this page's URL is: {absurl}")
+            except KeyError:
+                # logger.error("Could not determine page URL.")
+                pass
+
         else:
             page_meta = {}
 
-        item["meta"] = meta | parent_meta | page_meta
+        item["meta"] = meta | parent_meta | page_meta | predefined_meta
 
         yield item
 
