@@ -339,7 +339,10 @@ class TestProcessingPipeline(unittest.TestCase):
                 item = {
                     "content_raw": f.read()
                 }
-                return list(PP.parse_meta([item]))[0]["meta"]
+                try:
+                    return list(PP.parse_meta([item]))[0]["meta"]
+                except IndexError:
+                    return None
 
         os.chdir("content_files")
         golden_dict = {
@@ -352,6 +355,8 @@ class TestProcessingPipeline(unittest.TestCase):
         self.assertDictEqual(golden_dict, get_yaml("MULTI_YAML.md"))
         open("metadata.yaml", 'a')  # just for the test coverage...
         self.assertDictEqual(golden_dict, get_yaml("ONE_YAML_ONE_MD.md"))
+
+        self.assertCountEqual([], list(PP.parse_meta([{"content_raw": "---\npublish: false\n---\naaa"}])))
 
         os.chdir("..")
 

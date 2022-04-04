@@ -289,6 +289,9 @@ def parse_meta(items):
 
         item["meta"] = meta | parent_meta | page_meta | predefined_meta
 
+        # "publish = false" prevents page from being rendered
+        if "publish" in item["meta"] and not item["meta"]["publish"]:
+            return
         yield item
 
 
