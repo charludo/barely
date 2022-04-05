@@ -87,7 +87,7 @@ class Collections(PluginBase):
                 # for integration with Timestamps
                 if "edited" in item["meta"]:
                     collectible["date"] = item["meta"]["edited"]
-                elif "created" in item["meta"]:
+                if "created" in item["meta"]:
                     collectible["date"] = item["meta"]["created"]
                 else:
                     collectible["date"] = ""
