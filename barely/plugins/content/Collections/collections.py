@@ -29,7 +29,9 @@ class Collections(PluginBase):
                 "OVERVIEW_CONTENT": "",
                 "OVERVIEW_TEMPLATE": "",
                 "COLLECTION_TEMPLATE": "",
-                "SUMMARY_LENGTH": 100
+                "SUMMARY_LENGTH": 100,
+                "ORDER_KEY": "timestamp",
+                "ORDER_REVERSE": True,
             }
             self.plugin_config = standard_config | self.config["COLLECTIONS"]
 
@@ -143,7 +145,7 @@ class Collections(PluginBase):
         if self.plugin_config["COLLECTION_TEMPLATE"]:
             for col_name in self.COLLECTION:
                 # every collection needs to be ordered (by mtime-stamp)
-                collectibles = sorted(self.COLLECTION[col_name], key=lambda k: k["timestamp"], reverse=True)
+                collectibles = sorted(self.COLLECTION[col_name], key=lambda k: k[self.plugin_config["ORDER_KEY"]], reverse=self.plugin_config["ORDER_REVERSE"])
 
                 # the renderable collection page needs the following:
                 # - a template: already got that during init, stored in config

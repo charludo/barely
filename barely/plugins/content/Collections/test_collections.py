@@ -33,6 +33,8 @@ class TestCollections(unittest.TestCase):
             "COLLECTION_TEMPLATE": "",
             "SUMMARY_LENGTH": 100,
             "OVERVIEW_CONTENT": "",
+            "ORDER_KEY": "timestamp",
+            "ORDER_REVERSE": True,
         }
         col.config["COLLECTIONS"] = {"PRIORITY": 2}
         col.__init__()
@@ -95,7 +97,7 @@ class TestCollections(unittest.TestCase):
         col = Collections()
         old_root = col.config["ROOT"]["DEV"]
         col.config["ROOT"]["DEV"] = os.path.join(old_root, "empty")
-        col.config["COLLECTIONS"] = {"PRIORITY": 2}
+        col.config["COLLECTIONS"] = {"PRIORITY": 2, "ORDER_REVERSE": True, "ORDER_KEY": "title"}
         col.__init__()
 
         self.assertDictEqual({}, col.COLLECTION)
@@ -181,7 +183,7 @@ class TestCollections(unittest.TestCase):
                 "destination": os.path.join("web", "categories", "col2", "index.html"),
                 "meta": {
                     "title": "col2",
-                    "collectibles": [collectible_1, collectible_2]
+                    "collectibles": [collectible_2, collectible_1]
                 },
                 "content": "",
                 "content_raw": "",
