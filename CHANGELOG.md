@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - "publish: false" in a page can disable rendering of a page. Can also be used as a global toggle
 - Collections: added ORDER_KEY and ORDER_REVERSE options. Can be used to configure the order of posts within collection pages.
 
+### Changed
+- Collections: "created" timestamps take precedence over "edited" timestamps
+
 ## [1.1.0] - 2022-04-03
 ### Added
 - Collections: the OVERVIEW_CONTENT field allows to specify a markdown file to be used for the Collection overview page's content
