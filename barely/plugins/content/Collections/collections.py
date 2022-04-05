@@ -119,7 +119,7 @@ class Collections(PluginBase):
                 wanted_exhibits = {}
                 for exhibit in exhibits:
                     try:
-                        wanted_exhibits[exhibit] = self.COLLECTION[exhibit]
+                        wanted_exhibits[exhibit] = sorted(self.COLLECTION[exhibit], key=lambda k: k[self.plugin_config["ORDER_KEY"]], reverse=self.plugin_config["ORDER_REVERSE"])
                     except KeyError:
                         wanted_exhibits[exhibit] = []
                 item["meta"]["exhibits"] = wanted_exhibits  # now contains all (current) exhibition-pieces from wanted collections
