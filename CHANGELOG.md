@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - nothing
 
+## [1.1.2] - 2022-04-05
+### Added
+- "publish: false" in a page can disable rendering of a page. Can also be used as a global toggle
+- Collections: added ORDER_KEY and ORDER_REVERSE options. Can be used to configure the order of posts within collection pages.
+
 ## [1.1.0] - 2022-04-03
 ### Added
 - Collections: the OVERVIEW_CONTENT field allows to specify a markdown file to be used for the Collection overview page's content
@@ -48,7 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.3] - 2021-09-01
 ### Fixed
-- faulty system blueprints path made barely unable to find any bleuprints
+- faulty system blueprints path made barely unable to find any blueprints
 
 ### Changed
 - to ensure at least somewhat "unique" alt-tags in galleries, include the number-position of the image in the gallery
@@ -97,7 +102,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.9.0] - 2021-06-19
 Initial beta release
 
-[Unreleased]: https://github.com/charludo/barely/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/charludo/barely/compare/v1.1.2...HEAD
+[1.1.2]: https://github.com/charludo/barely/compare/v1.1.0...v1.1.2
 [1.1.0]: https://github.com/charludo/barely/compare/v1.0.5...v1.1.0
 [1.0.5]: https://github.com/charludo/barely/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/charludo/barely/compare/v1.0.3...v1.0.4

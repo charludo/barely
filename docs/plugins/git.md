@@ -1,7 +1,7 @@
 # Git
 
 Type: `backup`  
-Enabled by default: `false`
+Enabled by default: `true`
 
 Pushes to a remote origin whenever you are done rebuilding / live editing (unless you answer barelys exit prompt wih "no" or "publish only").
 
@@ -10,7 +10,7 @@ Pushes to a remote origin whenever you are done rebuilding / live editing (unles
 **Note**: the repository and its origin have to already be initialized. This plugin can not do that for you.
 
 ---
-
+**config.yaml key:** GIT
 |argument				|default value		|explanation									|
 |-----------------------|-------------------|-----------------------------------------------|
 |PRIORITY				|40					|												|

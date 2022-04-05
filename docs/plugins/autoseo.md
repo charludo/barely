@@ -46,6 +46,8 @@ All in all, in addition to the above global values, these attributes are respect
 	- twitter_creator
 ---
 
+**Note:** autoSEO ignores modular subpages - its configuration has to happen within the parent's yaml config.
+
 Use the generated tags in the `<head>` of your base template:
 
 ```HTML
@@ -61,6 +63,7 @@ Use the generated tags in the `<head>` of your base template:
 If you have not manually created a `robots.txt` and/or `sitemap.txt` already, the plugin will do it for you.
 
 ---
+**config.yaml key:** AUOT_SEO
 
 |argument				|default value		|explanation									|
 |-----------------------|-------------------|-----------------------------------------------|

@@ -289,13 +289,18 @@ Distributed under the GNU General Public License. See [LICENSE](https://github.c
 <!-- CONTACT -->
 ## Contact
 
-Telegram: [@smiletolerantly](https://t.me/smiletolerantly) - barely@buildwithbarely.org
+Telegram: [@smiletolerantly](https://t.me/smiletolerantly) - Mail: barely@buildwithbarely.org
 
 Official Website Link: [https://buildwithbarely.org](https://buildwithbarely.org)
 Github Project Link: [https://github.com/charludo/barely](https://github.com/charludo/barely)
 
 ## Changelog
-Most recent entry:
+Most recent entries:
+
+### [1.1.2] - 2022-04-05
+#### Added
+- "publish: false" in a page can disable rendering of a page. Can also be used as a global toggle
+- Collections: added ORDER_KEY and ORDER_REVERSE options. Can be used to configure the order of posts within collection pages.
 
 ### [1.1.0] - 2022-04-03
 #### Added

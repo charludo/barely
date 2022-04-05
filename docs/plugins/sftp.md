@@ -8,7 +8,7 @@ Uploads your webroot to an SFTP Webserver after you have exited barely.
 Works with either a username/password, or an SSH key.
 
 ---
-
+**config.yaml key:** SFTP
 |argument				|default value		|explanation																		|
 |-----------------------|-------------------|-----------------------------------------------------------------------------------|
 |PRIORITY				|90					|																					|

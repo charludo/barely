@@ -16,7 +16,7 @@ Display the timestamps like this in your template:
 ```
 
 ---
-
+**config.yaml key:** TIMESTAMPS
 |argument				|default value		|explanation									|
 |-----------------------|-------------------|-----------------------------------------------|
 |PRIORITY				|3					|												|

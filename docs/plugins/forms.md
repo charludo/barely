@@ -84,7 +84,7 @@ rows: for textarea
 cols: for textarea
 ```
 ---
-
+**config.yaml key:** FORMS
 |argument			|default value		|explanation									|
 |-------------------|-------------------|-----------------------------------------------|
 |PRIORITY			|5					|												|

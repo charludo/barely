@@ -17,8 +17,10 @@ Markdown-Syntax:
 
 The name of the gallery and the image folder are required. Sorting key and direction are optional; however, it is not possible to specify `direction` without `sort`, since these are positional arguments.
 
----
+Each image will receive an `alt` tag consisting of the gallery name, and the image's position within the gallery.
 
+---
+**config.yaml key:** GALLERY
 |argument			|default value		|explanation									|
 |-------------------|-------------------|-----------------------------------------------|
 |PRIORITY			|2					|												|

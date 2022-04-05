@@ -10,7 +10,7 @@ Keeps a limited number of project copies on your local machine.
 Restoring a backup is a manual task.
 
 ---
-
+**config.yaml key:** LOCAL_BACKUP
 |argument				|default value		|explanation										|
 |-----------------------|-------------------|---------------------------------------------------|
 |PRIORITY				|30					|													|

@@ -8,7 +8,7 @@ Enabled by default: `true`
 
 
 ---
-
+**config.yaml key:** MINIFY
 |argument				|default value		|explanation									|
 |-----------------------|-------------------|-----------------------------------------------|
 |PRIORITY				|3					|												|

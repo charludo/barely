@@ -8,7 +8,7 @@ Lex and highlight `markdown code blocks`. You can configure a global theme and l
 	```python
 
 	<your code goes here>
-	
+
 	```
 
 ---
@@ -16,7 +16,7 @@ Lex and highlight `markdown code blocks`. You can configure a global theme and l
 For a full list of features, check [pygments.org](https://pygments.org/)!
 
 ---
-
+**config.yaml key:** HIGHLIGHT
 |argument			|default value		|explanation									|
 |-------------------|-------------------|-----------------------------------------------|
 |PRIORITY			|20					|												|

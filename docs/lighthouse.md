@@ -19,7 +19,7 @@ $ barely lighthouse
 [barely][  core][ INFO] :: Finished the evaluation! Opening the result now.
 ```
 
-Or specify any other page to be evaluated:
+You can also specify any other page to be evaluated, or force the evaluation of the desktop version of a page:
 ```console
 $ barely lighthouse --help
 Usage: barely lighthouse [OPTIONS]
@@ -27,6 +27,7 @@ Usage: barely lighthouse [OPTIONS]
   use Google Lighthouse to evaluate a page for SEO- and accessibility scores
 
 Options:
+  -d, --desktop    evaluate full-width page. default is mobile.
   -p, --page TEXT  specify a page to be evaluated other than the root
   --help           Show this message and exit.
 ```

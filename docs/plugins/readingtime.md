@@ -5,6 +5,8 @@ Enabled by default: `true`
 
 Estimates the reading time in minutes for a page or post. Common feature for blogs.
 
+If WPM_FAST does not equal WPM_SLOW, displays an estimate of `x - y` minutes. Otherwise, only a single number is displayed.
+
 ---
 
 Display the reading time like this in your template:
@@ -13,7 +15,7 @@ Display the reading time like this in your template:
 ```
 
 ---
-
+**config.yaml key:** READING_TIME
 |argument				|default value		|explanation									|
 |-----------------------|-------------------|-----------------------------------------------|
 |PRIORITY				|850				|												|

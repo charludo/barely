@@ -40,14 +40,21 @@ There are a couple of things that are important to know about how barely works. 
 	```
 	These variables can be used like any others in your templates: `{{ title }}`.
 
-	Here you can also specify if you want your rendered file to have a different extension, for example: `extension: php`.
+	Sometimes, plugins expect (or allow) for configuration on a page level (e.g. the [Highlight](plugins/highlight.md) plugin). Additionally, barely pays attention to two page level configurations:
+	```yaml
+	extension: specify a extension different from html (without a leading dot). E.g.: php, xml,...
+	publish: if set to false, this page will not be rendered. Useful for drafting.
+	```
+
+	Of course, both of these may also be set at a global level.
 
 	Both the initial YAML section and any Markdown are optional. If you want to, your file can be completely empty. In that case, the template specified by the filename will still get rendered as usual.
+
 
 3. Configuration Files
 
 	You can utilize two configuration files:
-	- `config.yaml`: configure barelys behaviour. You have to at least specify the paths to your webroot and devroot, like this:
+	- `config.yaml`: configure barely's behaviour. You have to at least specify the paths to your webroot and devroot, like this:
 		```yaml
 		ROOT:
 		  DEV: /[...]/devroot

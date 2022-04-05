@@ -12,8 +12,10 @@ Display the table of contents like this in your template:
 {{ toc }}
 ```
 
----
+**Note:** unfortunately, the ToC does not support modular subpages, as their positioning and order heavily depensd on the jinja2 template used. ToCs can still be generated for the parent page, however.
 
+---
+**config.yaml key:**  TOC
 |argument				|default value		|explanation									|
 |-----------------------|-------------------|-----------------------------------------------|
 |PRIORITY				|2					|												|

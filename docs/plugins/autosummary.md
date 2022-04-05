@@ -8,6 +8,7 @@ Relies on NLTK, numpy, scipy, networkx, and rake-nltk. Since these are quite hea
 You can let the plugin generate a summary and/or a list of keywords for every page.
 
 ---
+**config.yaml key:** AUTO_SUMMARY
 
 |argument				|default value		|explanation									|
 |-----------------------|-------------------|-----------------------------------------------|
