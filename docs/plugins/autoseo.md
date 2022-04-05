@@ -63,7 +63,7 @@ Use the generated tags in the `<head>` of your base template:
 If you have not manually created a `robots.txt` and/or `sitemap.txt` already, the plugin will do it for you.
 
 ---
-**config.yaml key:** AUOT_SEO
+**config.yaml key:** AUTO_SEO
 
 |argument				|default value		|explanation									|
 |-----------------------|-------------------|-----------------------------------------------|
