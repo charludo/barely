@@ -1,0 +1,434 @@
+$bg--light: #f5f5f5
+$bg--dark: #0f0519
+$bg--rust: #aba191
+
+$text--light: #222222
+$text--dark: #c5c5c5
+$text--rust: #111104
+
+$accent--light: #c3073f
+$accent--dark: #e7717d
+$accent--rust: #501b1d
+
+$breakpoint-sm: 576px
+$breakpoint-md: 768px
+$breakpoint-lg: 992px
+$breakpoint-xl: 1200px
+$breakpoint-xxl: 1600px
+
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap')
+
+*
+	box-sizing: border-box
+	// transition-duration: .2s
+	scroll-behavior: smooth
+
+body
+	padding: 0
+	margin: 0
+
+	min-height: 100vh
+
+	font-family: "Atkinson", "Open Sans"
+	font-size: 110%
+
+	background: $bg--light
+	color: $text--light
+
+	.accent, .accent:hover, .accent:active, .accent:visited .hoveraccent:hover
+		color: $accent--light !important
+
+	.unfocus
+		opacity: .75
+
+	blockquote
+		border-left: 6px solid
+		margin-left: 0
+		margin-right: 0
+		padding: 0 0 0 1em
+		border-color: $accent--light
+
+	hr
+		border: none
+		height: 1px
+		background-color: $text--light
+		opacity: .3
+		margin: 1.5em 0
+
+	.socials
+		img
+			filter: invert(4%) sepia(0%) saturate(0%) hue-rotate(158deg) brightness(110%) contrast(80%)
+
+			&:hover
+				filter: invert(17%) sepia(86%) saturate(5066%) hue-rotate(334deg) brightness(75%) contrast(104%)
+
+	hl table
+		background-color: $text--light
+		.normal
+			background-color: $text--light !important
+
+	#snackbar
+		color: $bg--light
+		background-color: $text--light
+
+	@media (prefers-color-scheme: dark)
+		background: $bg--dark
+		color: $text--dark
+		.accent, .accent:hover, .accent:active, .accent:visited .hoveraccent:hover
+			color: $accent--dark !important
+
+		blockquote
+			border-color: $accent--dark
+
+		hr
+			background-color: $text--dark
+
+		.socials
+			img
+				filter: invert(97%) sepia(0%) saturate(374%) hue-rotate(168deg) brightness(84%) contrast(88%)
+
+				&:hover
+					filter: invert(53%) sepia(60%) saturate(360%) hue-rotate(305deg) brightness(91%) contrast(113%)
+
+		hl table
+			background-color: $bg--dark
+			.normal
+				background-color: $bg--dark !important
+
+		#snackbar
+			color: $bg--dark
+			background-color: $text--dark
+
+	&.theme--light
+		background: $bg--light
+		color: $text--light
+		.accent, .accent:hover, .accent:active, .accent:visited .hoveraccent:hover
+			color: $accent--light !important
+
+		blockquote
+			border-color: $accent--light
+
+		hr
+			background-color: $text--light
+
+		blockquote
+			border-color: $accent--light
+
+		.socials
+			img
+				filter: invert(4%) sepia(0%) saturate(0%) hue-rotate(158deg) brightness(110%) contrast(80%)
+
+				&:hover
+					filter: invert(17%) sepia(86%) saturate(5066%) hue-rotate(334deg) brightness(75%) contrast(104%)
+
+		hl table
+			background-color: $text--light
+			.normal
+				background-color: $text--light !important
+
+		#snackbar
+			color: $bg--light
+			background-color: $text--light
+
+	&.theme--dark
+		background: $bg--dark
+		color: $text--dark
+		.accent, .accent:hover, .accent:active, .accent:visited .hoveraccent:hover
+			color: $accent--dark !important
+
+		blockquote
+			border-color: $accent--dark
+
+		hr
+			background-color: $text--dark
+
+		.socials
+			img
+				filter: invert(97%) sepia(0%) saturate(374%) hue-rotate(168deg) brightness(84%) contrast(88%)
+
+				&:hover
+					filter: invert(53%) sepia(60%) saturate(360%) hue-rotate(305deg) brightness(91%) contrast(113%)
+
+		hl table
+			background-color: $bg--dark
+			.normal
+				background-color: $bg--dark !important
+
+		#snackbar
+			color: $bg--dark
+			background-color: $text--dark
+
+	&.theme--rust
+		background: $bg--rust
+		color: $text--rust
+		.accent, .accent:hover, .accent:active, .accent:visited .hoveraccent:hover
+			color: $accent--rust !important
+
+		blockquote
+			border-color: $accent--rust
+
+		hr
+			background-color: $text--rust
+
+		.socials
+			img
+				filter: invert(5%) sepia(6%) saturate(7100%) hue-rotate(24deg) brightness(94%) contrast(97%)
+
+				&:hover
+					filter: invert(11%) sepia(50%) saturate(2377%) hue-rotate(331deg) brightness(84%) contrast(92%)
+
+		hl table
+			background-color: $text--rust
+			.normal
+				background-color: $text--rust !important
+
+		#snackbar
+			color: $bg--rust
+			background-color: $text--rust
+
+#container
+	max-width: 800px
+	margin: 0 auto
+	padding: 1em
+
+	position: relative
+
+	@media screen and (min-width: $breakpoint-sm)
+		padding: 4em
+
+p
+	text-align: justify
+
+a, a:active, a:visited, a:hover
+	color: inherit
+	text-decoration: none
+	border-bottom: 1px dotted
+
+.socials
+	margin: 1em 0
+	a, div
+		border-bottom: none
+		cursor: pointer
+		display: inline-block
+		margin-right: 0px
+		img
+			transition-duration: 0s
+			width: 26px
+			height: 26px
+			// transition-property: transformY
+		img:hover
+			// transform: translateY(-20%)
+			transform: scale(115%)
+
+.noborder, .noborder:active, .noborder:visited, .noborder:hover
+	border: none
+
+.blogpost
+	.quickinfo
+		font-size: 85%
+		margin: 2em 0 0 0
+
+	h1, .toc-title, .posttitle
+		margin: 0
+		padding: 0
+
+	// h4
+		line-height: 0
+
+	.toc
+		ul, ol
+			padding: 0 16px
+			margin: 8px 0
+			// list-style: square
+			li
+				a
+					// padding: 16px 0 0 0
+					// margin: 16px 0
+					line-height: 150%
+
+	.comments
+		margin-top: 2em
+
+	.postbody img, .postbody picture, .postbody picture img
+		width: 100%
+		height: auto
+
+.postpreview
+	margin-bottom: 1.5em
+
+hl
+	font-size: 14px
+	// color: #888
+	display: block
+	margin: 2em 0
+	text-align: left
+
+	table
+		table-layout: fixed
+		width: 100%
+
+		.highlight
+			overflow: auto
+
+		td:first-child
+			width: 42px
+
+#header
+	display: flex
+	flex-flow: row nowrap
+	align-items: center
+	justify-content: space-between
+	list-style: none
+	margin: 0
+	padding: 0
+
+	h2
+		a
+			color: $text--light
+			@media (prefers-color-scheme: dark)
+				color: $text--dark
+
+
+	li
+		a
+			margin-right: .5em
+
+			@media screen and (min-width: $breakpoint-md)
+				margin-right: 1.5em
+
+	#theme-li
+		margin-left: auto
+		@media screen and (min-width: $breakpoint-sm)
+			transform: translateY(3px)
+
+
+	#themes
+		label
+			border: 0
+			clip: rect(0 0 0 0)
+			height: 1px
+			margin: -1px
+			overflow: hidden
+			padding: 0
+			position: absolute
+			width: 1px
+		input[type="radio"]
+			position: relative
+			-webkit-appearance: none
+			appearance: none
+			margin: 0
+			display: block
+
+			width: 32px
+			height: 32px
+			border-radius: 50%
+			cursor: pointer
+			padding: 8px
+			margin-bottom: 4px
+
+			&:after
+				content: ""
+				position: absolute
+				top: 50%
+				left: 50%
+				transform: translate(-50%, -50%)
+				width: 20px
+				height: 20px
+				border-radius: 50%
+
+			@media screen and (min-width: $breakpoint-sm)
+				margin: 0 0.25em
+				display: inline-block
+
+	@media screen and (min-width: $breakpoint-sm)
+		margin-top: -2em
+
+#toggle--light
+	&:after
+		background-color: $bg--light
+
+#toggle--dark
+	&:after
+		background-color: $bg--dark
+
+#toggle--rust
+	&:after
+		background-color: $bg--rust
+
+@media (prefers-color-scheme: light)
+	#toggle--light
+		border: 3px solid $accent--light
+		&:after
+			background-color: $accent--light
+
+@media (prefers-color-scheme: dark)
+	#toggle--dark
+		border: 3px solid $accent--dark
+		&:after
+			background-color: $accent--dark
+
+
+.theme--light
+	#toggle--light
+		border: 3px solid $accent--light
+		&:after
+			background-color: $accent--light
+
+	@media (prefers-color-scheme: dark)
+		#toggle--dark
+			border: none
+			&:after
+				background-color: $bg--dark
+
+	#header h2 a
+		color: $text--light
+
+.theme--dark
+	#toggle--dark
+		border: 3px solid $accent--dark
+		&:after
+			background-color: $accent--dark
+
+	@media (prefers-color-scheme: light)
+		#toggle--light
+			border: none
+			&:after
+				background-color: $bg--light
+
+	#header h2 a
+		color: $text--dark
+
+.theme--rust
+	#toggle--rust
+		border: 3px solid $accent--rust
+		&:after
+			background-color: $accent--rust
+
+	#header h2 a
+		color: $text--rust
+
+	@media (prefers-color-scheme: dark)
+		#toggle--dark
+			border: none
+			&:after
+				background-color: $bg--dark
+
+
+	@media (prefers-color-scheme: light)
+		#toggle--light
+			border: none
+			&:after
+				background-color: $bg--light
+#snackbar
+	visibility: hidden
+	opacity: 0
+
+	position: fixed
+	top: 0
+	left: 50%
+	transform: translateX(-50%)
+	padding: 8px 12px
+
+#snackbar.show
+	visibility: visible
+	opacity: 1

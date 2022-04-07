@@ -1,0 +1,10 @@
+{% extends "partials/base.html" %}
+
+{% block body %}
+	<h1>{{ title }}</h1>
+	{% for collection in collections_list %}
+		{% if collection["name"] != "all" and collection["name"] != "featured" %}
+		<p><a class="accent" href="{{ collection['href'] }}">#{{ collection["name"] }} {{ [collection["size"]] }}</a></p>
+		{% endif %}
+	{% endfor %}
+{% endblock %}

@@ -297,6 +297,10 @@ Github Project Link: [https://github.com/charludo/barely](https://github.com/cha
 ## Changelog
 Most recent entries:
 
+### [1.1.4] - 2022-04-07
+#### Added
+- new "blog" blueprint - read about it here: [https://notablog.io/blog/2022-04-01-building-a-blog-with-barely/](https://notablog.io/blog/2022-04-01-building-a-blog-with-barely/)
+
 ### [1.1.2] - 2022-04-05
 #### Added
 - "publish: false" in a page can disable rendering of a page. Can also be used as a global toggle

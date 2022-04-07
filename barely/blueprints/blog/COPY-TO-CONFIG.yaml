@@ -1,0 +1,35 @@
+TIMESTAMPS:
+    FORMAT: "%Y-%m-%d"
+
+TOC:
+    LIST_ELEMENT: ul
+    MIN_DEPTH: 2
+
+HIGHLIGHT:
+    ASSETS_DIR: res
+    LEXER: Rust
+    THEME: one-dark
+
+PIXELIZER:
+    TARGETS:
+        - lg 660 75
+        - md 510 70
+        - sm 360 65
+    LAYOUTS:
+        - "(max-width: 800px) 100vw"
+        - "660px"
+
+AUTO_SUMMARY:
+    KEYWORDS: true
+
+AUTO_SEO:
+    PRIORITY: 991
+
+COLLECTIONS:
+    PRIORITY: 990
+    PAGE: tags
+    OVERVIEW_TITLE: List of all tags
+    OVERVIEW_TEMPLATE: overview.html
+    COLLECTION_TEMPLATE: tag.html
+    ORDER_KEY: date
+    ORDER_REVERSE: true

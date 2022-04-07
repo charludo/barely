@@ -1,0 +1,39 @@
+{% extends "partials/base.html" %}
+
+{% block body %}
+<div class="blogpost">
+	<p class="quickinfo"><span class="unfocus">{{ created }}{% if ed and ed|string != created|string %} (ed. {{ ed }}){% endif %}</span>{% if collections %} / <a class="accent noborder" href="/tags/{{ collections[0] }}">#{{ collections[0] }}</a>{% endif %} /
+		<span class="unfocus">{{ reading_time }} min</span>
+	</p>
+	<h1>{{ title }}</h1>
+	{% include "partials/socials.html" %}
+	<p>{{ summary }}</p>
+	<hr class="blog-header--divider">
+	{% if toc %}
+	<strong class="toc-title">Table of Contents:</strong>
+	{{ toc }}
+	{% endif %}
+	{% if gitalong %}
+	<blockquote>
+		<p>All code examples are available in <a href="https://github.com/username/{{ gitalong }}/" target="_blank">this GitHub repository</a>!</p>
+	</blockquote>
+	{% endif %}
+	<div class="postbody">
+		{{ content|replace("<a", '<a target="_blank"') }}
+	</div>
+	<blockquote class="comments">
+		<p>This is a 100% static website. Therefore, no direct commenting method is available. However, feel free to <a href="https://github.com/username/{{ blogrepo }}/discussions/new?title=Re: {{ title }}" target="_blank">discuss this article on GitHub</a>!
+		</p>
+	</blockquote>
+	<div class="tags">
+		{% if collections %}
+		{% for collection in collections %}
+		{% if collection != "all" and collection != "featured" %}
+		<a class="accent" href="/tags/{{ collection }}">#{{ collection }}</a>
+		{% endif %}
+		{% endfor %}
+		{% endif %}
+	</div>
+	{% include "partials/socials.html" %}
+</div>
+{% endblock %}

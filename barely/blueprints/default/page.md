@@ -1,12 +1,13 @@
----
-title: Welcome!
----
-
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
+[![PyPI - Downloads][pypi-shield]][pypi-url]
+![PyPI](https://img.shields.io/pypi/v/barely)
 [![Issues][issues-shield]][issues-url]
+[![barely test](https://github.com/charludo/barely/actions/workflows/barely-test.yml/badge.svg?branch=main)](https://github.com/charludo/barely/actions/workflows/barely-test.yml)
+![Lines of code](https://img.shields.io/tokei/lines/github/charludo/barely)
 [![MIT License][license-shield]][license-url]
+![Website](https://img.shields.io/website?down_color=red&down_message=down&up_color=success&up_message=online&url=https%3A%2F%2Fbuildwithbarely.org)
 
 
 <br />
@@ -54,16 +55,25 @@ title: Welcome!
 9. [Changelog](#changelog)
 
 
+#### barely has a website now!
+[see it here: buildwithbarely.org](https://buildwithbarely.org) - of course also built with barely!
+
+## Demo
+
+Short demo of barely's live reloading capabilities:
+
+![barely live demo gif](https://raw.githubusercontent.com/charludo/barely/main/docs/barely-demo.gif)
+
 <!-- ABOUT -->
 ## About barely
 
-barely was built out of frustration with the readily available site generators, frameworks and CMS, which mostly fall into two categories: not providing crucial features; or providing such an overload of them that gettig started with the system takes longer than just building the site by hand.
+barely was built out of frustration with the readily available site generators, frameworks and CMS, which mostly fall into two categories: not providing crucial features; or providing such an overload of them that getting started with the system takes longer than just building the site by hand.
 
 barely reduces static website development to its key parts, by automatically rendering jinja2 templates and Markdown content into HTML. A simple **plugin interface** allows for easy extensibility, and the built-in **live web server** makes on-the-fly development as comfortable as possible.
 
 Since building performant and SEO-friendly websites is always important, barely comes bundled with a Google **Lighthouse** CLI option, letting you quickly generate reports about your sites health.
 
-For more on barelys design philosophy, and to see whether barely might be right for your project, [see here in the docs](https://github.com/charludo/barely/blob/main/docs/about.md).
+For more on barely's design philosophy, and to see whether barely might be right for your project, [see here in the docs](https://github.com/charludo/barely/blob/main/docs/about.md).
 
 
 
@@ -279,34 +289,40 @@ Distributed under the GNU General Public License. See [LICENSE](https://github.c
 <!-- CONTACT -->
 ## Contact
 
-Charlotte Hartmann Paludo - [@smiletolerantly](https://t.me/smiletolerantly) - contact@charlotteharludo.com
+Telegram: [@smiletolerantly](https://t.me/smiletolerantly) - Mail: barely@buildwithbarely.org
 
-Project Link: [https://github.com/charludo/barely](https://github.com/charludo/barely)
+Official Website Link: [https://buildwithbarely.org](https://buildwithbarely.org)
+Github Project Link: [https://github.com/charludo/barely](https://github.com/charludo/barely)
 
 ## Changelog
-Most recent entry:
+Most recent entries:
 
-### [1.0.0] - 2021-08-26
+### [1.1.4] - 2022-04-07
 #### Added
-- lighthouse CLI integration
-- AutoSEO plugin
-- AutoSummary plugin
-- Gallery plugin
-- Minify plugin
-- Pixelizer plugin
-- global `-d` debugging-flag
-- this changelog!
+- new "blog" blueprint - read about it here: [https://notablog.io/blog/2022-04-01-building-a-blog-with-barely/](https://notablog.io/blog/2022-04-01-building-a-blog-with-barely/)
+
+### [1.1.2] - 2022-04-05
+#### Added
+- "publish: false" in a page can disable rendering of a page. Can also be used as a global toggle
+- Collections: added ORDER_KEY and ORDER_REVERSE options. Can be used to configure the order of posts within collection pages.
 
 #### Changed
-- moved from BETA to STABLE
-- switched version numbering scheme from `v_095` to more readable `v1.0.0`
-- proper logging instead of print()
+- Collections: "created" timestamps take precedence over "edited" timestamps
+
+### [1.1.0] - 2022-04-03
+#### Added
+- Collections: the OVERVIEW_CONTENT field allows to specify a markdown file to be used for the Collection overview page's content
 
 #### Fixed
-- various small performance improvements, largely due to eliminating duplicate function calls
+- no longer ignores "meta" fields already set on a page. Previously they were overridden in the meta parsing process
+- Collections: if a page belonging to a collection was not modified after a rebuild, it would not be passed through the plugin pipeline. Among other side effects, this did not allow for Timestamp- and ReadingTime-integration for post previews
+- Timestamp: no longer panics if a file vanishes
+- ToC: indented ToC HTML was not accessibility friendly
 
-#### Removed
-- Minimizer plugin, obsolete thanks to Minify and Pixelizer
+#### Changed
+- ReadingTime: if the plugin was configured with WPM_FAST and WPM_SLOW values being identical, or if the text was very short, the fast and slow estimate could be identical. In this case, the plugin now simply shows "0" instead of "0 - 0" (for example)
+- the "content_raw" field utilized by some plugins now only contains the unparsed markdown content, where previously it also included the yaml headers
+
 
 See the full changelog [here](https://github.com/charludo/barely/blob/main/CHANGELOG.md)
 
@@ -322,3 +338,5 @@ See the full changelog [here](https://github.com/charludo/barely/blob/main/CHANG
 [issues-url]: https://github.com/charludo/barely/issues
 [license-shield]: https://img.shields.io/github/license/charludo/barely
 [license-url]: https://github.com/charludo/barely/blob/master/LICENSE.txt
+[pypi-shield]: https://img.shields.io/pypi/dm/barely
+[pypi-url]: https://pypi.org/project/barely/

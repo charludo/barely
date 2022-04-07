@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>{{ site_name }}</title>
+    <link>{{ page_url }}/index.xml</link>
+	<language>en-us</language>
+	<image>
+		<title>{{ site_name }}</title>
+		<link>{{ site_url }}</link>
+		<url>{{ site_url }}{{ title_image }}</url>
+		<width>1200</width>
+		<height>630</height>
+	</image>
+    <atom:link href="{{ page_url }}" rel="self" type="application/rss+xml" />
+    <description>{{ site_description }}</description>
+    <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+	<category>technology</category>
+    {% if exhibits %}
+    {% if "all" in exhibits %}
+    {% for item in exhibits["all"] %}
+    <item>
+       <title>{{ item.title }}</title>
+       <description>{{ item.preview|safe }}</description>
+       <pubDate>{{ item.date }}</pubDate>
+       <guid isPermaLink="true">{{ site_url }}{{ item.href }}</guid>
+       <link>{{ site_url }}{{ item.href }}</link>
+       <dc:creator><![CDATA[Your Name]]></dc:creator>
+    </item>
+    {% endfor %}
+    {% endif %}
+    {% endif %}
+  </channel>
+</rss>

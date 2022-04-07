@@ -8,13 +8,13 @@ HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 
 setuptools.setup(name='barely',
-                 version='1.1.3',
+                 version='1.1.4',
                  description='barely is a lightweight, but highly extensible static site generator written in pure python.',
                  long_description=README,
                  long_description_content_type="text/markdown",
                  keywords=['static site generator', 'jinja2', 'markdown', 'web development', 'blog'],
                  url='https://buildwithbarely.org',
-                 download_url='https://github.com/charludo/barely/archive/refs/tags/v1.1.2.tar.gz',
+                 download_url='https://github.com/charludo/barely/archive/refs/tags/v1.1.4.tar.gz',
                  author='Charlotte Hartmann Paludo',
                  author_email='barely@buildwithbarely.org',
                  license='GPL-3.0',

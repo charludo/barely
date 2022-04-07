@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{{ seo_tags }}
+	<meta name="theme-color" content="#222222">
+	<link rel="stylesheet" href="/res/style.css" />
+	<link rel="stylesheet" href="/res/highlight/one-dark.css" />
+	{% block extra_css %}{% endblock %}
+</head>
+<body class="{{ body }}">
+	<div id="container">
+		<ul id="header">
+			<li><h2><a class="noborder" href="/">{{ site_name }}</a></h2></li>
+			<li><a class="noborder accent" href="/blog">posts</a></li>
+			<li><a class="noborder accent" href="/tags">tags</a></li>
+			<li><a class="noborder accent" href="/rss/index.xml">rss</a></li>
+			<li id="theme-li">
+				<form id="themes">
+					<input type="radio" name="theme--toggle" id="toggle--light" value="theme--light"/><label for="toggle--light">Switch to light theme</label><!--
+					--><input type="radio" name="theme--toggle" id="toggle--dark" value="theme--dark"/><label for="toggle--dark">Switch to dark theme</label><!--
+					--><input type="radio" name="theme--toggle" id="toggle--rust" value="theme--rust"/><label for="toggle--rust">Switch to rust theme</label>
+				</form>
+			</li>
+		</ul>
+		{% block body %}
+
+		{% endblock %}
+	</div>
+	<div id="snackbar">Copied link!</div>
+	{% block extra_js %}{% endblock %}
+	<script src="/res/theme.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+site_url: https://default.com
+site_name: barely blog
+site_description: default description
+site_keywords:
+    - python
+    - barely
+favicon: /res/favicon.ico
+title_image: /res/socialcover.png
+blogrepo: yourrepo
