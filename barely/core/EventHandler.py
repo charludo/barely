@@ -234,7 +234,7 @@ class EventHandler():
         """ return the path of the parent of a subpage """
         parent_dir = os.path.dirname(os.path.dirname(sub_page))  # equals the dir of the parent
         try:
-            parent_page = str(list(Path(parent_dir).glob("*." + config["PAGE_EXT"]))[0])
+            parent_page = str(sorted(list(Path(parent_dir).glob("*." + config["PAGE_EXT"])))[0])
         except IndexError:
             raise IndexError("Child page has no parent!")
         return parent_page
