@@ -297,6 +297,17 @@ Github Project Link: [https://github.com/charludo/barely](https://github.com/cha
 ## Changelog
 Most recent entries:
 
+## [1.2.0] - 2025-04-16
+### Added
+- Nix Flake containing both a dev shell and the barely package
+
+### Changed
+- include the full `meta` field of collectibles in the exhibition list
+- use any `meta` field for sorting collections
+
+### Fixed
+- PIL naming (ANTIALIAS->LANCZOS)
+
 ### [1.1.4] - 2022-04-07
 #### Added
 - new "blog" blueprint - read about it here: [https://notablog.io/blog/2022-04-01-building-a-blog-with-barely/](https://notablog.io/blog/2022-04-01-building-a-blog-with-barely/)
@@ -308,21 +319,6 @@ Most recent entries:
 
 #### Changed
 - Collections: "created" timestamps take precedence over "edited" timestamps
-
-### [1.1.0] - 2022-04-03
-#### Added
-- Collections: the OVERVIEW_CONTENT field allows to specify a markdown file to be used for the Collection overview page's content
-
-#### Fixed
-- no longer ignores "meta" fields already set on a page. Previously they were overridden in the meta parsing process
-- Collections: if a page belonging to a collection was not modified after a rebuild, it would not be passed through the plugin pipeline. Among other side effects, this did not allow for Timestamp- and ReadingTime-integration for post previews
-- Timestamp: no longer panics if a file vanishes
-- ToC: indented ToC HTML was not accessibility friendly
-
-#### Changed
-- ReadingTime: if the plugin was configured with WPM_FAST and WPM_SLOW values being identical, or if the text was very short, the fast and slow estimate could be identical. In this case, the plugin now simply shows "0" instead of "0 - 0" (for example)
-- the "content_raw" field utilized by some plugins now only contains the unparsed markdown content, where previously it also included the yaml headers
-
 
 See the full changelog [here](https://github.com/charludo/barely/blob/main/CHANGELOG.md)
 

@@ -71,7 +71,7 @@ class Pixelizer(PluginBase):
                     target_x = target["width"]
                     size = target_x, original_y
                     self.logger.debug(f"Original size: {item['image'].size}, New size: {size}")
-                    variant["image"].thumbnail(size, Image.ANTIALIAS)
+                    variant["image"].thumbnail(size, Image.LANCZOS)
                     variant["quality"] = target["quality"]
                     variant["destination"] = f"{filename}-{target['slug']}.{type}"
                     variant["extension"] = type

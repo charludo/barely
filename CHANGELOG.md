@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - nothing
 
+## [1.2.0] - 2025-04-16
+### Added
+- Nix Flake containing both a dev shell and the barely package
+
+### Changed
+- include the full `meta` field of collectibles in the exhibition list
+- use any `meta` field for sorting collections
+
+### Fixed
+- PIL naming (ANTIALIAS->LANCZOS)
+
 ## [1.1.4] - 2022-04-07
 ### Added
 - new "blog" blueprint - read about it here: [https://notablog.io/blog/2022-04-01-building-a-blog-with-barely/](https://notablog.io/blog/2022-04-01-building-a-blog-with-barely/)
@@ -109,7 +120,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.9.0] - 2021-06-19
 Initial beta release
 
-[Unreleased]: https://github.com/charludo/barely/compare/v1.1.4...HEAD
+[Unreleased]: https://github.com/charludo/barely/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/charludo/barely/compare/v1.1.4...v1.2.0
 [1.1.4]: https://github.com/charludo/barely/compare/v1.1.2...v1.1.4
 [1.1.2]: https://github.com/charludo/barely/compare/v1.1.0...v1.1.2
 [1.1.0]: https://github.com/charludo/barely/compare/v1.0.5...v1.1.0

@@ -2,15 +2,25 @@
 auto-generate category pages from "collection"
 meta-tags on the pages
 """
+
 import glob
-import yaml
 from os import sep, walk
-from os.path import join, getmtime, dirname, splitext
+from os.path import dirname, getmtime, join, splitext
+
+import yaml
 from watchdog.events import FileModifiedEvent
-from barely.plugins import PluginBase
+
 from barely.core.EventHandler import EventHandler as EH
+from barely.core.ProcessingPipeline import (
+    hook_plugins,
+    parse_content,
+    parse_meta,
+    read_file,
+    render_page,
+    write_file,
+)
+from barely.plugins import PluginBase
 from barely.plugins.PluginManager import PluginManager as PM
-from barely.core.ProcessingPipeline import parse_meta, parse_content, render_page, read_file, write_file, hook_plugins
 
 
 class Collections(PluginBase):
@@ -36,11 +46,10 @@ class Collections(PluginBase):
             self.plugin_config = standard_config | self.config["COLLECTIONS"]
 
             # need to get a full read on the current collections-situation.
-            for file in glob.iglob(join(self.config["ROOT"]["DEV"], "**", "*.md"), recursive=True):
-                item = {
-                    "origin": file,
-                    "destination": EH._get_web_path(file)
-                }
+            for file in glob.iglob(
+                join(self.config["ROOT"]["DEV"], "**", "*.md"), recursive=True
+            ):
+                item = {"origin": file, "destination": EH._get_web_path(file)}
                 for it in parse_content(parse_meta(read_file([item]))):
                     _ = list(self.action(item=it))
 
@@ -68,7 +77,12 @@ class Collections(PluginBase):
                 collectible["destination"] = item["destination"]
                 collectible["extension"] = self.config["PAGE_EXT"]
                 collectible["raw"] = item["content_raw"]
-                collectible["href"] = item["destination"].replace(self.config["ROOT"]["WEB"], "", 1).replace("\\", "/")
+                collectible["href"] = (
+                    item["destination"]
+                    .replace(self.config["ROOT"]["WEB"], "", 1)
+                    .replace("\\", "/")
+                )
+                collectible["meta"] = item["meta"]
                 try:
                     collectible["timestamp"] = getmtime(item["origin"])
                 except FileNotFoundError:
@@ -78,7 +92,9 @@ class Collections(PluginBase):
                 try:
                     collectible["preview"] = item["meta"]["summary"]
                 except KeyError:
-                    collectible["preview"] = item["content"][:self.plugin_config["SUMMARY_LENGTH"]] + "..."
+                    collectible["preview"] = (
+                        item["content"][: self.plugin_config["SUMMARY_LENGTH"]] + "..."
+                    )
 
                 # we'd also really like to get the first image of the blog
                 if "title_image" in item["meta"]:
@@ -115,14 +131,22 @@ class Collections(PluginBase):
             # PAGE can want to display EXHIBITS
             try:
                 exhibits = item["meta"]["exhibits"]
-                self.EXHIBITS.add(item["origin"])        # store for later (finalize re-renders these)
+                self.EXHIBITS.add(
+                    item["origin"]
+                )  # store for later (finalize re-renders these)
                 wanted_exhibits = {}
                 for exhibit in exhibits:
                     try:
-                        wanted_exhibits[exhibit] = sorted(self.COLLECTION[exhibit], key=lambda k: k[self.plugin_config["ORDER_KEY"]], reverse=self.plugin_config["ORDER_REVERSE"])
+                        wanted_exhibits[exhibit] = sorted(
+                            self.COLLECTION[exhibit],
+                            key=self.sort_fn,
+                            reverse=self.plugin_config["ORDER_REVERSE"],
+                        )
                     except KeyError:
                         wanted_exhibits[exhibit] = []
-                item["meta"]["exhibits"] = wanted_exhibits  # now contains all (current) exhibition-pieces from wanted collections
+                item["meta"]["exhibits"] = (
+                    wanted_exhibits  # now contains all (current) exhibition-pieces from wanted collections
+                )
             except KeyError:
                 pass
 
@@ -145,7 +169,11 @@ class Collections(PluginBase):
         if self.plugin_config["COLLECTION_TEMPLATE"]:
             for col_name in self.COLLECTION:
                 # every collection needs to be ordered (by mtime-stamp)
-                collectibles = sorted(self.COLLECTION[col_name], key=lambda k: k[self.plugin_config["ORDER_KEY"]], reverse=self.plugin_config["ORDER_REVERSE"])
+                collectibles = sorted(
+                    self.COLLECTION[col_name],
+                    key=self.sort_fn,
+                    reverse=self.plugin_config["ORDER_REVERSE"],
+                )
 
                 # the renderable collection page needs the following:
                 # - a template: already got that during init, stored in config
@@ -156,16 +184,18 @@ class Collections(PluginBase):
                 # - action, origin: for logging
                 page = {
                     "template": self.plugin_config["COLLECTION_TEMPLATE"],
-                    "destination": join(self.config["ROOT"]["WEB"], self.plugin_config["PAGE"], col_name.lower(), "index.html"),
-                    "meta": {
-                        "title": col_name,
-                        "collectibles": collectibles
-                    },
+                    "destination": join(
+                        self.config["ROOT"]["WEB"],
+                        self.plugin_config["PAGE"],
+                        col_name.lower(),
+                        "index.html",
+                    ),
+                    "meta": {"title": col_name, "collectibles": collectibles},
                     "content": "",
                     "content_raw": "",
                     "action": "collected",
                     "origin": col_name,
-                    "extension": self.config["PAGE_EXT"]
+                    "extension": self.config["PAGE_EXT"],
                 }
 
                 # mini pipeline, only the necessary steps
@@ -175,15 +205,22 @@ class Collections(PluginBase):
             # order collections by their size
             collections = []
             for c in self.COLLECTION:
-                collections.append({
-                    "name": c,
-                    "size": len(self.COLLECTION[c]),
-                    "href": join(sep, self.plugin_config["PAGE"], c.lower(), "index.html").replace("\\", "/")
-                })
+                collections.append(
+                    {
+                        "name": c,
+                        "size": len(self.COLLECTION[c]),
+                        "href": join(
+                            sep, self.plugin_config["PAGE"], c.lower(), "index.html"
+                        ).replace("\\", "/"),
+                    }
+                )
             collections = sorted(collections, key=lambda k: k["size"], reverse=True)
 
             if self.plugin_config["OVERVIEW_CONTENT"]:
-                origin = join(self.config["ROOT"]["DEV"], self.plugin_config["OVERVIEW_CONTENT"].lstrip("/\\"))
+                origin = join(
+                    self.config["ROOT"]["DEV"],
+                    self.plugin_config["OVERVIEW_CONTENT"].lstrip("/\\"),
+                )
                 processed = list(parse_content(read_file([{"origin": origin}])))[0]
                 content = processed["content"]
                 content_raw = processed["content_raw"]
@@ -194,16 +231,24 @@ class Collections(PluginBase):
 
             page = {
                 "template": self.plugin_config["OVERVIEW_TEMPLATE"],
-                "destination": join(self.config["ROOT"]["WEB"], self.plugin_config["PAGE"], "index.html"),
+                "destination": join(
+                    self.config["ROOT"]["WEB"], self.plugin_config["PAGE"], "index.html"
+                ),
                 "meta": {
                     "title": self.plugin_config["OVERVIEW_TITLE"],
-                    "collections_list": collections
+                    "collections_list": collections,
                 },
                 "content": content,
                 "content_raw": content_raw,
                 "action": "created overview",
                 "origin": origin,
-                "extension": self.config["PAGE_EXT"]
+                "extension": self.config["PAGE_EXT"],
             }
 
             write_file(render_page(hook_plugins(parse_meta([page]))))
+
+    def sort_fn(self, item):
+        key = self.plugin_config["ORDER_KEY"]
+        if value := item.get(key, None):
+            return value
+        return item["meta"].get(key, None)
