@@ -7,7 +7,7 @@
 [![barely test](https://github.com/charludo/barely/actions/workflows/barely-test.yml/badge.svg?branch=main)](https://github.com/charludo/barely/actions/workflows/barely-test.yml)
 ![Lines of code](https://img.shields.io/tokei/lines/github/charludo/barely)
 [![MIT License][license-shield]][license-url]
-![Website](https://img.shields.io/website?down_color=red&down_message=down&up_color=success&up_message=online&url=https%3A%2F%2Fbuildwithbarely.org)
+![Website](https://img.shields.io/website?down_color=red&down_message=down&up_color=success&up_message=online&url=https%3A%2F%2Fnotablog.io)
 
 
 <br />
@@ -56,7 +56,7 @@
 
 
 #### barely has a website now!
-[see it here: buildwithbarely.org](https://buildwithbarely.org) - of course also built with barely!
+[see it here: notablog.io](https://notablog.io) - of course also built with barely!
 
 ## Demo
 
@@ -288,9 +288,9 @@ Distributed under the GNU General Public License. See [LICENSE](https://github.c
 <!-- CONTACT -->
 ## Contact
 
-Telegram: [@smiletolerantly](https://t.me/smiletolerantly) - Mail: barely@buildwithbarely.org
+Telegram: [@smiletolerantly](https://t.me/smiletolerantly) - Mail: barely@notablog.io
 
-Official Website Link: [https://buildwithbarely.org](https://buildwithbarely.org)
+Official Website Link: [https://notablog.io](https://notablog.io)
 Github Project Link: [https://github.com/charludo/barely](https://github.com/charludo/barely)
 
 ## Changelog

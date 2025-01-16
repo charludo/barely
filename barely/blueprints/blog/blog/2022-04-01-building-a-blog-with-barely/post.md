@@ -11,7 +11,7 @@ created: 2022-04-01
 ---
 ## Introduction
 
-In this blog post, we are going to build a blog. Or rather, we are going to build *this* blog. (I know, a fitting topic for the first post on here, isn't it?) Rather than build it by hand or with the help of a bulky CMS however, we are going to use the static site generator [barely](https://buildwithbarely.org).
+In this blog post, we are going to build a blog. Or rather, we are going to build *this* blog. (I know, a fitting topic for the first post on here, isn't it?) Rather than build it by hand or with the help of a bulky CMS however, we are going to use the static site generator [barely](https://notablog.io).
 
 Apart from a slew of quality of life features (like hot reloading, SASS compilation and automatic .webp conversion), barely also offers us everything we need to build a blog "out of the box", most importantly a collection system to organize our posts into categories and link them appropriately.
 
@@ -65,7 +65,7 @@ title: Hello World!
 This is the content of our "Hello World" post!
 ```
 
-If you are unclear on how the yaml configuration at the top of the file works, check out [this introduction](https://buildwithbarely.org/features/yaml/). To see your post, navigate to [http://127.0.0.1:5500/blog/hello-world/](http://127.0.0.1:5500/blog/hello-world/).
+If you are unclear on how the yaml configuration at the top of the file works, check out [this introduction](https://notablog.io/features/yaml/). To see your post, navigate to [http://127.0.0.1:5500/blog/hello-world/](http://127.0.0.1:5500/blog/hello-world/).
 
 Alright, a title and some content are good, but not exactly a fully featured blog yet. So let's take it from the top.
 
@@ -187,7 +187,7 @@ Neat!
 ### Other features
 These were the most important blog-specific features. There's loads of other stuff you might want to add: automatic resizing of pictures, automatic SEO, lexing & highlighting of code snippets,...
 
-These are not really blog specific however, and are covered in detail [here](https://buildwithbarely.org/features/)!
+These are not really blog specific however, and are covered in detail [here](https://notablog.io/features/)!
 
 ## Comments & Search
 "Hold up!" you might say at this point. "There's something missing! What about comments, and search functionality?" And you'd be right - we have not implemented these yet. However, that's less of an issue with barely, and more an issue of the nature of static websites.
