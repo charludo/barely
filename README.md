@@ -214,7 +214,6 @@ But most of the time, you will want at least a little more functionality. That's
 barely comes with 10 plugins by default:
 
 - [AutoSEO](https://github.com/charludo/barely/blob/main/docs/plugins/autoseo.md)
-- [AutoSummary](https://github.com/charludo/barely/blob/main/docs/plugins/autosummary.md)
 - [Collections](https://github.com/charludo/barely/blob/main/docs/plugins/collections.md)
 - [Forms](https://github.com/charludo/barely/blob/main/docs/plugins/forms.md)
 - [Gallery](https://github.com/charludo/barely/blob/main/docs/plugins/gallery.md)
@@ -297,6 +296,13 @@ Github Project Link: [https://github.com/charludo/barely](https://github.com/cha
 ## Changelog
 Most recent entries:
 
+## [1.2.2] - 2025-04-16
+### Added
+- `--no-aftermath` / `-n` option for `barely rebuild` to skip aftermath question
+
+### Removed
+- AutoSummary plugin, due to packaging difficulties and unidiomatic installation
+
 ## [1.2.1] - 2025-04-16
 ### Added
 - Nix Flake containing both a dev shell and the barely package
@@ -312,14 +318,6 @@ Most recent entries:
 ### [1.1.4] - 2022-04-07
 #### Added
 - new "blog" blueprint - read about it here: [https://notablog.io/blog/2022-04-01-building-a-blog-with-barely/](https://notablog.io/blog/2022-04-01-building-a-blog-with-barely/)
-
-### [1.1.2] - 2022-04-05
-#### Added
-- "publish: false" in a page can disable rendering of a page. Can also be used as a global toggle
-- Collections: added ORDER_KEY and ORDER_REVERSE options. Can be used to configure the order of posts within collection pages.
-
-#### Changed
-- Collections: "created" timestamps take precedence over "edited" timestamps
 
 See the full changelog [here](https://github.com/charludo/barely/blob/main/CHANGELOG.md)
 

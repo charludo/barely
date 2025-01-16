@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - nothing
 
+## [1.2.2] - 2025-04-16
+### Added
+- `--no-aftermath` / `-n` option for `barely rebuild` to skip aftermath question
+
+### Removed
+- AutoSummary plugin, due to packaging difficulties and unidiomatic installation
+
 ## [1.2.1] - 2025-04-16
 ### Added
 - Nix Flake containing both a dev shell and the barely package
@@ -121,7 +128,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.9.0] - 2021-06-19
 Initial beta release
 
-[Unreleased]: https://github.com/charludo/barely/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/charludo/barely/compare/v1.2.2...HEAD
+[1.2.2]: https://github.com/charludo/barely/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/charludo/barely/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/charludo/barely/compare/v1.1.4...v1.2.0
 [1.1.4]: https://github.com/charludo/barely/compare/v1.1.2...v1.1.4

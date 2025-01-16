@@ -11,9 +11,7 @@ barely knows three kinds of plugins:
 These look out for certain file extensions, which they will further process than barely normally would. Some also perform some additional tasks right after you've finished editing the project.
 
 barely ships with:
-- [AutoSeo](plugins/autoseo.md): generate SEO-, OpenGraph- and Twitter-relevant tags from a very minimal required information set. Can also generate `robots.txt` and `sitemap.txt` files. Works great with AutoSummary!
-
-- [AutoSummary](plugins/autosummary.md): make use of the NLTK to generate a short summary of a page. Can also extract a list of most relevant keywords
+- [AutoSeo](plugins/autoseo.md): generate SEO-, OpenGraph- and Twitter-relevant tags from a very minimal required information set. Can also generate `robots.txt` and `sitemap.txt` files.
 
 - [Collections](plugins/collections.md): add a page to Collections or request the contents of one (or multiple). Can also generate Collection overview pages. These are barelys version of categories.
 

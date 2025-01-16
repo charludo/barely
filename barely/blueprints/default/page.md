@@ -214,7 +214,6 @@ But most of the time, you will want at least a little more functionality. That's
 barely comes with 10 plugins by default:
 
 - [AutoSEO](https://github.com/charludo/barely/blob/main/docs/plugins/autoseo.md)
-- [AutoSummary](https://github.com/charludo/barely/blob/main/docs/plugins/autosummary.md)
 - [Collections](https://github.com/charludo/barely/blob/main/docs/plugins/collections.md)
 - [Forms](https://github.com/charludo/barely/blob/main/docs/plugins/forms.md)
 - [Gallery](https://github.com/charludo/barely/blob/main/docs/plugins/gallery.md)

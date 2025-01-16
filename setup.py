@@ -10,13 +10,13 @@ README = (HERE / "README.md").read_text()
 
 setuptools.setup(
     name="barely",
-    version="1.2.1",
+    version="1.2.2",
     description="barely is a lightweight, but highly extensible static site generator written in pure python.",
     long_description=README,
     long_description_content_type="text/markdown",
     keywords=["static site generator", "jinja2", "markdown", "web development", "blog"],
     url="https://notablog.io",
-    download_url="https://github.com/charludo/barely/archive/refs/tags/v1.2.1.tar.gz",
+    download_url="https://github.com/charludo/barely/archive/refs/tags/v1.2.2.tar.gz",
     author="Charlotte Hartmann Paludo",
     author_email="barely@charlotteharludo.com",
     license="GPL-3.0",

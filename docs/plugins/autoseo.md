@@ -1,6 +1,6 @@
 # AutoSEO
 
-Type: `content`  
+Type: `content`
 Enabled by default: `true`
 
 Generate all the pesky meta-tags from a very limited configuration. This plugin can save you a lot of time, and make your pages much more appealing to Google & Co.
@@ -21,7 +21,7 @@ twitter_creator: what twitter user to attribute content to. better specified on 
 
 **ALL** of these are optional.
 
-Then make sure you have a `title` specified in the meta of your pages (`site_name` will be used as fallback). Either provide a summary, a description, or let the AutoSummary generate it, as well as extract relevant keywords.
+Then make sure you have a `title` specified in the meta of your pages (`site_name` will be used as fallback). Either provide a summary, or a description.
 
 You can specify a title_image, if none is found, the plugin will extract one from your markdown; if none is found again, it will look for one in the page's directory in the devroot.
 

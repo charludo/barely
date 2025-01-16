@@ -12,11 +12,11 @@
       {
         packages.default = pkgs.python312Packages.buildPythonPackage rec {
           pname = "barely";
-          version = "1.2.1";
+          version = "1.2.2";
 
           src = pkgs.fetchPypi {
             inherit pname version;
-            hash = "sha256-w3rkFiCJIwoBOQ+t1npfeJWcwB/8wCZC8bcP3wLms1U=";
+            hash = "sha256-/gliqfkPwnhZilFXltNXuOjQnJoJ9u0SnktqlLmRfTo=";
           };
 
 

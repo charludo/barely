@@ -221,8 +221,9 @@ def live(verbose):
 @click.option("--light", "-l", help="don't clean existing files, and skip image rebuilds", is_flag=True)
 @click.option("--partial", "-p", help="specify file or directory to rebuild instead of devroot", default="devroot")
 @click.option("--start", "-s", help="after rebuilding, start the web server", is_flag=True)
+@click.option("--no-aftermath", "-n", help="after rebuilding, exit without aftermath", is_flag=True)
 @click.pass_context
-def rebuild(ctx, start, partial, light):
+def rebuild(ctx, start, partial, light, no_aftermath):
     """(re)build the entire project"""
     init()
 
@@ -240,7 +241,7 @@ def rebuild(ctx, start, partial, light):
 
     if start:
         ctx.invoke(live)
-    else:
+    elif not no_aftermath:
         aftermath(PM)
 
 
