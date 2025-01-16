@@ -10,6 +10,42 @@
         pkgs = import nixpkgs { inherit system; };
       in
       {
+        packages.default = pkgs.python312Packages.buildPythonPackage rec {
+          pname = "barely";
+          version = "1.2.1";
+
+          src = pkgs.fetchPypi {
+            inherit pname version;
+            hash = "sha256-w3rkFiCJIwoBOQ+t1npfeJWcwB/8wCZC8bcP3wLms1U=";
+          };
+
+
+          doCheck = false;
+
+          pyproject = true;
+          build-system = [ pkgs.python312Packages.setuptools ];
+
+          propagatedBuildInputs = with pkgs.python312Packages; [
+            pip
+            click
+            click-default-group
+            coloredlogs
+            mock
+            pyyaml
+            watchdog
+            pillow
+            gitpython
+            pygments
+            libsass
+            pysftp
+            livereload
+            binaryornot
+            jinja2
+            mistune
+            calmjs
+          ] ++ [ pkgs.python312Full ];
+        };
+
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             python39Full

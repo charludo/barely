@@ -297,10 +297,11 @@ Github Project Link: [https://github.com/charludo/barely](https://github.com/cha
 ## Changelog
 Most recent entries:
 
-## [1.2.0] - 2025-04-16
+## [1.2.1] - 2025-04-16
 ### Added
 - Nix Flake containing both a dev shell and the barely package
 
+## [1.2.0] - 2025-04-16
 ### Changed
 - include the full `meta` field of collectibles in the exhibition list
 - use any `meta` field for sorting collections
