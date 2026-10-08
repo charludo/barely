@@ -296,6 +296,10 @@ Github Project Link: [https://github.com/charludo/barely](https://github.com/cha
 ## Changelog
 Most recent entries:
 
+## [1.2.3] - 2026-10-08
+### Fixed
+- Pixelizer no longer modifies the shared config, which made it silently fail to register when instantiated a second time (e.g. by Collections' finalize).
+
 ## [1.2.2] - 2025-04-16
 ### Added
 - `--no-aftermath` / `-n` option for `barely rebuild` to skip aftermath question
@@ -314,10 +318,6 @@ Most recent entries:
 
 ### Fixed
 - PIL naming (ANTIALIAS->LANCZOS)
-
-### [1.1.4] - 2022-04-07
-#### Added
-- new "blog" blueprint - read about it here: [https://notablog.io/blog/2022-04-01-building-a-blog-with-barely/](https://notablog.io/blog/2022-04-01-building-a-blog-with-barely/)
 
 See the full changelog [here](https://github.com/charludo/barely/blob/main/CHANGELOG.md)
 

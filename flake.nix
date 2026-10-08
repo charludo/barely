@@ -2,9 +2,11 @@
   inputs = {
     utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # the locked nixpkgs' twine rejects the metadata version written by current setuptools
+    nixpkgs-twine.url = "github:nixos/nixpkgs/nixos-unstable";
   };
 
-  outputs = { self, nixpkgs, utils }:
+  outputs = { self, nixpkgs, nixpkgs-twine, utils }:
     utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
@@ -12,11 +14,11 @@
       {
         packages.default = pkgs.python312Packages.buildPythonPackage rec {
           pname = "barely";
-          version = "1.2.2";
+          version = "1.2.3";
 
           src = pkgs.fetchPypi {
             inherit pname version;
-            hash = "sha256-/gliqfkPwnhZilFXltNXuOjQnJoJ9u0SnktqlLmRfTo=";
+            hash = "sha256-hOh/0YzdBzARUOZyhXihPgm1nV459JYJ0wdTDVPKVFQ=";
           };
 
 
@@ -48,15 +50,16 @@
 
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
-            python39Full
-            python39Packages.pip
-            python39Packages.platformdirs
+            (python39Full.withPackages (ps: with ps; [
+              pip
+              platformdirs
+              build
+            ]))
+            nixpkgs-twine.legacyPackages.${system}.twine
 
             ruff
             djlint
           ];
-
-          LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib pkgs.file ];
 
           shellHook = /* bash */ ''
             set_if_unset() {
@@ -64,11 +67,6 @@
                     export "$1"="$2"
                 fi
             }
-
-            # Setting LD_LIBRARY_PATH can cause issues on non-NixOS systems
-            if ! command -v nixos-version &> /dev/null; then
-                unset LD_LIBRARY_PATH
-            fi
 
             SOURCE_DATE_EPOCH=$(date +%s)
             VENV=.venv

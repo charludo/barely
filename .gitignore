@@ -4,6 +4,9 @@ barely/tests/ref/backups/backups/
 barely/tests/ref/backups/webroot/
 barely/tests/ref/backups/devroot/
 
+# nix
+result*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

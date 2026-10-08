@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 
 setuptools.setup(
     name="barely",
-    version="1.2.2",
+    version="1.2.3",
     description="barely is a lightweight, but highly extensible static site generator written in pure python.",
     long_description=README,
     long_description_content_type="text/markdown",
