@@ -30,13 +30,15 @@ class Pixelizer(PluginBase):
             }
             self.plugin_config = standard_config | self.config["PIXELIZER"]
 
-            for i, t in enumerate(self.plugin_config["TARGETS"]):
+            targets = []
+            for t in self.plugin_config["TARGETS"]:
                 slug, width, quality = t.split()
-                self.plugin_config["TARGETS"][i] = {
+                targets.append({
                     "slug": slug,
                     "width": int(width),
                     "quality": int(quality)
-                }
+                })
+            self.plugin_config["TARGETS"] = targets
 
             self.func_map = {
                 "png,jpg,jpeg,tif,tiff,bmp": self.process_image,

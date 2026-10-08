@@ -45,6 +45,18 @@ class TestPixelizer(unittest.TestCase):
         self.assertDictEqual(golden, pix.plugin_config)
         self.assertListEqual(golden_register_for, pix.register_for)
 
+        # user-configured targets must survive repeated instantiation
+        pix.config["PIXELIZER"] = {"PRIORITY": 2, "TARGETS": ["xl 1920 70", "sm 300 70"]}
+        golden_targets = [
+            {"slug": "xl", "width": 1920, "quality": 70},
+            {"slug": "sm", "width": 300, "quality": 70}
+        ]
+        for _ in range(2):
+            again = Pixelizer()
+            self.assertListEqual(golden_targets, again.plugin_config["TARGETS"])
+            self.assertListEqual(golden_register_for, again.register_for)
+        self.assertListEqual(["xl 1920 70", "sm 300 70"], pix.config["PIXELIZER"]["TARGETS"])
+
         # reset
         del pix.config["PIXELIZER"]
         pix.__init__()
